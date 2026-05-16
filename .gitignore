@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# large media archives
+uploads.zip
+
+# claude memory
+.claude/
