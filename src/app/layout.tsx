@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Archivo } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import CookieBanner from "@/components/CookieBanner";
 
 const archivo = Archivo({
   subsets: ["latin"],
@@ -31,9 +30,8 @@ export default function RootLayout({
       <body
         className="min-h-full flex flex-col font-[family-name:var(--font-archivo)] bg-[var(--cream)] text-[var(--charcoal)]"
       >
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        {children}
+        <CookieBanner />
       </body>
     </html>
   );

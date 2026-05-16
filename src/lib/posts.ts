@@ -19,6 +19,7 @@ export interface Section {
   list?: string[];
 }
 
+// Legacy static posts kept only for seeding — see src/lib/posts-db.ts for DB queries
 export const posts: Post[] = [
   {
     slug: "case-study-mia-the-new-yorker",
@@ -26,7 +27,7 @@ export const posts: Post[] = [
     date: "2025-08-19",
     category: "Case Studies",
     heroImage:
-      "http://karenalexandra.com/wp-content/uploads/2025/09/Canon-0035-1024x726.jpg",
+      "https://karenalexandra.com/wp-content/uploads/2025/09/Canon-0035-1024x726.jpg",
     heroAlt: "Karen Alexandra | Fashion E-Commerce Merchandiser",
     excerpt:
       "Mia The New Yorker is my first fashion e-commerce brand, inspired by my dog and Peruvian heritage — a hands-on digital merchandising laboratory launched October 2024.",
@@ -38,7 +39,7 @@ export const posts: Post[] = [
       },
       {
         image:
-          "http://karenalexandra.com/wp-content/uploads/2025/09/Mia-The-New-Yorker-Overview-1024x576.png",
+          "https://karenalexandra.com/wp-content/uploads/2025/09/Mia-The-New-Yorker-Overview-1024x576.png",
         imageAlt: "Karen Alexandra | Fashion E-Commerce Merchandiser",
       },
       {
@@ -64,7 +65,7 @@ export const posts: Post[] = [
     date: "2025-08-11",
     category: "Case Studies",
     heroImage:
-      "http://karenalexandra.com/wp-content/uploads/2025/09/Little-Black-Shell-Taupe-Leather-1-of-4.jpg",
+      "https://karenalexandra.com/wp-content/uploads/2025/09/Little-Black-Shell-Taupe-Leather-1-of-4.jpg",
     heroAlt: "Karen Alexandra | Fashion E-Commerce Merchandiser",
     excerpt:
       "Little Black Shell was a luxury fashion blog and strategic portfolio built while studying fashion merchandising and working at Nordstrom — growing to 30,000 Instagram followers.",
@@ -118,6 +119,3 @@ export const posts: Post[] = [
   },
 ];
 
-export function getPost(slug: string): Post | undefined {
-  return posts.find((p) => p.slug === slug);
-}

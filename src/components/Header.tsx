@@ -1,41 +1,59 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-
-const navLinks = [
-  { href: "/blog", label: "Case Studies" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
-];
 
 export default function Header() {
-  const pathname = usePathname();
-
   return (
-    <header className="sticky top-0 z-50 bg-[var(--cream)]/95 backdrop-blur-sm border-b border-[var(--beige)]">
-      <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
-        <Link
-          href="/"
-          className="text-sm tracking-[0.2em] uppercase font-medium hover:text-[var(--taupe)] transition-colors"
-        >
-          Karen Alexandra
-        </Link>
-        <nav className="flex items-center gap-8">
-          {navLinks.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`text-xs tracking-[0.15em] uppercase transition-colors ${
-                pathname === href
-                  ? "text-[var(--taupe)]"
-                  : "text-[var(--charcoal)] hover:text-[var(--taupe)]"
-              }`}
+    <header className="bg-white">
+      <div className="grid grid-cols-3 items-center px-5 md:px-8 py-4 md:py-5">
+        {/* Left */}
+        <div>
+          <Link
+            href="/blog"
+            className="text-[11px] md:text-xs tracking-[0.15em] text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
+          >
+            blog posts
+          </Link>
+        </div>
+
+        {/* Center */}
+        <div className="flex justify-center">
+          <Link
+            href="/"
+            className="text-[13px] md:text-sm tracking-[0.2em] font-medium text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors whitespace-nowrap"
+          >
+            Karen Alexandra
+          </Link>
+        </div>
+
+        {/* Right */}
+        <div className="flex items-center justify-end gap-3 md:gap-5">
+          <Link
+            href="/contact"
+            className="hidden sm:block text-[11px] md:text-xs tracking-[0.15em] text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
+          >
+            contact me
+          </Link>
+          <button
+            aria-label="Search"
+            className="text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
-              {label}
-            </Link>
-          ))}
-        </nav>
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+          </button>
+        </div>
       </div>
     </header>
   );
