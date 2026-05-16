@@ -7,12 +7,18 @@ export default function Header() {
     <header className="bg-white">
       <div className="grid grid-cols-3 items-center px-5 md:px-8 py-4 md:py-5">
         {/* Left */}
-        <div>
+        <div className="flex items-center gap-4 md:gap-6">
           <Link
-            href="/blog"
+            href="/case-studies"
             className="text-[11px] md:text-xs tracking-[0.15em] text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
           >
-            blog posts
+            case studies
+          </Link>
+          <Link
+            href="/about"
+            className="text-[11px] md:text-xs tracking-[0.15em] text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
+          >
+            about
           </Link>
         </div>
 

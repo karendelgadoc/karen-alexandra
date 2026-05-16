@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { getAllPosts } from "@/lib/posts-db";
 
 export const metadata: Metadata = {
   title: "About — Karen Alexandra",
@@ -31,7 +32,8 @@ const credentials = [
   },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const posts = await getAllPosts();
   return (
     <>
       {/* Header */}
@@ -134,6 +136,61 @@ export default function AboutPage() {
           ))}
         </div>
       </section>
+
+      <div className="max-w-6xl mx-auto px-6">
+        <hr className="border-[var(--beige)]" />
+      </div>
+
+      {/* Case Studies */}
+      <section className="max-w-6xl mx-auto px-6 py-16 md:py-24">
+        <div className="flex items-end justify-between mb-10 md:mb-12">
+          <div>
+            <p className="text-xs tracking-[0.3em] uppercase text-[var(--taupe)] mb-2">
+              Selected Work
+            </p>
+            <h2 className="text-2xl md:text-3xl font-light">Case Studies</h2>
+          </div>
+          <Link
+            href="/case-studies"
+            className="text-xs tracking-[0.15em] uppercase text-[var(--muted)] hover:text-[var(--taupe)] transition-colors hidden md:block"
+          >
+            View All →
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          {posts.map((post) => (
+            <Link
+              key={post.slug}
+              href={`/case-studies/${post.slug}`}
+              className="group block"
+            >
+              <div className="aspect-[4/3] overflow-hidden bg-[var(--beige)] mb-4 md:mb-5">
+                <Image
+                  src={post.heroImage}
+                  alt={post.heroAlt}
+                  width={800}
+                  height={600}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <p className="text-xs tracking-[0.2em] uppercase text-[var(--taupe)] mb-2">
+                {post.category}
+              </p>
+              <h3 className="text-lg md:text-xl font-light mb-2 group-hover:text-[var(--taupe)] transition-colors">
+                {post.title}
+              </h3>
+              <p className="text-sm text-[var(--muted)] leading-relaxed">
+                {post.excerpt}
+              </p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <div className="max-w-6xl mx-auto px-6">
+        <hr className="border-[var(--beige)]" />
+      </div>
 
       {/* Gallery Row */}
       <section className="max-w-6xl mx-auto px-6 pb-24">

@@ -1,10 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import { getAllPosts } from "@/lib/posts-db";
 import PhotoCarousel from "@/components/PhotoCarousel";
 
-export default async function HomePage() {
-  const posts = await getAllPosts();
+export default function HomePage() {
   return (
     <>
       {/* Hero — full-height split on desktop, stacked on mobile */}
@@ -28,58 +26,6 @@ export default async function HomePage() {
           <p className="text-sm font-light text-[var(--muted)] tracking-wide">
             A global citizen&apos;s guide to well living.
           </p>
-        </div>
-      </section>
-
-      {/* Divider */}
-      <div className="max-w-6xl mx-auto px-6">
-        <hr className="border-[var(--beige)]" />
-      </div>
-
-      {/* Case Studies Preview */}
-      <section className="max-w-6xl mx-auto px-6 py-16 md:py-24">
-        <div className="flex items-end justify-between mb-10 md:mb-12">
-          <div>
-            <p className="text-xs tracking-[0.3em] uppercase text-[var(--taupe)] mb-2">
-              Selected Work
-            </p>
-            <h2 className="text-2xl md:text-3xl font-light">Case Studies</h2>
-          </div>
-          <Link
-            href="/blog"
-            className="text-xs tracking-[0.15em] uppercase text-[var(--muted)] hover:text-[var(--taupe)] transition-colors hidden md:block"
-          >
-            View All →
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-          {posts.map((post) => (
-            <Link
-              key={post.slug}
-              href={`/blog/${post.slug}`}
-              className="group block"
-            >
-              <div className="aspect-[4/3] overflow-hidden bg-[var(--beige)] mb-4 md:mb-5">
-                <Image
-                  src={post.heroImage}
-                  alt={post.heroAlt}
-                  width={800}
-                  height={600}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <p className="text-xs tracking-[0.2em] uppercase text-[var(--taupe)] mb-2">
-                {post.category}
-              </p>
-              <h3 className="text-lg md:text-xl font-light mb-2 group-hover:text-[var(--taupe)] transition-colors">
-                {post.title}
-              </h3>
-              <p className="text-sm text-[var(--muted)] leading-relaxed">
-                {post.excerpt}
-              </p>
-            </Link>
-          ))}
         </div>
       </section>
 

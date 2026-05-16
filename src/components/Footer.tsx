@@ -17,10 +17,16 @@ export default function Footer() {
         {/* Links */}
         <div className="flex flex-row md:flex-col items-center md:items-center gap-6 md:gap-3">
           <Link
-            href="/blog"
+            href="/case-studies"
             className="text-sm text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
           >
-            Blog Posts
+            Case Studies
+          </Link>
+          <Link
+            href="/about"
+            className="text-sm text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
+          >
+            About
           </Link>
           <Link
             href="/contact"
