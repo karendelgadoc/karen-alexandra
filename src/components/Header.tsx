@@ -18,7 +18,7 @@ export default function Header() {
             href="/about"
             className="text-[11px] md:text-xs tracking-[0.15em] text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
           >
-            about
+            portfolio
           </Link>
         </div>
 

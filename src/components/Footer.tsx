@@ -26,7 +26,7 @@ export default function Footer() {
             href="/about"
             className="text-sm text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
           >
-            About
+            Portfolio
           </Link>
           <Link
             href="/contact"
