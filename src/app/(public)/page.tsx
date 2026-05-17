@@ -3,6 +3,8 @@ import Image from "next/image";
 import PhotoCarousel from "@/components/PhotoCarousel";
 import { getFeaturedBlogPosts } from "@/lib/blog-db";
 
+export const revalidate = 60;
+
 export default async function HomePage() {
   const featuredPosts = await getFeaturedBlogPosts(3);
 
