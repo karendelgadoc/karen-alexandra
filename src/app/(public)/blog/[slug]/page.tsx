@@ -1,10 +1,91 @@
-import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { getAllBlogSlugs, getBlogPostBySlug } from "@/lib/blog-db";
+
+export const revalidate = 60;
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export default async function BlogSlugPage({ params }: Props) {
+export async function generateStaticParams() {
+  const slugs = await getAllBlogSlugs();
+  return slugs.map((slug) => ({ slug }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  redirect(`/case-studies/${slug}`);
+  const post = await getBlogPostBySlug(slug);
+  if (!post) return {};
+  return {
+    title: `${post.title} — Karen Alexandra`,
+    description: post.excerpt,
+  };
+}
+
+export default async function BlogPostPage({ params }: Props) {
+  const { slug } = await params;
+  const post = await getBlogPostBySlug(slug);
+  if (!post) notFound();
+
+  // Body paragraphs — double newline separates paragraphs
+  const paragraphs = post.body.split(/\n\n+/).filter(Boolean);
+
+  return (
+    <>
+      {/* Hero */}
+      {post.heroImage && (
+        <section className="w-full aspect-[16/7] overflow-hidden bg-[var(--beige)] relative">
+          <Image
+            src={post.heroImage}
+            alt={post.heroAlt}
+            fill
+            className="object-cover"
+            priority
+          />
+        </section>
+      )}
+
+      {/* Article */}
+      <article className="max-w-2xl mx-auto px-6 py-16">
+        <div className="mb-10">
+          <p className="text-[10px] tracking-[0.25em] uppercase text-[var(--taupe)] mb-3">
+            {post.category} &middot;{" "}
+            {new Date(post.date).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+          <h1 className="text-4xl md:text-5xl font-light leading-tight mb-6">
+            {post.title}
+          </h1>
+          <p className="text-lg text-[var(--muted)] leading-relaxed border-l-2 border-[var(--taupe)] pl-5">
+            {post.excerpt}
+          </p>
+        </div>
+
+        <hr className="border-[var(--beige)] mb-10" />
+
+        <div className="space-y-5 text-[var(--muted)] leading-relaxed">
+          {paragraphs.map((para, i) => (
+            <p key={i} dangerouslySetInnerHTML={{ __html: para }} />
+          ))}
+        </div>
+      </article>
+
+      {/* Back link */}
+      <div className="max-w-2xl mx-auto px-6 pb-20">
+        <hr className="border-[var(--beige)] mb-10" />
+        <Link
+          href="/blog"
+          className="text-xs tracking-[0.2em] uppercase text-[var(--taupe)] hover:text-[var(--charcoal)] transition-colors"
+        >
+          ← Back to Blog
+        </Link>
+      </div>
+    </>
+  );
 }

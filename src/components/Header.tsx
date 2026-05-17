@@ -9,14 +9,20 @@ export default function Header() {
         {/* Left */}
         <div className="flex items-center gap-4 md:gap-6">
           <Link
-            href="/case-studies"
+            href="/blog"
             className="text-[11px] md:text-xs tracking-[0.15em] text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
+          >
+            blog
+          </Link>
+          <Link
+            href="/case-studies"
+            className="hidden sm:block text-[11px] md:text-xs tracking-[0.15em] text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
           >
             case studies
           </Link>
           <Link
             href="/about"
-            className="text-[11px] md:text-xs tracking-[0.15em] text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
+            className="hidden sm:block text-[11px] md:text-xs tracking-[0.15em] text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
           >
             portfolio
           </Link>

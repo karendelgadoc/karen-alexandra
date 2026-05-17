@@ -30,8 +30,11 @@ export default function AdminNav() {
       </div>
 
       <div className="space-y-1 flex-1">
-        <Link href="/admin/posts" className={linkClass("/admin/posts")}>
+        <Link href="/admin/blog" className={linkClass("/admin/blog")}>
           Blog Posts
+        </Link>
+        <Link href="/admin/posts" className={linkClass("/admin/posts")}>
+          Case Studies
         </Link>
         <Link href="/" className="block px-3 py-2 rounded text-sm text-stone-500 hover:bg-stone-100 transition-colors" target="_blank">
           Ver sitio →
