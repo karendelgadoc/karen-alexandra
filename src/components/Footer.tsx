@@ -57,7 +57,7 @@ export default function Footer() {
               </a>
             </li>
             <li>
-              <a href="https://www.pinterest.com/karenalexandrac" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.pinterest.com/karenalexandra__/" target="_blank" rel="noopener noreferrer">
                 Pinterest
               </a>
             </li>

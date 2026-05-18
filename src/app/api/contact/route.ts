@@ -1,16 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const INBOX_MAP: Record<string, string> = {
-  "Brand partnership": "partnerships@karenalexandra.com",
-  "Press or feature": "press@karenalexandra.com",
-  "E-commerce consulting": "studio@karenalexandra.com",
-  "Newsletter / Substack": "studio@karenalexandra.com",
-  "Something else": "studio@karenalexandra.com",
-  "Speaking or moderating": "speaking@karenalexandra.com",
-};
+const TO_ADDRESS = "delgado.alexandra.karen@gmail.com";
 
-const FROM_ADDRESS = "Karen Alexandra Studio <studio@karenalexandra.com>";
+const FROM_ADDRESS = "Karen Alexandra <onboarding@resend.dev>";
 
 export async function POST(req: NextRequest) {
   let body: Record<string, string>;
@@ -39,7 +32,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const to = INBOX_MAP[type] ?? "studio@karenalexandra.com";
+  const to = TO_ADDRESS;
   const subject = type
     ? `[${type}] Inquiry from ${name}`
     : `Inquiry from ${name}`;
@@ -65,7 +58,7 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error("Resend error:", err);
     return NextResponse.json(
-      { error: "Failed to send. Please email studio@karenalexandra.com directly." },
+      { error: "Failed to send. Please try again or email directly." },
       { status: 500 }
     );
   }
