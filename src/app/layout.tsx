@@ -1,11 +1,27 @@
 import type { Metadata } from "next";
-import { Archivo } from "next/font/google";
+import { Cormorant_Garamond, Jost, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import CookieBanner from "@/components/CookieBanner";
 
-const archivo = Archivo({
+const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  variable: "--font-archivo",
+  weight: ["300", "400", "500"],
+  style: ["normal", "italic"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const jost = Jost({
+  subsets: ["latin"],
+  weight: ["300", "400"],
+  variable: "--font-body",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -26,10 +42,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${archivo.variable} h-full antialiased`}>
-      <body
-        className="min-h-full flex flex-col font-[family-name:var(--font-archivo)] bg-[var(--cream)] text-[var(--charcoal)]"
-      >
+    <html lang="en" className={`${cormorant.variable} ${jost.variable} ${jetbrainsMono.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col">
         {children}
         <CookieBanner />
       </body>

@@ -28,35 +28,68 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 function renderSection(section: Section, i: number) {
   return (
-    <div key={i} className="mb-10">
+    <div key={i} style={{ marginBottom: "48px" }}>
       {section.heading && (
-        <div className="mb-4">
+        <div style={{ marginBottom: "20px" }}>
           {section.headingLevel === "h3" ? (
-            <h3 className="text-2xl font-light">
-              {section.italic ? <em>{section.heading}</em> : section.heading}
+            <h3
+              style={{
+                fontFamily: "var(--ka-display)",
+                fontSize: "28px",
+                fontStyle: section.italic ? "italic" : "normal",
+                fontWeight: 400,
+                lineHeight: 1.1,
+              }}
+            >
+              {section.heading}
             </h3>
           ) : (
-            <h2 className="text-3xl font-light">
-              {section.italic ? <em>{section.heading}</em> : section.heading}
+            <h2
+              style={{
+                fontFamily: "var(--ka-display)",
+                fontSize: "40px",
+                fontStyle: section.italic ? "italic" : "normal",
+                fontWeight: 400,
+                lineHeight: 1.05,
+                letterSpacing: "-0.01em",
+              }}
+            >
+              {section.heading}
             </h2>
           )}
         </div>
       )}
 
       {section.image && (
-        <div className="my-8 overflow-hidden bg-[var(--beige)]">
+        <div
+          style={{
+            margin: "32px 0",
+            overflow: "hidden",
+            background: "var(--ka-sand)",
+          }}
+        >
           <Image
             src={section.image}
             alt={section.imageAlt ?? ""}
             width={1200}
             height={800}
-            className="w-full h-auto"
+            style={{ width: "100%", height: "auto" }}
           />
         </div>
       )}
 
       {section.body && (
-        <div className="text-[var(--muted)] leading-relaxed space-y-4">
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "18px",
+            fontSize: "16px",
+            lineHeight: 1.75,
+            color: "var(--ka-ink-soft)",
+            fontWeight: 300,
+          }}
+        >
           {section.body.split("\n\n").map((para, j) => (
             <p key={j} dangerouslySetInnerHTML={{ __html: para }} />
           ))}
@@ -64,17 +97,33 @@ function renderSection(section: Section, i: number) {
       )}
 
       {section.list && (
-        <ul className="space-y-4 mt-4">
+        <ul style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
           {section.list.map((item, j) => {
-            const [label, ...rest] = item.split(": ");
+            const colonIdx = item.indexOf(": ");
+            const label = colonIdx > -1 ? item.slice(0, colonIdx) : null;
+            const rest = colonIdx > -1 ? item.slice(colonIdx + 2) : item;
             return (
-              <li key={j} className="flex gap-3 text-[var(--muted)] leading-relaxed">
-                <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[var(--taupe)] shrink-0" />
+              <li
+                key={j}
+                style={{ display: "flex", gap: "16px", fontSize: "15px", lineHeight: 1.7, color: "var(--ka-ink-soft)", fontWeight: 300 }}
+              >
+                <span
+                  style={{
+                    marginTop: "10px",
+                    width: "5px",
+                    height: "5px",
+                    borderRadius: "50%",
+                    background: "var(--ka-accent-deep)",
+                    flexShrink: 0,
+                  }}
+                />
                 <span>
-                  <strong className="text-[var(--charcoal)] font-medium">
-                    {label}:
-                  </strong>{" "}
-                  {rest.join(": ")}
+                  {label && (
+                    <strong style={{ color: "var(--ka-ink)", fontWeight: 400 }}>
+                      {label}:{" "}
+                    </strong>
+                  )}
+                  {rest}
                 </span>
               </li>
             );
@@ -92,48 +141,78 @@ export default async function CaseStudyPage({ params }: Props) {
 
   return (
     <>
-      {/* Hero */}
-      <section className="w-full aspect-[16/7] overflow-hidden bg-[var(--beige)] relative">
+      {/* ── Hero ─────────────────────────────────────────────────────── */}
+      <section
+        style={{
+          aspectRatio: "16/7",
+          position: "relative",
+          overflow: "hidden",
+          background: "var(--ka-sand)",
+        }}
+      >
         <Image
           src={post.heroImage}
           alt={post.heroAlt}
           fill
-          className="object-cover"
+          style={{ objectFit: "cover" }}
           priority
+          sizes="100vw"
         />
       </section>
 
-      {/* Article */}
-      <article className="max-w-3xl mx-auto px-6 py-16">
-        <div className="mb-10">
-          <p className="text-xs tracking-[0.2em] uppercase text-[var(--taupe)] mb-3">
-            {post.category} &middot;{" "}
+      {/* ── Article ──────────────────────────────────────────────────── */}
+      <article style={{ maxWidth: "820px", margin: "0 auto", padding: "80px 32px" }}>
+        <div style={{ marginBottom: "48px" }}>
+          <span className="ka-eyebrow" style={{ display: "block", marginBottom: "16px" }}>
+            {post.category}&nbsp;&nbsp;·&nbsp;&nbsp;
             {new Date(post.date).toLocaleDateString("en-US", {
               year: "numeric",
               month: "long",
             })}
-          </p>
-          <h1 className="text-4xl md:text-5xl font-light leading-tight mb-6">
+          </span>
+          <h1
+            style={{
+              fontFamily: "var(--ka-display)",
+              fontSize: "clamp(40px, 5vw, 64px)",
+              fontWeight: 400,
+              fontStyle: "italic",
+              lineHeight: 1.05,
+              letterSpacing: "-0.01em",
+              marginBottom: "28px",
+            }}
+          >
             {post.title}
           </h1>
-          <p className="text-lg text-[var(--muted)] leading-relaxed border-l-2 border-[var(--taupe)] pl-5">
+          <p
+            style={{
+              fontSize: "18px",
+              lineHeight: 1.7,
+              color: "var(--ka-ink-soft)",
+              borderLeft: "3px solid var(--ka-accent-deep)",
+              paddingLeft: "24px",
+              fontStyle: "italic",
+              fontFamily: "var(--ka-display)",
+            }}
+          >
             {post.excerpt}
           </p>
         </div>
 
-        <hr className="border-[var(--beige)] mb-10" />
+        <div className="ka-rule" style={{ marginBottom: "56px" }} />
 
         {post.sections.map((section, i) => renderSection(section, i))}
       </article>
 
-      {/* Back link */}
-      <div className="max-w-3xl mx-auto px-6 pb-20">
-        <hr className="border-[var(--beige)] mb-10" />
+      {/* ── Back link ────────────────────────────────────────────────── */}
+      <div style={{ maxWidth: "820px", margin: "0 auto", padding: "0 32px 80px" }}>
+        <div className="ka-rule" style={{ marginBottom: "32px" }} />
         <Link
           href="/case-studies"
-          className="text-xs tracking-[0.2em] uppercase text-[var(--taupe)] hover:text-[var(--charcoal)] transition-colors"
+          className="ka-arrow-link"
+          style={{ flexDirection: "row-reverse" }}
         >
-          ← All Case Studies
+          <span className="ka-arrow" style={{ transform: "rotate(180deg)" }}>→</span>
+          All Case Studies
         </Link>
       </div>
     </>

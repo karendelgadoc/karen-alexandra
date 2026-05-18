@@ -3,6 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { getAllPosts } from "@/lib/posts-db";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "About — Karen Alexandra",
   description:

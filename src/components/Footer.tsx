@@ -1,64 +1,86 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
+  const year = new Date().getFullYear();
+
   return (
-    <footer style={{ backgroundColor: "#ECEAE5" }}>
-      <div className="max-w-6xl mx-auto px-8 md:px-10 py-12 md:py-16 flex flex-col md:grid md:grid-cols-3 gap-10 md:gap-8 items-center md:items-start">
-        {/* Monogram */}
-        <div className="flex justify-center md:justify-start">
-          <span
-            className="text-5xl md:text-6xl font-light tracking-tight text-[var(--charcoal)] select-none"
-            style={{ fontFamily: "Georgia, serif" }}
-          >
-            K/A
-          </span>
-        </div>
-
-        {/* Links */}
-        <div className="flex flex-row md:flex-col items-center md:items-center gap-6 md:gap-3">
-          <Link
-            href="/blog"
-            className="text-sm text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
-          >
-            Blog
-          </Link>
-          <Link
-            href="/case-studies"
-            className="text-sm text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
-          >
-            Case Studies
-          </Link>
-          <Link
-            href="/about"
-            className="text-sm text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
-          >
-            Portfolio
-          </Link>
-          <Link
-            href="/contact"
-            className="text-sm text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
-          >
-            Contact
-          </Link>
-          <Link
-            href="/privacy"
-            className="text-sm text-[var(--muted)] hover:text-[var(--taupe)] transition-colors"
-          >
-            Privacy
-          </Link>
-        </div>
-
-        {/* Quote */}
-        <div className="relative pl-5 md:pl-6 text-center md:text-left">
-          <span
-            className="absolute -top-3 left-0 text-6xl md:text-7xl font-light text-[var(--muted)] leading-none select-none"
-            style={{ fontFamily: "Georgia, serif" }}
-          >
-            &ldquo;
-          </span>
-          <p className="italic text-[var(--charcoal)] text-sm md:text-base leading-relaxed">
-            Choosing an outfit for the day is like waking up and answering the question &ldquo;who do I want to be today?&rdquo;
+    <footer className="ka-footer">
+      <div className="ka-footer-grid">
+        {/* Brand */}
+        <div>
+          <div className="ka-footer-mark">
+            <Image
+              src="/logo-monogram.png"
+              alt="KA"
+              width={56}
+              height={56}
+              style={{ height: "auto" }}
+            />
+          </div>
+          <p className="ka-footer-tag">
+            The art of well — stories from a life lived in cashmere, on marble
+            lobbies, and at the front row.
           </p>
+        </div>
+
+        {/* Explore */}
+        <div>
+          <h4>Explore</h4>
+          <ul>
+            <li><Link href="/">Home</Link></li>
+            <li><Link href="/portfolio">Portfolio</Link></li>
+            <li><Link href="/case-studies">Case Studies</Link></li>
+            <li><Link href="/journal">Journal</Link></li>
+            <li><Link href="/watch">Watch</Link></li>
+          </ul>
+        </div>
+
+        {/* Categories */}
+        <div>
+          <h4>Categories</h4>
+          <ul>
+            <li><Link href="/journal?category=fashion">Fashion</Link></li>
+            <li><Link href="/journal?category=travel">Travel</Link></li>
+            <li><Link href="/journal?category=wellness">Wellness</Link></li>
+            <li><Link href="/journal?category=lifestyle">Lifestyle</Link></li>
+          </ul>
+        </div>
+
+        {/* Elsewhere */}
+        <div>
+          <h4>Elsewhere</h4>
+          <ul>
+            <li>
+              <a href="https://www.instagram.com/karenalexandrac" target="_blank" rel="noopener noreferrer">
+                Instagram
+              </a>
+            </li>
+            <li>
+              <a href="https://www.pinterest.com/karenalexandrac" target="_blank" rel="noopener noreferrer">
+                Pinterest
+              </a>
+            </li>
+            <li>
+              <a href="https://www.youtube.com/@karenalexandrac" target="_blank" rel="noopener noreferrer">
+                YouTube
+              </a>
+            </li>
+            <li>
+              <a href="https://www.linkedin.com/in/karenalexandrac" target="_blank" rel="noopener noreferrer">
+                LinkedIn
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="ka-footer-meta">
+        <span>© {year} Karen Alexandra. All rights reserved.</span>
+        <div style={{ display: "flex", gap: "32px" }}>
+          <Link href="/privacy">Privacy</Link>
+          <Link href="/contact">Press</Link>
+          <Link href="/contact">Inquiries</Link>
         </div>
       </div>
     </footer>

@@ -1,72 +1,62 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function Header() {
+  const pathname = usePathname();
+
+  const leftLinks = [
+    { href: "/journal", label: "Journal" },
+    { href: "/portfolio", label: "Portfolio" },
+    { href: "/case-studies", label: "Case Studies" },
+  ];
+
+  const rightLinks = [
+    { href: "/watch", label: "Watch" },
+    { href: "/about", label: "About" },
+    { href: "/contact", label: "Contact" },
+  ];
+
   return (
-    <header className="bg-white">
-      <div className="grid grid-cols-3 items-center px-5 md:px-8 py-4 md:py-5">
-        {/* Left */}
-        <div className="flex items-center gap-4 md:gap-6">
-          <Link
-            href="/blog"
-            className="text-[11px] md:text-xs tracking-[0.15em] text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
-          >
-            blog
-          </Link>
-          <Link
-            href="/case-studies"
-            className="hidden sm:block text-[11px] md:text-xs tracking-[0.15em] text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
-          >
-            case studies
-          </Link>
-          <Link
-            href="/about"
-            className="hidden sm:block text-[11px] md:text-xs tracking-[0.15em] text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
-          >
-            portfolio
-          </Link>
-        </div>
-
-        {/* Center */}
-        <div className="flex justify-center">
-          <Link
-            href="/"
-            className="text-[13px] md:text-sm tracking-[0.2em] font-medium text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors whitespace-nowrap"
-          >
-            Karen Alexandra
-          </Link>
-        </div>
-
-        {/* Right */}
-        <div className="flex items-center justify-end gap-3 md:gap-5">
-          <Link
-            href="/contact"
-            className="hidden sm:block text-[11px] md:text-xs tracking-[0.15em] text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
-          >
-            contact me
-          </Link>
-          <button
-            aria-label="Search"
-            className="text-[var(--charcoal)] hover:text-[var(--taupe)] transition-colors"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+    <header>
+      <nav className="ka-nav">
+        <div className="ka-nav-left">
+          {leftLinks.map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`ka-nav-link${pathname === href || pathname.startsWith(href + "/") ? " active" : ""}`}
             >
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.35-4.35" />
-            </svg>
-          </button>
+              {label}
+            </Link>
+          ))}
         </div>
-      </div>
+
+        <Link href="/" className="ka-logo">
+          <Image
+            src="/logo-wordmark.png"
+            alt="Karen Alexandra"
+            width={180}
+            height={36}
+            style={{ height: "auto" }}
+            priority
+          />
+        </Link>
+
+        <div className="ka-nav-right">
+          {rightLinks.map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`ka-nav-link${pathname === href ? " active" : ""}`}
+            >
+              {label}
+            </Link>
+          ))}
+        </div>
+      </nav>
     </header>
   );
 }

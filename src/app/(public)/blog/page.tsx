@@ -3,6 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { getAllBlogPosts, type BlogCategory } from "@/lib/blog-db";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Blog — Karen Alexandra",
   description: "Fashion, lifestyle, travel and wellness from a global citizen.",
