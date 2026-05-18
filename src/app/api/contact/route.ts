@@ -3,7 +3,7 @@ import { Resend } from "resend";
 
 const TO_ADDRESS = "delgado.alexandra.karen@gmail.com";
 
-const FROM_ADDRESS = "Karen Alexandra <onboarding@resend.dev>";
+const FROM_ADDRESS = "Karen Alexandra <studio@karenalexandra.com>";
 
 export async function POST(req: NextRequest) {
   let body: Record<string, string>;
