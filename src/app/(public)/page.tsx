@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { getFeaturedBlogPosts } from "@/lib/blog-db";
+import { getFeaturedBlogPosts, getAllBlogPosts } from "@/lib/blog-db";
 import { KaMarquee, KaSectionHead } from "@/components/KaComponents";
 
 export const revalidate = 60;
@@ -54,109 +54,169 @@ const CATEGORIES = [
 ];
 
 export default async function HomePage() {
-  const featuredPosts = await getFeaturedBlogPosts(3).catch(() => []);
+  const [featuredPosts, allPosts] = await Promise.all([
+    getFeaturedBlogPosts(3).catch(() => []),
+    getAllBlogPosts().catch(() => []),
+  ]);
+  const latestPost = allPosts[0] ?? null;
+  const letterTitle = latestPost
+    ? latestPost.title.length > 40
+      ? latestPost.title.slice(0, 40).trimEnd() + "…"
+      : latestPost.title
+    : "On dressing for the life you want.";
+  const letterSlug = latestPost?.slug ?? null;
 
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────────── */}
       <section
         style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          minHeight: "88vh",
+          padding: "80px 64px 96px",
           borderBottom: "1px solid var(--ka-line)",
+          display: "grid",
+          gridTemplateColumns: "1.4fr 1fr",
+          gap: 80,
+          alignItems: "center",
         }}
       >
         {/* Left — text */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-end",
-            padding: "64px",
-            paddingBottom: "80px",
-            borderRight: "1px solid var(--ka-line)",
-          }}
-        >
-          <span className="ka-eyebrow" style={{ marginBottom: "24px" }}>
-            Est. 2014 · The Art of Well
-          </span>
+        <div>
+          <div className="ka-eyebrow" style={{ marginBottom: 56 }}>
+            — By Karen Alexandra
+          </div>
+
           <h1
             style={{
               fontFamily: "var(--ka-display)",
-              fontSize: "clamp(72px, 8vw, 120px)",
               fontWeight: 400,
-              fontStyle: "italic",
-              lineHeight: 1.0,
+              fontSize: "clamp(72px, 9vw, 132px)",
+              lineHeight: 0.96,
               letterSpacing: "-0.02em",
-              marginBottom: "28px",
             }}
           >
-            The Art<br />of Well.
+            The Art
+            <br />
+            <span style={{ fontStyle: "italic" }}>
+              of Well<span style={{ color: "var(--ka-accent-deep)" }}>.</span>
+            </span>
           </h1>
-          <p
+
+          <div
             style={{
-              fontFamily: "var(--ka-body)",
-              fontSize: "15px",
-              color: "var(--ka-ink-soft)",
-              maxWidth: "400px",
-              lineHeight: 1.7,
-              fontWeight: 300,
-              marginBottom: "48px",
+              display: "flex",
+              gap: 40,
+              marginTop: 64,
+              paddingTop: 32,
+              borderTop: "1px solid var(--ka-line)",
             }}
           >
-            A global citizen&apos;s guide to well living — fashion, travel,
-            wellness and the life that happens in between.
-          </p>
-          <div style={{ display: "flex", gap: "16px" }}>
+            <p
+              style={{
+                fontSize: 16,
+                lineHeight: 1.7,
+                color: "var(--ka-muted)",
+                maxWidth: 360,
+                flex: 1,
+                fontFamily: "var(--ka-body)",
+              }}
+            >
+              A correspondence on the quiet luxuries — the cashmere worth
+              keeping, the suite worth flying for, the morning ritual worth
+              protecting.
+            </p>
+            <p
+              style={{
+                fontSize: 16,
+                lineHeight: 1.7,
+                color: "var(--ka-muted)",
+                maxWidth: 360,
+                flex: 1,
+                fontFamily: "var(--ka-body)",
+              }}
+            >
+              Authored by a luxury fashion e-commerce lead and lifestyle
+              correspondent based between New York and the Côte d&apos;Azur.
+            </p>
+          </div>
+
+          <div
+            style={{ marginTop: 48, display: "flex", gap: 24, alignItems: "center" }}
+          >
             <Link href="/journal" className="ka-btn">
-              Read the Journal <span>→</span>
+              Begin Reading
             </Link>
-            <Link href="/portfolio" className="ka-btn" style={{ borderColor: "var(--ka-line)", color: "var(--ka-muted)" }}>
-              The Work
-            </Link>
+            <span
+              style={{
+                fontFamily: "var(--ka-display)",
+                fontStyle: "italic",
+                fontSize: 16,
+                color: "var(--ka-muted)",
+              }}
+            >
+              — 48 dispatches, all year long
+            </span>
           </div>
         </div>
 
-        {/* Right — portrait */}
-        <div style={{ position: "relative", overflow: "hidden" }}>
-          <Image
-            src="/photos/portrait-lavender.jpg"
-            alt="Karen Alexandra"
-            fill
-            style={{ objectFit: "cover", objectPosition: "center top" }}
-            priority
-            sizes="50vw"
-          />
-          {/* Editor card */}
+        {/* Right — portrait with callout */}
+        <div style={{ position: "relative" }}>
+          <div
+            style={{
+              aspectRatio: "4 / 5",
+              width: "100%",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/photos/portrait-lavender.jpg"
+              alt="Karen Alexandra"
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block",
+              }}
+            />
+          </div>
+
+          {/* "This week's letter" callout */}
           <div
             style={{
               position: "absolute",
-              bottom: "40px",
-              left: "32px",
+              bottom: -32,
+              left: -32,
               background: "var(--ka-bg)",
-              border: "1px solid var(--ka-ink)",
               padding: "20px 24px",
-              maxWidth: "260px",
+              borderLeft: "2px solid var(--ka-accent-deep)",
+              maxWidth: 280,
             }}
           >
-            <span className="ka-eyebrow" style={{ display: "block", marginBottom: "8px" }}>
+            <div className="ka-eyebrow" style={{ marginBottom: 6 }}>
               This week&apos;s letter
-            </span>
-            <p
+            </div>
+            <div
               style={{
                 fontFamily: "var(--ka-display)",
-                fontSize: "18px",
                 fontStyle: "italic",
+                fontSize: 20,
                 lineHeight: 1.3,
-                marginBottom: "12px",
               }}
             >
-              On dressing for the life you actually want.
-            </p>
-            <Link href="/journal" className="ka-arrow-link" style={{ fontSize: "10px" }}>
-              Read now <span className="ka-arrow">→</span>
-            </Link>
+              {letterTitle}
+            </div>
+            {letterSlug && (
+              <Link
+                href={`/journal/${letterSlug}`}
+                className="ka-arrow-link"
+                style={{ fontSize: 11, display: "block", marginTop: 12 }}
+              >
+                Read now <span className="ka-arrow">→</span>
+              </Link>
+            )}
           </div>
         </div>
       </section>
