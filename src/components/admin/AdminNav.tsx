@@ -42,6 +42,9 @@ export default function AdminNav() {
         <Link href="/admin/posts" className={linkClass("/admin/posts")}>
           Case Studies
         </Link>
+        <Link href="/admin/photos" className={linkClass("/admin/photos")}>
+          Photo Library
+        </Link>
         <Link href="/" className="block px-3 py-2 rounded text-sm text-stone-500 hover:bg-stone-100 transition-colors" target="_blank">
           Ver sitio →
         </Link>

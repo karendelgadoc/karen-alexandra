@@ -369,3 +369,10 @@ a:hover { border-bottom-color: var(--ka-ink); }
   color: var(--ka-muted);
   opacity: 0.85;
 }
+
+/* ── Download protection ───────────────────────────────── */
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
+  -webkit-touch-callout: none;
+}
