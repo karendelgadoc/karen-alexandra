@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { BlogPostInput, BlogCategory, FaqItem } from "@/lib/blog-db";
 import SeoPanel from "@/components/admin/SeoPanel";
+import BlogBodyEditor from "@/components/admin/BlogBodyEditor";
 
 const CATEGORIES: BlogCategory[] = ["fashion", "lifestyle", "travel", "wellness"];
 
@@ -134,10 +135,8 @@ export function BlogPostFormFields({
       </div>
 
       <div>
-        <label className={LABEL_CLS}>Body (separate paragraphs with a blank line)</label>
-        <textarea value={form.body} onChange={(e) => set("body", e.target.value)} rows={18}
-          className={`${FIELD_CLS} resize-y font-mono`} />
-        <p className="text-xs text-stone-400 mt-1">Use <code className="text-xs bg-stone-100 px-1">## Heading</code> for subheadings (helps GEO).</p>
+        <label className={LABEL_CLS}>Body</label>
+        <BlogBodyEditor value={form.body} onChange={(body) => set("body", body)} />
       </div>
 
       <div className="flex gap-6">

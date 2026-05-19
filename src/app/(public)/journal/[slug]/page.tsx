@@ -242,6 +242,35 @@ export default async function JournalPostPage({ params }: Props) {
               return <BogotaMap key={i} />;
             }
 
+            // [!COLLAGE src1="…" alt1="…" … caption="…"]  — 2–4 photo collage
+            if (para.startsWith("[!COLLAGE")) {
+              const imgs = [1, 2, 3, 4]
+                .map((n) => ({
+                  src: para.match(new RegExp(`src${n}="([^"]+)"`))?.[1] ?? "",
+                  alt: para.match(new RegExp(`alt${n}="([^"]+)"`))?.[1] ?? "",
+                }))
+                .filter((img) => img.src);
+              if (imgs.length === 0) return null;
+              const caption = para.match(/caption="([^"]+)"/)?.[1];
+              const cols = Math.min(imgs.length, 3);
+              return (
+                <figure key={i} style={{ margin: "32px -32px" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: 6 }}>
+                    {imgs.map((img, j) => (
+                      <div key={j} style={{ position: "relative", aspectRatio: "1", overflow: "hidden" }}>
+                        <Image src={img.src} alt={img.alt} fill style={{ objectFit: "cover" }} sizes={`(max-width: 800px) ${100 / cols}vw, ${800 / cols}px`} />
+                      </div>
+                    ))}
+                  </div>
+                  {caption && (
+                    <figcaption style={{ padding: "10px 32px 0", fontSize: 12, color: "var(--ka-muted)", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "var(--ka-body)" }}>
+                      {caption}
+                    </figcaption>
+                  )}
+                </figure>
+              );
+            }
+
             return <p key={i} dangerouslySetInnerHTML={{ __html: sanitizeHtml(para) }} />;
           })}
         </div>
