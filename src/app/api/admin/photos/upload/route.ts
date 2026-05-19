@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: uploadErr.message }, { status: 500 });
     }
 
-    const url = `${process.env.NEXT_PUBLIC_INSFORGE_URL}/storage/v1/object/public/blog-images/${key}`;
+    const url = `${process.env.NEXT_PUBLIC_INSFORGE_URL}/api/storage/buckets/blog-images/objects/${encodeURIComponent(key)}`;
 
     const photo = await createPhoto({
       storage_key: key,
