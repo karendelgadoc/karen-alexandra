@@ -154,9 +154,8 @@ export default async function JournalPostPage({ params }: Props) {
               if (!src) return null;
               return (
                 <figure key={i} style={{ margin: "32px -32px" }}>
-                  <div style={{ position: "relative", aspectRatio: "3/2", overflow: "hidden" }}>
-                    <Image src={src} alt={alt} fill style={{ objectFit: "cover" }} sizes="(max-width: 800px) 100vw, 800px" />
-                  </div>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={src} alt={alt} style={{ width: "100%", height: "auto", display: "block" }} loading="lazy" />
                   {caption && (
                     <figcaption style={{ padding: "10px 32px 0", fontSize: 12, color: "var(--ka-muted)", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "var(--ka-body)" }}>
                       {caption}
@@ -174,13 +173,12 @@ export default async function JournalPostPage({ params }: Props) {
               const text = para.match(/text="([^"]+)"/)?.[1] ?? "";
               if (!src) return null;
               return (
-                <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px", alignItems: "center", margin: "24px -32px", padding: "0 32px" }}>
+                <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px", alignItems: "start", margin: "24px -32px", padding: "0 32px" }}>
                   <p style={{ fontSize: 18, lineHeight: 1.75, color: "var(--ka-ink-soft)", fontWeight: 300, fontFamily: "var(--ka-display)", fontStyle: "italic", margin: 0 }}>
                     {text}
                   </p>
-                  <div style={{ position: "relative", aspectRatio: "4/5", overflow: "hidden" }}>
-                    <Image src={src} alt={alt} fill style={{ objectFit: "cover" }} sizes="(max-width: 800px) 50vw, 400px" />
-                  </div>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={src} alt={alt} style={{ width: "100%", height: "auto", display: "block" }} loading="lazy" />
                 </div>
               );
             }
@@ -193,10 +191,9 @@ export default async function JournalPostPage({ params }: Props) {
               const text = para.match(/text="([^"]+)"/)?.[1] ?? "";
               if (!src) return null;
               return (
-                <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px", alignItems: "center", margin: "24px -32px", padding: "0 32px" }}>
-                  <div style={{ position: "relative", aspectRatio: "4/5", overflow: "hidden" }}>
-                    <Image src={src} alt={alt} fill style={{ objectFit: "cover" }} sizes="(max-width: 800px) 50vw, 400px" />
-                  </div>
+                <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px", alignItems: "start", margin: "24px -32px", padding: "0 32px" }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={src} alt={alt} style={{ width: "100%", height: "auto", display: "block" }} loading="lazy" />
                   <p style={{ fontSize: 18, lineHeight: 1.75, color: "var(--ka-ink-soft)", fontWeight: 300, fontFamily: "var(--ka-display)", fontStyle: "italic", margin: 0 }}>
                     {text}
                   </p>

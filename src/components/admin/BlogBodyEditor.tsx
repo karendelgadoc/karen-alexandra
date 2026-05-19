@@ -230,7 +230,7 @@ export default function BlogBodyEditor({ value, onChange }: Props) {
 
         .bbe-grid2 {
           display: grid; grid-template-columns: 1fr 1fr;
-          gap: 24px; align-items: center;
+          gap: 24px; align-items: start;
           margin: 16px -32px; padding: 0 32px;
         }
       `}</style>
@@ -394,24 +394,37 @@ function Editable({
 
 // ── The inline editor for each block — renders like the live post ────────
 
-function ImageFrame({ src, alt, aspect, onClick, placeholderLabel }: {
+function ImageFrame({ src, alt, placeholderAspect, onClick, placeholderLabel, fixedAspect }: {
   src: string;
   alt: string;
-  aspect: string;
+  /** Aspect used only when no image is selected (placeholder block) */
+  placeholderAspect: string;
   onClick: () => void;
   placeholderLabel: string;
+  /** Optional forced aspect (used for collage where uniform tiles are intentional) */
+  fixedAspect?: string;
 }) {
   if (!src) {
     return (
-      <div className="bbe-image-frame placeholder" style={{ aspectRatio: aspect }} onClick={onClick}>
+      <div className="bbe-image-frame placeholder" style={{ aspectRatio: placeholderAspect }} onClick={onClick}>
         + {placeholderLabel}
       </div>
     );
   }
+  if (fixedAspect) {
+    return (
+      <div className="bbe-image-frame" style={{ aspectRatio: fixedAspect }} onClick={onClick}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={src} alt={alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        <div className="bbe-image-overlay">Click to replace</div>
+      </div>
+    );
+  }
+  // Natural-dimension render — image keeps its real aspect ratio
   return (
-    <div className="bbe-image-frame" style={{ aspectRatio: aspect }} onClick={onClick}>
+    <div className="bbe-image-frame" onClick={onClick} style={{ aspectRatio: undefined }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt={alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+      <img src={src} alt={alt} style={{ width: "100%", height: "auto", display: "block" }} />
       <div className="bbe-image-overlay">Click to replace</div>
     </div>
   );
@@ -445,7 +458,7 @@ function BlockEditor({ block, onChange, onPickImage }: {
     case "image":
       return (
         <figure style={{ margin: "16px -32px" }}>
-          <ImageFrame src={block.src} alt={block.alt} aspect="3/2" onClick={() => onPickImage()} placeholderLabel="Choose image" />
+          <ImageFrame src={block.src} alt={block.alt} placeholderAspect="3/2" onClick={() => onPickImage()} placeholderLabel="Choose image" />
           <Editable
             value={block.caption}
             onChange={(v) => onChange({ caption: v })}
@@ -456,7 +469,7 @@ function BlockEditor({ block, onChange, onPickImage }: {
       );
     case "imageText": {
       const imgEl = (
-        <ImageFrame src={block.src} alt={block.alt} aspect="4/5" onClick={() => onPickImage()} placeholderLabel="Choose image" />
+        <ImageFrame src={block.src} alt={block.alt} placeholderAspect="4/5" onClick={() => onPickImage()} placeholderLabel="Choose image" />
       );
       const textEl = (
         <Editable
@@ -525,7 +538,8 @@ function BlockEditor({ block, onChange, onPickImage }: {
                   key={i}
                   src={img?.src ?? ""}
                   alt={img?.alt ?? ""}
-                  aspect="1"
+                  placeholderAspect="1"
+                  fixedAspect="1"
                   onClick={() => onPickImage(i)}
                   placeholderLabel={`Photo ${i + 1}`}
                 />
