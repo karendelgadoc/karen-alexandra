@@ -84,9 +84,6 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "Karen Alexandra",
   },
-  icons: {
-    apple: "/logo-monogram.png",
-  },
 };
 
 export const viewport: Viewport = {

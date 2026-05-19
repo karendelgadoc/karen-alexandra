@@ -12,8 +12,8 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: "portrait-primary",
     categories: ["lifestyle", "fashion", "travel"],
     icons: [
-      { src: "/logo-monogram.png", sizes: "512x512", type: "image/png", purpose: "any" },
-      { src: "/logo-monogram.png", sizes: "192x192", type: "image/png", purpose: "any" },
+      { src: "/icon.png", sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: "/icon.png", sizes: "192x192", type: "image/png", purpose: "any" },
     ],
   };
 }
