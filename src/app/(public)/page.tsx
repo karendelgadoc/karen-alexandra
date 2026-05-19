@@ -16,10 +16,11 @@ export default async function HomePage() {
     ? latestPost.title.length > 40 ? latestPost.title.slice(0, 40).trimEnd() + "…" : latestPost.title
     : (c.hero.letterCardTitle ?? "On dressing for the life you want.");
   const letterSlug = latestPost?.slug ?? null;
+  const letterImage = latestPost?.heroImage ?? null;
 
   const hidden = new Set(c.hiddenSections ?? []);
   const order = c.sectionOrder ?? HOME_DEFAULTS.sectionOrder;
-  const sectionMap = buildHomeSectionMap(c, { featuredPosts, letterTitle, letterSlug });
+  const sectionMap = buildHomeSectionMap(c, { featuredPosts, letterTitle, letterSlug, letterImage });
 
   return (
     <>

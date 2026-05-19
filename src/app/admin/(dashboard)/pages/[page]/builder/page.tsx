@@ -41,7 +41,8 @@ async function buildSections(page: PageKey) {
         ? latestPost.title.length > 40 ? latestPost.title.slice(0, 40).trimEnd() + "…" : latestPost.title
         : c.hero.letterCardTitle ?? "On dressing for the life you want.";
       const letterSlug = latestPost?.slug ?? null;
-      return { c, sectionMap: buildHomeSectionMap(c, { featuredPosts, letterTitle, letterSlug }), defaults: HOME_DEFAULTS };
+      const letterImage = latestPost?.heroImage ?? null;
+      return { c, sectionMap: buildHomeSectionMap(c, { featuredPosts, letterTitle, letterSlug, letterImage }), defaults: HOME_DEFAULTS };
     }
     case "portfolio": {
       const [posts, content] = await Promise.all([getAllPosts(), getPortfolioContent().catch(() => null)]);

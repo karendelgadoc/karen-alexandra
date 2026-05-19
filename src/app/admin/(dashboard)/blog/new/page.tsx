@@ -124,8 +124,8 @@ export function BlogPostFormFields({
           value={form.heroImage ?? ""}
           onChange={(url) => set("heroImage", url)}
           onAltChange={(alt) => { if (!form.heroAlt) set("heroAlt", alt); }}
-          aspect="16/7"
-          label="Choose hero image"
+          aspect="4/5"
+          label="Choose hero image (vertical — used on homepage feature)"
         />
         <p className="text-xs text-stone-400 mt-1">Click to upload a new image or pick one from the photo library.</p>
       </div>
