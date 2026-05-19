@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getAllBlogSlugs, getBlogPostBySlug } from "@/lib/blog-db";
 import { JsonLd, articleSchema, faqSchema, breadcrumbSchema } from "@/components/JsonLd";
 import { sanitizeHtml } from "@/lib/sanitize";
+import BogotaMap from "@/components/BogotaMap";
 
 export const revalidate = 60;
 
@@ -137,13 +138,110 @@ export default async function JournalPostPage({ params }: Props) {
         {/* Body */}
         <div style={{ display: "flex", flexDirection: "column", gap: "24px", fontSize: "17px", lineHeight: 1.75, color: "var(--ka-ink-soft)", fontWeight: 300 }}>
           {paragraphs.map((para, i) => {
-            // Render `## Heading` / `### Heading` as h2/h3 for AI parsability
+            // ## / ### headings
             if (para.startsWith("### ")) {
               return <h3 key={i} style={{ fontFamily: "var(--ka-display)", fontSize: 24, fontStyle: "italic", marginTop: 16, color: "var(--ka-ink)" }}>{para.slice(4)}</h3>;
             }
             if (para.startsWith("## ")) {
-              return <h2 key={i} style={{ fontFamily: "var(--ka-display)", fontSize: 32, fontStyle: "italic", marginTop: 24, color: "var(--ka-ink)" }}>{para.slice(3)}</h2>;
+              return <h2 key={i} style={{ fontFamily: "var(--ka-display)", fontSize: 36, fontStyle: "italic", marginTop: 32, marginBottom: 4, color: "var(--ka-ink)", fontWeight: 400 }}>{para.slice(3)}</h2>;
             }
+
+            // [!IMG src="…" alt="…" caption="…"]
+            if (para.startsWith("[!IMG")) {
+              const src = para.match(/src="([^"]+)"/)?.[1];
+              const alt = para.match(/alt="([^"]+)"/)?.[1] ?? "";
+              const caption = para.match(/caption="([^"]+)"/)?.[1];
+              if (!src) return null;
+              return (
+                <figure key={i} style={{ margin: "32px -32px" }}>
+                  <div style={{ position: "relative", aspectRatio: "3/2", overflow: "hidden" }}>
+                    <Image src={src} alt={alt} fill style={{ objectFit: "cover" }} sizes="(max-width: 800px) 100vw, 800px" />
+                  </div>
+                  {caption && (
+                    <figcaption style={{ padding: "10px 32px 0", fontSize: 12, color: "var(--ka-muted)", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "var(--ka-body)" }}>
+                      {caption}
+                    </figcaption>
+                  )}
+                </figure>
+              );
+            }
+
+            // [!GRID src="…" alt="…" text="…"]
+            // Right-aligned image, text to the left — editorial asymmetric layout
+            if (para.startsWith("[!GRID")) {
+              const src = para.match(/src="([^"]+)"/)?.[1];
+              const alt = para.match(/alt="([^"]+)"/)?.[1] ?? "";
+              const text = para.match(/text="([^"]+)"/)?.[1] ?? "";
+              if (!src) return null;
+              return (
+                <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px", alignItems: "center", margin: "24px -32px", padding: "0 32px" }}>
+                  <p style={{ fontSize: 18, lineHeight: 1.75, color: "var(--ka-ink-soft)", fontWeight: 300, fontFamily: "var(--ka-display)", fontStyle: "italic", margin: 0 }}>
+                    {text}
+                  </p>
+                  <div style={{ position: "relative", aspectRatio: "4/5", overflow: "hidden" }}>
+                    <Image src={src} alt={alt} fill style={{ objectFit: "cover" }} sizes="(max-width: 800px) 50vw, 400px" />
+                  </div>
+                </div>
+              );
+            }
+
+            // [!GRID-LEFT src="…" alt="…" text="…"]
+            // Left-aligned image, text to the right
+            if (para.startsWith("[!GRID-LEFT")) {
+              const src = para.match(/src="([^"]+)"/)?.[1];
+              const alt = para.match(/alt="([^"]+)"/)?.[1] ?? "";
+              const text = para.match(/text="([^"]+)"/)?.[1] ?? "";
+              if (!src) return null;
+              return (
+                <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px", alignItems: "center", margin: "24px -32px", padding: "0 32px" }}>
+                  <div style={{ position: "relative", aspectRatio: "4/5", overflow: "hidden" }}>
+                    <Image src={src} alt={alt} fill style={{ objectFit: "cover" }} sizes="(max-width: 800px) 50vw, 400px" />
+                  </div>
+                  <p style={{ fontSize: 18, lineHeight: 1.75, color: "var(--ka-ink-soft)", fontWeight: 300, fontFamily: "var(--ka-display)", fontStyle: "italic", margin: 0 }}>
+                    {text}
+                  </p>
+                </div>
+              );
+            }
+
+            // [!HIGHLIGHT text="…" label="…"]  — lilac callout aside
+            if (para.startsWith("[!HIGHLIGHT")) {
+              const text = para.match(/text="([^"]+)"/)?.[1] ?? "";
+              const label = para.match(/label="([^"]+)"/)?.[1];
+              return (
+                <aside key={i} style={{ background: "var(--ka-bg-soft)", borderLeft: "3px solid var(--ka-accent-deep)", padding: "24px 28px", margin: "16px 0" }}>
+                  {label && (
+                    <div className="ka-eyebrow" style={{ marginBottom: 10, color: "var(--ka-accent-deep)" }}>{label}</div>
+                  )}
+                  <p style={{ fontFamily: "var(--ka-display)", fontStyle: "italic", fontSize: 19, lineHeight: 1.55, color: "var(--ka-ink)", margin: 0 }}>
+                    {text}
+                  </p>
+                </aside>
+              );
+            }
+
+            // [!QUOTE text="…"]  — pull quote
+            if (para.startsWith("[!QUOTE")) {
+              const text = para.match(/text="([^"]+)"/)?.[1] ?? "";
+              return (
+                <blockquote key={i} style={{ borderLeft: "none", borderTop: "1px solid var(--ka-line)", borderBottom: "1px solid var(--ka-line)", padding: "28px 0", margin: "16px 0", textAlign: "center" }}>
+                  <p style={{ fontFamily: "var(--ka-display)", fontStyle: "italic", fontSize: 24, lineHeight: 1.45, color: "var(--ka-ink)", fontWeight: 400, margin: 0 }}>
+                    &ldquo;{text}&rdquo;
+                  </p>
+                </blockquote>
+              );
+            }
+
+            // [!RULE]  — decorative hairline break
+            if (para.trim() === "[!RULE]") {
+              return <div key={i} className="ka-rule" style={{ margin: "16px 0" }} />;
+            }
+
+            // [!MAP-BOGOTA]  — custom illustrated Bogotá map
+            if (para.trim() === "[!MAP-BOGOTA]") {
+              return <BogotaMap key={i} />;
+            }
+
             return <p key={i} dangerouslySetInnerHTML={{ __html: sanitizeHtml(para) }} />;
           })}
         </div>
