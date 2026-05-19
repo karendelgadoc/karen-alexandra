@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { BlogPostInput, BlogCategory, FaqItem } from "@/lib/blog-db";
 import SeoPanel from "@/components/admin/SeoPanel";
 import BlogBodyEditor from "@/components/admin/BlogBodyEditor";
+import ImagePickerField from "@/components/admin/ImagePickerField";
 
 const CATEGORIES: BlogCategory[] = ["fashion", "lifestyle", "travel", "wellness"];
 
@@ -107,17 +108,35 @@ export function BlogPostFormFields({
         { key: "title", label: "Title", type: "text" },
         { key: "slug", label: "Slug", type: "text" },
         { key: "date", label: "Date", type: "date" },
-        { key: "heroImage", label: "Hero Image URL", type: "url" },
-        { key: "heroAlt", label: "Hero Image Alt Text", type: "text" },
       ] as const).map(({ key, label, type }) => (
         <div key={key}>
           <label className={LABEL_CLS}>{label}</label>
           <input type={type} value={(form[key] as string) ?? ""}
             onChange={(e) => set(key, e.target.value as BlogPostInput[typeof key])}
-            required={key !== "heroImage" && key !== "heroAlt"}
+            required
             className={FIELD_CLS} />
         </div>
       ))}
+
+      <div>
+        <label className={LABEL_CLS}>Hero image</label>
+        <ImagePickerField
+          value={form.heroImage ?? ""}
+          onChange={(url) => set("heroImage", url)}
+          onAltChange={(alt) => { if (!form.heroAlt) set("heroAlt", alt); }}
+          aspect="16/7"
+          label="Choose hero image"
+        />
+        <p className="text-xs text-stone-400 mt-1">Click to upload a new image or pick one from the photo library.</p>
+      </div>
+
+      <div>
+        <label className={LABEL_CLS}>Hero image alt text</label>
+        <input type="text" value={form.heroAlt ?? ""}
+          onChange={(e) => set("heroAlt", e.target.value)}
+          placeholder="Describe the image for screen readers & SEO"
+          className={FIELD_CLS} />
+      </div>
 
       <div>
         <label className={LABEL_CLS}>Category</label>
@@ -178,19 +197,21 @@ export function BlogPostFormFields({
         <p className="text-xs text-stone-400 mt-1">{(form.seoDescription ?? "").length || form.excerpt.length}/160 characters</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className={LABEL_CLS}>Social share image (OG)</label>
-          <input type="url" value={form.ogImage ?? ""}
-            onChange={(e) => set("ogImage", e.target.value)} className={FIELD_CLS}
-            placeholder="Defaults to hero image" />
-        </div>
-        <div>
-          <label className={LABEL_CLS}>Canonical URL</label>
-          <input type="url" value={form.canonicalUrl ?? ""}
-            onChange={(e) => set("canonicalUrl", e.target.value)} className={FIELD_CLS}
-            placeholder="Auto-set if blank" />
-        </div>
+      <div>
+        <label className={LABEL_CLS}>Social share image (OG) <span className="text-stone-400 font-normal normal-case">— defaults to hero image</span></label>
+        <ImagePickerField
+          value={form.ogImage ?? ""}
+          onChange={(url) => set("ogImage", url)}
+          aspect="1.91/1"
+          label="Choose OG image"
+        />
+      </div>
+
+      <div>
+        <label className={LABEL_CLS}>Canonical URL</label>
+        <input type="url" value={form.canonicalUrl ?? ""}
+          onChange={(e) => set("canonicalUrl", e.target.value)} className={FIELD_CLS}
+          placeholder="Auto-set if blank" />
       </div>
 
       <label className="flex items-center gap-2 text-sm cursor-pointer text-stone-600">
