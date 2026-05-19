@@ -1,24 +1,17 @@
 import type { NextConfig } from "next";
 
 const securityHeaders = [
-  // Prevent clickjacking
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
-  // Stop MIME-type sniffing
   { key: "X-Content-Type-Options", value: "nosniff" },
-  // Only send origin when navigating to same origin
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  // Disable browser features not needed
   {
     key: "Permissions-Policy",
     value: "camera=(), microphone=(), geolocation=(), payment=()",
   },
-  // Force HTTPS for 2 years (only applies over HTTPS — Vercel handles this)
   {
     key: "Strict-Transport-Security",
     value: "max-age=63072000; includeSubDomains; preload",
   },
-  // Content Security Policy
-  // 'unsafe-inline' in script-src is required by Next.js (inline hydration scripts)
   {
     key: "Content-Security-Policy",
     value: [
@@ -47,25 +40,13 @@ const nextConfig: NextConfig = {
   },
 
   async headers() {
-    return [
-      {
-        source: "/(.*)",
-        headers: securityHeaders,
-      },
-    ];
+    return [{ source: "/(.*)", headers: securityHeaders }];
   },
 
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "karenalexandra.com",
-      },
-      {
-        // InsForge Storage
-        protocol: "https",
-        hostname: "*.insforge.app",
-      },
+      { protocol: "https", hostname: "karenalexandra.com" },
+      { protocol: "https", hostname: "*.insforge.app" },
     ],
   },
 };

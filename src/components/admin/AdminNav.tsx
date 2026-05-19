@@ -30,6 +30,12 @@ export default function AdminNav() {
       </div>
 
       <div className="space-y-1 flex-1">
+        <Link href="/admin/pages" className={linkClass("/admin/pages")}>
+          Pages
+        </Link>
+        <Link href="/admin/menus" className={linkClass("/admin/menus")}>
+          Navigation
+        </Link>
         <Link href="/admin/blog" className={linkClass("/admin/blog")}>
           Blog Posts
         </Link>

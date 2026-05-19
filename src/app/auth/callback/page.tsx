@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getBrowserClient } from "@/lib/insforge";
 
@@ -13,8 +13,12 @@ function getCookie(name: string): string | null {
 export default function AuthCallbackPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const ran = useRef(false);
 
   useEffect(() => {
+    if (ran.current) return;
+    ran.current = true;
+
     async function handleCallback() {
       // Read the code NOW — before getBrowserClient() whose constructor
       // auto-runs detectAuthCallback() which cleans the URL param.

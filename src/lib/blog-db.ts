@@ -2,6 +2,8 @@ import { getServerClient } from "./insforge";
 
 export type BlogCategory = "fashion" | "lifestyle" | "travel" | "wellness";
 
+export interface FaqItem { question: string; answer: string; }
+
 export interface BlogPost {
   id: string;
   slug: string;
@@ -14,6 +16,18 @@ export interface BlogPost {
   body: string;
   published: boolean;
   featured: boolean;
+  // SEO
+  seoTitle: string | null;
+  seoDescription: string | null;
+  focusKeyword: string | null;
+  ogImage: string | null;
+  canonicalUrl: string | null;
+  noindex: boolean;
+  // GEO
+  keyTakeaway: string | null;
+  faqItems: FaqItem[];
+  authorName: string | null;
+  authorBio: string | null;
 }
 
 interface DbBlogPost {
@@ -30,6 +44,16 @@ interface DbBlogPost {
   featured: boolean;
   created_at: string;
   updated_at: string;
+  seo_title?: string | null;
+  seo_description?: string | null;
+  focus_keyword?: string | null;
+  og_image?: string | null;
+  canonical_url?: string | null;
+  noindex?: boolean | null;
+  key_takeaway?: string | null;
+  faq_items?: FaqItem[] | null;
+  author_name?: string | null;
+  author_bio?: string | null;
 }
 
 function toPost(row: DbBlogPost): BlogPost {
@@ -45,6 +69,16 @@ function toPost(row: DbBlogPost): BlogPost {
     body: row.body,
     published: row.published,
     featured: row.featured,
+    seoTitle:       row.seo_title       ?? null,
+    seoDescription: row.seo_description ?? null,
+    focusKeyword:   row.focus_keyword   ?? null,
+    ogImage:        row.og_image        ?? null,
+    canonicalUrl:   row.canonical_url   ?? null,
+    noindex:        row.noindex         ?? false,
+    keyTakeaway:    row.key_takeaway    ?? null,
+    faqItems:       Array.isArray(row.faq_items) ? row.faq_items : [],
+    authorName:     row.author_name     ?? null,
+    authorBio:      row.author_bio      ?? null,
   };
 }
 
@@ -144,6 +178,18 @@ export interface BlogPostInput {
   body: string;
   published?: boolean;
   featured?: boolean;
+  // SEO
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  focusKeyword?: string | null;
+  ogImage?: string | null;
+  canonicalUrl?: string | null;
+  noindex?: boolean;
+  // GEO
+  keyTakeaway?: string | null;
+  faqItems?: FaqItem[];
+  authorName?: string | null;
+  authorBio?: string | null;
 }
 
 function toDbRow(input: BlogPostInput) {
@@ -158,6 +204,16 @@ function toDbRow(input: BlogPostInput) {
     body: input.body,
     published: input.published ?? true,
     featured: input.featured ?? false,
+    seo_title:       input.seoTitle       ?? null,
+    seo_description: input.seoDescription ?? null,
+    focus_keyword:   input.focusKeyword   ?? null,
+    og_image:        input.ogImage        ?? null,
+    canonical_url:   input.canonicalUrl   ?? null,
+    noindex:         input.noindex        ?? false,
+    key_takeaway:    input.keyTakeaway    ?? null,
+    faq_items:       input.faqItems       ?? [],
+    author_name:     input.authorName     ?? null,
+    author_bio:      input.authorBio      ?? null,
   };
 }
 
@@ -185,6 +241,16 @@ export async function updateBlogPost(id: string, input: Partial<BlogPostInput>):
   if (input.body !== undefined) updates.body = input.body;
   if (input.published !== undefined) updates.published = input.published;
   if (input.featured !== undefined) updates.featured = input.featured;
+  if (input.seoTitle !== undefined)        updates.seo_title       = input.seoTitle;
+  if (input.seoDescription !== undefined)  updates.seo_description = input.seoDescription;
+  if (input.focusKeyword !== undefined)    updates.focus_keyword   = input.focusKeyword;
+  if (input.ogImage !== undefined)         updates.og_image        = input.ogImage;
+  if (input.canonicalUrl !== undefined)    updates.canonical_url   = input.canonicalUrl;
+  if (input.noindex !== undefined)         updates.noindex         = input.noindex;
+  if (input.keyTakeaway !== undefined)     updates.key_takeaway    = input.keyTakeaway;
+  if (input.faqItems !== undefined)        updates.faq_items       = input.faqItems;
+  if (input.authorName !== undefined)      updates.author_name     = input.authorName;
+  if (input.authorBio !== undefined)       updates.author_bio      = input.authorBio;
 
   const { data, error } = await db.database
     .from("blog_posts")

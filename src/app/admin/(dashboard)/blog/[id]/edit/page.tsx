@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { BlogPostInput } from "@/lib/blog-db";
 import { BlogPostFormFields } from "../../new/page";
+import SeoPanel from "@/components/admin/SeoPanel";
 
 interface Props { params: Promise<{ id: string }> }
 
@@ -31,13 +32,23 @@ export default function EditBlogPostPage({ params }: Props) {
             body: post.body,
             published: post.published,
             featured: post.featured,
+            seoTitle: post.seoTitle ?? "",
+            seoDescription: post.seoDescription ?? "",
+            focusKeyword: post.focusKeyword ?? "",
+            ogImage: post.ogImage ?? "",
+            canonicalUrl: post.canonicalUrl ?? "",
+            noindex: post.noindex ?? false,
+            keyTakeaway: post.keyTakeaway ?? "",
+            faqItems: post.faqItems ?? [],
+            authorName: post.authorName ?? "Karen Alexandra",
+            authorBio: post.authorBio ?? "",
           })
         );
     });
   }, [params]);
 
-  function set(key: keyof BlogPostInput, value: string | boolean) {
-    setForm((f) => f ? { ...f, [key]: value } : f);
+  function set<K extends keyof BlogPostInput>(key: K, value: BlogPostInput[K]) {
+    setForm((f) => (f ? { ...f, [key]: value } : f));
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -62,27 +73,24 @@ export default function EditBlogPostPage({ params }: Props) {
   if (!form) return <p className="text-sm text-[var(--muted)]">Loading…</p>;
 
   return (
-    <div className="max-w-2xl">
+    <div>
       <h1 className="text-2xl font-light mb-8">Edit Blog Post</h1>
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <BlogPostFormFields form={form} set={set} />
-        {error && <p className="text-sm text-red-500">{error}</p>}
-        <div className="flex gap-4 pt-2">
-          <button
-            type="submit"
-            disabled={saving}
-            className="text-xs tracking-[0.15em] uppercase bg-[var(--charcoal)] text-[var(--cream)] px-6 py-3 hover:opacity-80 transition-opacity disabled:opacity-40"
-          >
-            {saving ? "Saving…" : "Save Changes"}
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push("/admin/blog")}
-            className="text-xs tracking-[0.15em] uppercase border border-stone-300 px-6 py-3 hover:border-[var(--charcoal)] transition-colors"
-          >
-            Cancel
-          </button>
+      <form onSubmit={handleSubmit} className="grid gap-8" style={{ gridTemplateColumns: "minmax(0, 1fr) 360px" }}>
+        <div className="space-y-5 min-w-0">
+          <BlogPostFormFields form={form} set={set} />
+          {error && <p className="text-sm text-red-500">{error}</p>}
+          <div className="flex gap-4 pt-2">
+            <button type="submit" disabled={saving}
+              className="text-xs tracking-[0.15em] uppercase bg-[var(--charcoal)] text-[var(--cream)] px-6 py-3 hover:opacity-80 transition-opacity disabled:opacity-40">
+              {saving ? "Saving…" : "Save Changes"}
+            </button>
+            <button type="button" onClick={() => router.push("/admin/blog")}
+              className="text-xs tracking-[0.15em] uppercase border border-stone-300 px-6 py-3 hover:border-[var(--charcoal)] transition-colors">
+              Cancel
+            </button>
+          </div>
         </div>
+        <aside><SeoPanel form={form} /></aside>
       </form>
     </div>
   );

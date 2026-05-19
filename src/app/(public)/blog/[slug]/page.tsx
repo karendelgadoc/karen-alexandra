@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { getAllBlogSlugs, getBlogPostBySlug } from "@/lib/blog-db";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 export const revalidate = 60;
 
@@ -71,7 +72,7 @@ export default async function BlogPostPage({ params }: Props) {
 
         <div className="space-y-5 text-[var(--muted)] leading-relaxed">
           {paragraphs.map((para, i) => (
-            <p key={i} dangerouslySetInnerHTML={{ __html: para }} />
+            <p key={i} dangerouslySetInnerHTML={{ __html: sanitizeHtml(para) }} />
           ))}
         </div>
       </article>

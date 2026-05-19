@@ -237,17 +237,34 @@ a:hover { border-bottom-color: var(--ka-ink); }
 
 /* ─── Marquee strip ──────────────────────────────────────────────────────── */
 
+@keyframes ka-marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
 .ka-marquee {
   border-top: 1px solid var(--ka-line);
   border-bottom: 1px solid var(--ka-line);
-  padding: 28px 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 40px;
+  padding: 28px 0;
   background: var(--ka-bg);
   overflow: hidden;
+  /* prevent text selection while scrolling */
+  user-select: none;
 }
+
+.ka-marquee-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: ka-marquee-scroll 28s linear infinite;
+  will-change: transform;
+}
+
+/* pause on hover so users can read */
+.ka-marquee:hover .ka-marquee-track {
+  animation-play-state: paused;
+}
+
 .ka-marquee-item {
   font-family: var(--ka-display);
   font-size: 22px;
@@ -255,6 +272,7 @@ a:hover { border-bottom-color: var(--ka-ink); }
   letter-spacing: 0.04em;
   color: var(--ka-ink-soft);
   white-space: nowrap;
+  padding: 0 32px;
 }
 .ka-marquee-dot {
   width: 6px; height: 6px; border-radius: 50%;

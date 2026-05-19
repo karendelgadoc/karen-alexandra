@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Section } from "@/lib/posts";
 import { getAllSlugs, getPostBySlug } from "@/lib/posts-db";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 export const revalidate = 60;
 
@@ -91,7 +92,7 @@ function renderSection(section: Section, i: number) {
           }}
         >
           {section.body.split("\n\n").map((para, j) => (
-            <p key={j} dangerouslySetInnerHTML={{ __html: para }} />
+            <p key={j} dangerouslySetInnerHTML={{ __html: sanitizeHtml(para) }} />
           ))}
         </div>
       )}

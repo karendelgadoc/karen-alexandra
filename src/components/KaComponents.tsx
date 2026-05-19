@@ -12,14 +12,18 @@ const MARQUEE_ITEMS = [
 ];
 
 export function KaMarquee({ items = MARQUEE_ITEMS }: { items?: string[] }) {
+  // Duplicate the track so the animation loops seamlessly
+  const track = [...items, ...items];
   return (
     <div className="ka-marquee">
-      {items.map((item, i) => (
-        <span key={i} style={{ display: "contents" }}>
-          <span className="ka-marquee-item">{item}</span>
-          {i < items.length - 1 && <span className="ka-marquee-dot" />}
-        </span>
-      ))}
+      <div className="ka-marquee-track">
+        {track.map((item, i) => (
+          <span key={i} style={{ display: "contents" }}>
+            <span className="ka-marquee-item">{item}</span>
+            <span className="ka-marquee-dot" />
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
