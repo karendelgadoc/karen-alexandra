@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { getBrowserClient } from "@/lib/insforge";
 
 interface Photo {
   id: string;
@@ -69,7 +68,6 @@ export default function PhotoGallery({ initialPhotos, adminKey }: Props) {
     setUploading(true);
     setUploadError(null);
 
-    const insforge = getBrowserClient();
     const uploaded: Photo[] = [];
 
     for (const file of Array.from(files)) {
@@ -79,29 +77,19 @@ export default function PhotoGallery({ initialPhotos, adminKey }: Props) {
         continue;
       }
       try {
-        const sanitized = file.name.toLowerCase().replace(/\s+/g, "-");
-        const key = `library/${sanitized}`;
-        const { data, error } = await insforge.storage
-          .from("blog-images")
-          .upload(key, file);
-
-        if (error || !data) throw new Error(error?.message ?? "Upload failed");
-        const url = `${process.env.NEXT_PUBLIC_INSFORGE_URL}/storage/v1/object/public/blog-images/${key}`;
-        const res = await fetch("/api/admin/photos", {
+        const fd = new FormData();
+        fd.append("file", file);
+        const res = await fetch("/api/admin/photos/upload", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "x-admin-key": adminKey },
-          body: JSON.stringify({
-            storage_key: key,
-            url,
-            filename: sanitized,
-            title: file.name.replace(/\.[^.]+$/, "").replace(/[-_]/g, " "),
-            source: "library",
-          }),
+          headers: { "x-admin-key": adminKey },
+          body: fd,
         });
-        if (res.ok) {
-          const photo = await res.json();
-          uploaded.push(photo);
+        if (!res.ok) {
+          const errBody = await res.json().catch(() => ({}));
+          throw new Error(errBody.error ?? `Upload failed (${res.status})`);
         }
+        const photo = await res.json();
+        uploaded.push(photo);
       } catch (err) {
         setUploadError(err instanceof Error ? err.message : "Upload failed");
       }
