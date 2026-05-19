@@ -165,6 +165,25 @@ export default async function JournalPostPage({ params }: Props) {
               );
             }
 
+            // [!GRID-LEFT src="…" alt="…" text="…"]
+            // Left-aligned image, text to the right.
+            // NOTE: must be checked BEFORE [!GRID — both start with the same prefix.
+            if (para.startsWith("[!GRID-LEFT")) {
+              const src = para.match(/src="([^"]+)"/)?.[1];
+              const alt = para.match(/alt="([^"]+)"/)?.[1] ?? "";
+              const text = para.match(/text="([^"]+)"/)?.[1] ?? "";
+              if (!src) return null;
+              return (
+                <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px", alignItems: "start", margin: "24px -32px", padding: "0 32px" }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={src} alt={alt} style={{ width: "100%", height: "auto", display: "block" }} loading="lazy" />
+                  <p style={{ fontSize: 18, lineHeight: 1.75, color: "var(--ka-ink-soft)", fontWeight: 300, fontFamily: "var(--ka-display)", fontStyle: "italic", margin: 0 }}>
+                    {text}
+                  </p>
+                </div>
+              );
+            }
+
             // [!GRID src="…" alt="…" text="…"]
             // Right-aligned image, text to the left — editorial asymmetric layout
             if (para.startsWith("[!GRID")) {
@@ -179,24 +198,6 @@ export default async function JournalPostPage({ params }: Props) {
                   </p>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={src} alt={alt} style={{ width: "100%", height: "auto", display: "block" }} loading="lazy" />
-                </div>
-              );
-            }
-
-            // [!GRID-LEFT src="…" alt="…" text="…"]
-            // Left-aligned image, text to the right
-            if (para.startsWith("[!GRID-LEFT")) {
-              const src = para.match(/src="([^"]+)"/)?.[1];
-              const alt = para.match(/alt="([^"]+)"/)?.[1] ?? "";
-              const text = para.match(/text="([^"]+)"/)?.[1] ?? "";
-              if (!src) return null;
-              return (
-                <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px", alignItems: "start", margin: "24px -32px", padding: "0 32px" }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={src} alt={alt} style={{ width: "100%", height: "auto", display: "block" }} loading="lazy" />
-                  <p style={{ fontSize: 18, lineHeight: 1.75, color: "var(--ka-ink-soft)", fontWeight: 300, fontFamily: "var(--ka-display)", fontStyle: "italic", margin: 0 }}>
-                    {text}
-                  </p>
                 </div>
               );
             }
