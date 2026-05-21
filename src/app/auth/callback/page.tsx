@@ -21,12 +21,23 @@ export default function AuthCallbackPage() {
 
     async function handleCallback() {
       // Read the code NOW — before getBrowserClient() whose constructor
-      // auto-runs detectAuthCallback() which cleans the URL param.
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get("insforge_code") ?? params.get("code");
+      // auto-runs detectAuthCallback(). That auto-detect not only cleans
+      // the URL param but ALSO calls exchangeOAuthCode(code) *without* the
+      // PKCE verifier (which lives in our cookie, not sessionStorage),
+      // consuming the one-time auth code at the backend before we can use
+      // it. So we both (a) capture the code and (b) strip it from the URL
+      // ourselves so the SDK's auto-detect sees nothing to do.
+      const url = new URL(window.location.href);
+      const code = url.searchParams.get("insforge_code") ?? url.searchParams.get("code");
       const codeVerifier = getCookie("pkce_verifier") ?? undefined;
 
-      const oauthError = params.get("error") ?? params.get("error_description");
+      if (code) {
+        url.searchParams.delete("insforge_code");
+        url.searchParams.delete("code");
+        window.history.replaceState({}, "", url.toString());
+      }
+
+      const oauthError = url.searchParams.get("error") ?? url.searchParams.get("error_description");
       if (oauthError) {
         setError(`Google sign-in was cancelled or failed: ${oauthError}`);
         return;
