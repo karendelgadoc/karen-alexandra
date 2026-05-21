@@ -1,15 +1,13 @@
 import Image from "next/image";
-import Link from "next/link";
 import type { ReactNode } from "react";
 import type { WatchContent } from "@/lib/page-content-db";
 import { YT_CHANNEL_URL, type VideoCard } from "@/lib/youtube";
+import FilteredVideoGrid from "./FilteredVideoGrid";
 
 // Fallback used only if the YouTube fetch returns 0 videos (rate-limit, outage, etc.)
 const FALLBACK_VIDEOS: VideoCard[] = [
   { id: "", title: "New films coming soon", url: YT_CHANNEL_URL, thumbnail: "/photos/mykonos-infinity.jpg", category: "Film", date: "", length: "—", views: "", summary: "Karen's YouTube channel — travel, fashion and wellness films. Subscribe to be notified when new films drop." },
 ];
-
-const VIDEO_FILTERS = ["All films", "Travel", "Fashion", "Wellness", "Lifestyle"];
 
 function PlayButton({ size = 52 }: { size?: number }) {
   return (
@@ -60,42 +58,9 @@ export function FeaturedSection({ featured }: { featured: VideoCard }) {
   );
 }
 
-export function FiltersSection() {
-  return (
-    <div style={{ padding: "28px 64px", display: "flex", gap: "10px", alignItems: "center", borderBottom: "1px solid var(--ka-line)", justifyContent: "space-between" }}>
-      <div style={{ display: "flex", gap: "10px" }}>
-        {VIDEO_FILTERS.map((f, i) => <span key={f} className={`ka-tag${i === 0 ? " ka-tag-active" : ""}`}>{f}</span>)}
-      </div>
-      <span style={{ fontFamily: "var(--ka-mono)", fontSize: "10px", color: "var(--ka-muted)", letterSpacing: "0.1em", textTransform: "uppercase" as const }}>Auto-sync · New videos appear automatically</span>
-    </div>
-  );
-}
+// Filters + grid are rendered together by FilteredVideoGrid (client component)
+// so chip clicks re-filter the grid in place.
 
-export function VideoGridSection({ rest }: { rest: VideoCard[] }) {
-  if (rest.length === 0) return null;
-  return (
-    <section style={{ padding: "64px", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "40px" }}>
-      {rest.map((v) => (
-        <Link key={v.id || v.title} href={v.url} target="_blank" rel="noopener noreferrer" style={{ display: "block" }}>
-          <div style={{ aspectRatio: "16/9", position: "relative", overflow: "hidden", background: "var(--ka-sand)" }}>
-            <Image src={v.thumbnail} alt={v.title} fill style={{ objectFit: "cover" }} sizes="33vw" unoptimized={v.thumbnail.includes("ytimg.com")} />
-            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(10,10,10,0.15)" }}><PlayButton size={44} /></div>
-            {v.length !== "—" && (
-              <span style={{ position: "absolute", bottom: "10px", right: "10px", fontFamily: "var(--ka-mono)", fontSize: "10px", background: "var(--ka-ink)", color: "var(--ka-bg)", padding: "2px 6px" }}>{v.length}</span>
-            )}
-          </div>
-          <div style={{ padding: "14px 0 0" }}>
-            <span className="ka-eyebrow">{[v.category, v.date].filter(Boolean).join("  ·  ")}</span>
-            <p style={{ fontFamily: "var(--ka-display)", fontSize: "20px", fontStyle: "italic", marginTop: "8px", marginBottom: "10px", lineHeight: 1.2 }}>{v.title}</p>
-            {v.summary && (
-              <p style={{ fontSize: "12px", color: "var(--ka-muted)", lineHeight: 1.6, fontWeight: 300 }}>{v.summary}</p>
-            )}
-          </div>
-        </Link>
-      ))}
-    </section>
-  );
-}
 
 export function MetaSection() {
   return (
@@ -117,8 +82,10 @@ export function buildWatchSectionMap(c: WatchContent, extra: WatchExtraProps): R
   return {
     "hero":       <HeroSection c={c} />,
     "featured":   <FeaturedSection featured={featured} />,
-    "filters":    <FiltersSection />,
-    "video-grid": <VideoGridSection rest={rest} />,
+    "filters":    <FilteredVideoGrid videos={rest} />,
+    // Kept as a no-op for backward compat with any saved sectionOrder that
+    // still references "video-grid" — the grid is now rendered inside "filters".
+    "video-grid": null,
     "meta":       <MetaSection />,
   };
 }
