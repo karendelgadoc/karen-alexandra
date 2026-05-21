@@ -7,7 +7,7 @@ import type { BlogPost, BlogCategory } from "@/lib/blog-db";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Journal — Karen Alexandra",
+  title: "The Edit — Karen Alexandra",
   description:
     "A global citizen's guide to well living — fashion, travel, wellness and the life that happens in between.",
 };
@@ -123,7 +123,7 @@ export default async function JournalPage({
         }}
       >
         <span className="ka-eyebrow" style={{ display: "block", marginBottom: "20px" }}>
-          The Journal
+          The Edit
         </span>
         <h1
           style={{

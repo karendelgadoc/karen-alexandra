@@ -6,7 +6,7 @@ import { getLatestVideos } from "@/lib/youtube";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Watch — Karen Alexandra",
+  title: "On Film — Karen Alexandra",
   description: "Travel, fashion and wellness films by Karen Alexandra.",
 };
 

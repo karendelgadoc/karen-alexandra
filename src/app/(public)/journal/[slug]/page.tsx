@@ -85,7 +85,7 @@ export default async function JournalPostPage({ params }: Props) {
       {fSchema && <JsonLd data={fSchema} />}
       <JsonLd data={breadcrumbSchema([
         { name: "Home",    url: `${SITE}/` },
-        { name: "Journal", url: `${SITE}/journal` },
+        { name: "The Edit", url: `${SITE}/journal` },
         { name: post.title, url },
       ])} />
 
@@ -325,7 +325,7 @@ export default async function JournalPostPage({ params }: Props) {
         <div className="ka-rule" style={{ marginBottom: "32px" }} />
         <Link href="/journal" className="ka-arrow-link" style={{ flexDirection: "row-reverse", gap: "10px" }}>
           <span className="ka-arrow" style={{ transform: "rotate(180deg)" }}>→</span>
-          Back to Journal
+          Back to The Edit
         </Link>
       </div>
     </>

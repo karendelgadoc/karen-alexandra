@@ -218,13 +218,13 @@ export const ABOUT_DEFAULTS: AboutContent = {
 
 export const MENU_DEFAULTS: MenuContent = {
   leftLinks: [
-    { label: "Journal",      href: "/journal" },
+    { label: "The Edit",      href: "/journal" },
     { label: "Portfolio",    href: "/portfolio" },
     { label: "Case Studies", href: "/case-studies" },
   ],
   rightLinks: [
     { label: "Services", href: "/services" },
-    { label: "Watch",    href: "/watch" },
+    { label: "On Film",  href: "/watch" },
     { label: "About",    href: "/about" },
     { label: "Contact",  href: "/contact" },
   ],

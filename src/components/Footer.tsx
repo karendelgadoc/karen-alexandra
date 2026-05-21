@@ -29,8 +29,8 @@ export default function Footer() {
           <h4>Explore</h4>
           <ul>
             <li><Link href="/">Home</Link></li>
-            <li><Link href="/journal">Journal</Link></li>
-            <li><Link href="/watch">Watch</Link></li>
+            <li><Link href="/journal">The Edit</Link></li>
+            <li><Link href="/watch">On Film</Link></li>
             <li><Link href="/contact">Contact</Link></li>
           </ul>
         </div>
