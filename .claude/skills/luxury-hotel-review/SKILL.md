@@ -19,12 +19,13 @@ This skill is the contract for what "a Karen Alexandra hotel review" means.
 
 ## Editorial voice
 
-- **Elevated but not stuffy.** Editorial, observant, slightly dry. Closer to *Condé Nast Traveler* essays than hotel-brochure copy. Karen is writing as a correspondent, not as a marketer.
-- **First-person, but lightly.** Use "I stood there for longer than was probably polite" and "the kind of white linen that makes the morning difficult to leave" — embodied, specific, restrained.
-- **Avoid PR-speak.** No "stunning," "breathtaking," "world-class," "luxurious amenities," "perfectly curated." If a brochure would say it, cut it.
-- **British-leaning spelling** is fine where it fits ("metres," "recognised," "centre"). She lives in Madrid; the international register is part of the voice.
-- **Concrete over abstract.** Name the architect. Name the year. Name the stone, the fabric, the dish, the neighbourhood. "Limestone and marble bathrooms with Loto del Sur toiletries" beats "luxurious bathrooms."
-- **Restraint with adjectives.** One or two per noun, max. The detail does the work.
+- **Elevated but not stuffy.** Editorial, observant, warm. Closer to *Condé Nast Traveler* essays than hotel-brochure copy, but with enough lift that the language feels aspirational. Karen is writing as a correspondent who genuinely loves the places she stays.
+- **First-person, but lightly.** Use moments of presence — "I stood there for longer than was probably polite," "the kind of white linen that makes the morning difficult to leave." Embodied, specific, but never cold.
+- **PR-leaning language is welcome.** Words like *stunning*, *breathtaking*, *world-class*, *perfectly curated*, *exceptional*, *luxurious* sound natural to Karen's voice — use them when they fit the moment. The goal isn't to scrub the prose of glamour; it's to pair the glamour with concrete observation so it doesn't read as empty marketing.
+- **American English.** Use *neighborhood, center, traveler, gray, meters, recognized, color, program, optimize, summarize, prioritize*. Not the British forms — Karen is American.
+- **Concrete details earn the adjectives.** Name the architect. Name the year. Name the chef, the neighborhood, the local brand. "A stunning lobby of salvaged 17th-century stonework" works because the *salvaged 17th-century stonework* anchors the *stunning*. "Stunning lobby" alone does not.
+- **Focus on aesthetic and atmosphere, not inventory.** Talk about the feeling, the palette, the light, the design sensibility — not a checklist of furniture or fixtures. "The suite read like a private library — dark beamed ceilings, deep leather, the kind of low light that makes you want to stay in" is the register. Avoid item-by-item enumeration ("the bed, the chair, the trunk, the desk, the curtains, the bathroom").
+- **Restraint with adjectives even in PR mode.** One or two strong adjectives per noun, max. Stacking them ("stunning, exquisite, breathtaking") dilutes the effect.
 
 ## Required structure
 
@@ -32,13 +33,13 @@ Every hotel review must have these sections in this order. Section headings are 
 
 1. **Lead image + opening section** — a hero `[!IMG]` block followed by a `##` heading like "A building that should not exist" (or whatever is the hotel's defining tension/story). Open with **why this hotel exists at all** — its origin, its building, its preservation history, its founder. Hotels are objects with histories; treat them that way. This section should run 2–3 paragraphs and feel like an essay opening, not a check-in summary.
 
-2. **The rooms** — `## The rooms`. One full-width `[!GRID]` block (image right, text left) and one `[!GRID-LEFT]` block (image left, text right) showing two different room views. Describe materials, light, sleep quality, what is on the desk, what the linen feels like. End with a sentence on the city's particular atmospheric quirk (altitude, humidity, ocean air) and how the room handles it.
+2. **The rooms** — `## The rooms`. One full-width `[!GRID]` block (image right, text left) and one `[!GRID-LEFT]` block (image left, text right) showing two different room views. Focus on **overall aesthetic and atmosphere**: the design sensibility (mid-century, colonial, minimalist, maximalist, etc.), the color palette, the quality of light, the mood. Do *not* enumerate every item in the room (bed, desk, chair, lamp, trunk, drapes). Skip the bathroom entirely — no plumbing, no toiletries, no tile. End with a sentence on the city's atmospheric quirk (altitude, humidity, ocean air) and how the room's design responds to it.
 
 3. **Wellness** — *mandatory*, never skip. `## Wellness` or a contextual title ("The wellness hour", "Below ground", etc.). Spa, treatments, pool, hammam, gym, anything ritual. Use one `[!HIGHLIGHT label="..." text="..."]` block to spotlight the signature treatment or ritual, with treatment name, duration, what it actually does, and why it's tied to this place (local coffee, local salt, local herbs, local water).
 
-4. **Food** — *mandatory*. `## Food` (or restaurant name as heading). Cover: the hotel's main restaurant, the bar, breakfast, and any standout in-room moment. Name the chef if notable, name dishes specifically, note the wine/spirit programme if relevant. One `[!IMG]` of food or interior. A second `[!HIGHLIGHT]` block can spotlight one dish or a tasting menu pairing.
+4. **Food** — *mandatory*. `## Food` (or restaurant name as heading). Cover: the hotel's main restaurant, the bar, breakfast, and any standout in-room moment. Name the chef if notable, name dishes specifically, note the wine/spirit program if relevant. One `[!IMG]` of food or interior. A second `[!HIGHLIGHT]` block can spotlight one dish or a tasting menu pairing.
 
-5. **Beyond the hotel** — *mandatory*. `## Beyond the hotel` or `## The neighbourhood` or similar. 3–6 specific things to do in the destination that Karen would actually prioritise, with neighbourhood context. Examples: a museum + which floor to skip to; a coffee bar + what to order; a walk + the time of day; a market + the stall. Use `[!COLLAGE]` for a 3-image grid of the destination if photos exist. Each item is a short paragraph or bulleted under bolded sub-headings — be specific, no generic "Visit the cathedral" entries.
+5. **Beyond the hotel** — *mandatory*. `## Beyond the hotel` or `## The neighborhood` or similar. 3–6 specific things to do in the destination that Karen would actually prioritize, with neighborhood context. Examples: a museum + which floor to skip to; a coffee bar + what to order; a walk + the time of day; a market + the stall. Use `[!COLLAGE]` for a 3-image grid of the destination if photos exist. Each item is a short paragraph or bulleted under bolded sub-headings — be specific, no generic "Visit the cathedral" entries.
 
 6. **A practical note** — `## A practical note` or `## The logistics`. 4–8 lines of practical detail: how to arrive (altitude warning, jet lag, ground transfer), best season, best room category, what to book in advance, dress code if any, dietary heads-up.
 
@@ -74,7 +75,7 @@ Every hotel review ends with an interactive map of the destination, pinned with 
 
 1. Read `src/components/BogotaMap.tsx` start to finish — it's the reference.
 2. Copy to `src/components/<City>Map.tsx`. Keep the **interactivity contract**: pan (pointer drag), zoom (wheel + pinch, 1×–4×), `+ / – / Reset` buttons, click-pin → popover, Escape to close, pulsing active-pin ring.
-3. Replace the SVG layer with a hand-illustrated outline of the destination's recognisable shape (neighbourhood blocks, harbour, river, mountain ridge — whatever defines it visually). Cream / lilac palette to match the site (`var(--ka-bg)`, `var(--ka-accent-deep)`).
+3. Replace the SVG layer with a hand-illustrated outline of the destination's recognisable shape (neighborhood blocks, harbour, river, mountain ridge — whatever defines it visually). Cream / lilac palette to match the site (`var(--ka-bg)`, `var(--ka-accent-deep)`).
 4. Define the `LOCATIONS` array: `{ id, name, subLabel, description, x, y }`. Each `description` is 1–2 short sentences — what it is, why it matters. The hotel goes first.
 5. Wire the block in `src/app/(public)/journal/[slug]/page.tsx`: add a renderer branch for `[!MAP-<CITY>]` that imports `<City>Map`.
 6. Verify locally before inserting it into the post body.
@@ -95,7 +96,7 @@ Every hotel review row in `blog_posts` must have **all** of these populated befo
 | `hero_image` | Full URL, **vertical 4:5 crop**. This image is also pulled into the homepage hero feature slot — landscape will look wrong. Upload a vertical option to `/admin/photos` if needed |
 | `hero_alt` | Specific, descriptive, mentions the hotel + visible subject. SEO + accessibility |
 | `seo_title` | 50–60 chars. Can mirror `title` or be punchier. Include hotel name + city |
-| `seo_description` | 140–160 chars. Promise + payoff. Mention hotel, city, neighbourhood, and one specific lure (spa, suite, neighbourhood) |
+| `seo_description` | 140–160 chars. Promise + payoff. Mention hotel, city, neighborhood, and one specific lure (spa, suite, neighborhood) |
 | `focus_keyword` | Hotel name in canonical form. `"Four Seasons Casa Medina"`, `"Aman Tokyo"`. The post body and seo_title must use this string verbatim at least once |
 | `key_takeaway` | 1–2 sentences answering "if I only read one paragraph, what do I learn?" This powers the AI-overview / Google generative answers — write it for an LLM summary as much as a human skim |
 | `og_image` | Full URL, 1.91:1 aspect. Can be the hero re-cropped or a different hero shot. Used for Twitter / Open Graph / link unfurls |
@@ -107,8 +108,8 @@ Every hotel review row in `blog_posts` must have **all** of these populated befo
 
 LLM-driven search is now a meaningful traffic source. Optimize for both:
 
-- **Concrete facts up front**: founding year, architect, room count, neighbourhood, altitude/elevation, distinguishing physical feature. AI overviews extract these eagerly.
-- **Named entities**: name the architect, the chef, the spa programme, the local brand (Loto del Sur, etc.). Entities are how LLMs link your content to wider knowledge graphs.
+- **Concrete facts up front**: founding year, architect, room count, neighborhood, altitude/elevation, distinguishing physical feature. AI overviews extract these eagerly.
+- **Named entities**: name the architect, the chef, the spa program, the local brand (Loto del Sur, etc.). Entities are how LLMs link your content to wider knowledge graphs.
 - **Q-and-A patterns** in the body: "Why does it matter?" / "What is the signature treatment?" / "How does the room handle the altitude?" — phrase observations as if answering a search question, even when prose-wrapped.
 - **FAQ block** (`faq_items` JSONB column): include 3–5 Q&A pairs. Examples:
   - "What is the best room category at [hotel]?"
@@ -156,8 +157,10 @@ After inserting, tell Karen:
 - Generic Google-Maps screenshot or static image of a map — must be the interactive React component.
 - Body text written as Q&A formatting (use prose; reserve Q&A for the `faq_items` JSONB).
 - Repeating the hotel name in every paragraph — vary with "the hotel," "the building," "the property" (sparingly), or just elide.
-- Calling food "delicious" or rooms "stunning." Find the specific word.
-- Closing line that summarises ("In conclusion, Aman Tokyo is…"). End on an image, a quote, a moment.
+- Item-by-item room inventories. Don't list "the bed, the lamp, the desk, the trunk, the curtains" — give the *feeling and aesthetic* of the room instead.
+- **Anything about bathrooms.** No tile, no marble, no rain shower, no toiletries, no double vanity. Skip it entirely.
+- Adjective stacking — *stunning* on its own works; *stunning, exquisite, breathtaking* in a row reads as desperate.
+- Closing line that summarizes ("In conclusion, Aman Tokyo is…"). End on an image, a quote, a moment.
 
 ## Checklist before declaring done
 
