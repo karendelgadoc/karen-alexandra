@@ -54,18 +54,13 @@ export default function Footer() {
           <h4>Elsewhere</h4>
           <ul>
             <li>
-              <a href="https://www.instagram.com/karenalexandrac" target="_blank" rel="noopener noreferrer">
-                Instagram
+              <a href="https://www.youtube.com/@KarenAlexandra" target="_blank" rel="noopener noreferrer">
+                YouTube
               </a>
             </li>
             <li>
               <a href="https://www.pinterest.com/karenalexandra__/" target="_blank" rel="noopener noreferrer">
                 Pinterest
-              </a>
-            </li>
-            <li>
-              <a href="https://www.youtube.com/@KarenAlexandra" target="_blank" rel="noopener noreferrer">
-                YouTube
               </a>
             </li>
             <li>
