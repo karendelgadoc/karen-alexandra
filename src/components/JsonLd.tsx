@@ -36,7 +36,7 @@ export function personSchema() {
     sameAs: [
       "https://www.instagram.com/karenalexandrac",
       "https://www.pinterest.com/karenalexandra__/",
-      "https://www.youtube.com/@karenalexandrac",
+      "https://www.youtube.com/@KarenAlexandra",
     ],
     knowsAbout: [
       "Brand marketing",
@@ -62,7 +62,7 @@ export function organizationSchema() {
     sameAs: [
       "https://www.instagram.com/karenalexandrac",
       "https://www.pinterest.com/karenalexandra__/",
-      "https://www.youtube.com/@karenalexandrac",
+      "https://www.youtube.com/@KarenAlexandra",
     ],
   };
 }

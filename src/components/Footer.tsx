@@ -62,7 +62,7 @@ export default function Footer() {
               </a>
             </li>
             <li>
-              <a href="https://www.youtube.com/@karenalexandrac" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.youtube.com/@KarenAlexandra" target="_blank" rel="noopener noreferrer">
                 YouTube
               </a>
             </li>

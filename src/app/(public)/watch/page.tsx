@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getWatchContent, WATCH_DEFAULTS } from "@/lib/page-content-db";
 import { buildWatchSectionMap } from "@/components/sections/watch";
+import { getLatestVideos } from "@/lib/youtube";
 
 export const revalidate = 60;
 
@@ -10,9 +11,12 @@ export const metadata: Metadata = {
 };
 
 export default async function WatchPage() {
-  const content = await getWatchContent().catch(() => null);
+  const [content, videos] = await Promise.all([
+    getWatchContent().catch(() => null),
+    getLatestVideos(12),
+  ]);
   const c = content ?? WATCH_DEFAULTS;
-  const sectionMap = buildWatchSectionMap(c);
+  const sectionMap = buildWatchSectionMap(c, { videos });
   const order = c.sectionOrder ?? WATCH_DEFAULTS.sectionOrder;
   const hidden = new Set(c.hiddenSections ?? []);
 

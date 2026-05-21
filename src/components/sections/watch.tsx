@@ -2,14 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { WatchContent } from "@/lib/page-content-db";
+import { YT_CHANNEL_URL, type VideoCard } from "@/lib/youtube";
 
-export const VIDEOS = [
-  { title: "A week in Mykonos — villas, yacht days & the best restaurants",   category: "Travel",    length: "18:42", date: "May 2025",      views: "12.4K", image: "/photos/mykonos-infinity.jpg", summary: "A sun-soaked week navigating the island's best-kept addresses — from a clifftop villa to a yacht charter and the restaurant everyone is talking about." },
-  { title: "What I packed for Mallorca — resort wardrobe breakdown",          category: "Fashion",   length: "12:18", date: "April 2025",    views: "8.7K",  image: "/photos/mallorca-cliff.jpg",   summary: "Fourteen days, one suitcase. Every piece I brought, how I styled it and what I wished I'd left at home." },
-  { title: "Morning routine in Santorini — wellness habits I never skip",     category: "Wellness",  length: "09:55", date: "March 2025",    views: "6.1K",  image: "/photos/santorini-pool.jpg",   summary: "Sunrise, sea and a slow morning. The rituals that keep me grounded even when the backdrop is spectacular." },
-  { title: "Inside a Mykonos villa — how I find & book luxury rentals",       category: "Travel",    length: "15:30", date: "February 2025", views: "9.2K",  image: "/photos/mykonos-villa.jpg",    summary: "The exact process I use to find exceptional villas — platforms, red flags and what to ask before you book." },
-  { title: "The Marbella edit — fashion highlights from the Costa del Sol",   category: "Fashion",   length: "11:04", date: "January 2025",  views: "7.5K",  image: "/photos/marbella-beach.jpg",   summary: "Lightweight linens, the perfect swimsuit and a raffia bag you'll carry forever. The pieces I wore on repeat." },
-  { title: "Menorca — the slower island, styled",                             category: "Lifestyle", length: "14:22", date: "December 2024", views: "5.8K",  image: "/photos/menorca-village.jpg",  summary: "An island that rewards patience. Why I keep coming back, and what to do when you want nothing on the schedule." },
+// Fallback used only if the YouTube fetch returns 0 videos (rate-limit, outage, etc.)
+const FALLBACK_VIDEOS: VideoCard[] = [
+  { id: "", title: "New films coming soon", url: YT_CHANNEL_URL, thumbnail: "/photos/mykonos-infinity.jpg", category: "Film", date: "", length: "—", views: "", summary: "Karen's YouTube channel — travel, fashion and wellness films. Subscribe to be notified when new films drop." },
 ];
 
 const VIDEO_FILTERS = ["All films", "Travel", "Fashion", "Wellness", "Lifestyle"];
@@ -29,28 +26,35 @@ export function HeroSection({ c }: { c: WatchContent }) {
         <span className="ka-eyebrow" style={{ display: "block", marginBottom: "20px" }}>{c.hero.eyebrow}</span>
         <h1 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(56px, 7vw, 96px)", fontStyle: "italic", fontWeight: 400, lineHeight: 1.0, letterSpacing: "-0.02em" }}>{c.hero.headline}</h1>
       </div>
-      <a href="https://www.youtube.com/@karenalexandrac" target="_blank" rel="noopener noreferrer" className="ka-btn" style={{ flexShrink: 0 }}>YouTube Channel <span>↗</span></a>
+      <a href={YT_CHANNEL_URL} target="_blank" rel="noopener noreferrer" className="ka-btn" style={{ flexShrink: 0 }}>YouTube Channel <span>↗</span></a>
     </section>
   );
 }
 
-export function FeaturedSection({ featured }: { featured: (typeof VIDEOS)[number] }) {
+export function FeaturedSection({ featured }: { featured: VideoCard }) {
+  const stats = [featured.category, featured.date, featured.views ? `${featured.views} views` : null]
+    .filter(Boolean)
+    .join("  ·  ");
   return (
     <section style={{ background: "var(--ka-bg-soft)", padding: "64px", borderBottom: "1px solid var(--ka-line)", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "64px", alignItems: "center" }}>
-      <div style={{ aspectRatio: "16/9", position: "relative", overflow: "hidden", background: "var(--ka-sand)", cursor: "pointer" }}>
-        <Image src={featured.image} alt={featured.title} fill style={{ objectFit: "cover" }} sizes="50vw" priority />
+      <a href={featured.url} target="_blank" rel="noopener noreferrer" style={{ aspectRatio: "16/9", position: "relative", overflow: "hidden", background: "var(--ka-sand)", cursor: "pointer", display: "block" }}>
+        <Image src={featured.thumbnail} alt={featured.title} fill style={{ objectFit: "cover" }} sizes="50vw" priority unoptimized={featured.thumbnail.includes("ytimg.com")} />
         <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(10,10,10,0.2)" }}><PlayButton size={68} /></div>
         <span style={{ position: "absolute", top: "14px", left: "14px", fontFamily: "var(--ka-body)", fontSize: "9px", letterSpacing: "0.22em", textTransform: "uppercase" as const, background: "var(--ka-accent)", color: "var(--ka-ink)", padding: "4px 10px" }}>Newest</span>
-        <span style={{ position: "absolute", bottom: "12px", right: "12px", fontFamily: "var(--ka-mono)", fontSize: "10px", background: "var(--ka-ink)", color: "var(--ka-bg)", padding: "2px 7px" }}>{featured.length}</span>
-      </div>
+        {featured.length !== "—" && (
+          <span style={{ position: "absolute", bottom: "12px", right: "12px", fontFamily: "var(--ka-mono)", fontSize: "10px", background: "var(--ka-ink)", color: "var(--ka-bg)", padding: "2px 7px" }}>{featured.length}</span>
+        )}
+      </a>
       <div>
-        <span className="ka-eyebrow" style={{ display: "block", marginBottom: "12px" }}>{featured.category}&nbsp;&nbsp;·&nbsp;&nbsp;{featured.date}&nbsp;&nbsp;·&nbsp;&nbsp;{featured.views} views</span>
+        <span className="ka-eyebrow" style={{ display: "block", marginBottom: "12px" }}>{stats}</span>
         <h2 style={{ fontFamily: "var(--ka-display)", fontSize: "36px", fontStyle: "italic", fontWeight: 400, marginBottom: "20px", lineHeight: 1.15 }}>{featured.title}</h2>
-        <div style={{ background: "var(--ka-bg)", border: "1px solid var(--ka-line)", padding: "20px 24px", marginBottom: "28px" }}>
-          <span className="ka-eyebrow" style={{ display: "block", marginBottom: "8px", color: "var(--ka-accent-deep)" }}>AI · Summary</span>
-          <p style={{ fontSize: "14px", lineHeight: 1.65, color: "var(--ka-ink-soft)", fontWeight: 300 }}>{featured.summary}</p>
-        </div>
-        <a href="https://www.youtube.com/@karenalexandrac" target="_blank" rel="noopener noreferrer" className="ka-arrow-link">Watch on YouTube <span className="ka-arrow">→</span></a>
+        {featured.summary && (
+          <div style={{ background: "var(--ka-bg)", border: "1px solid var(--ka-line)", padding: "20px 24px", marginBottom: "28px" }}>
+            <span className="ka-eyebrow" style={{ display: "block", marginBottom: "8px", color: "var(--ka-accent-deep)" }}>Description</span>
+            <p style={{ fontSize: "14px", lineHeight: 1.65, color: "var(--ka-ink-soft)", fontWeight: 300 }}>{featured.summary}</p>
+          </div>
+        )}
+        <a href={featured.url} target="_blank" rel="noopener noreferrer" className="ka-arrow-link">Watch on YouTube <span className="ka-arrow">→</span></a>
       </div>
     </section>
   );
@@ -67,23 +71,25 @@ export function FiltersSection() {
   );
 }
 
-export function VideoGridSection({ rest }: { rest: (typeof VIDEOS)[number][] }) {
+export function VideoGridSection({ rest }: { rest: VideoCard[] }) {
+  if (rest.length === 0) return null;
   return (
     <section style={{ padding: "64px", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "40px" }}>
       {rest.map((v) => (
-        <Link key={v.title} href="https://www.youtube.com/@karenalexandrac" target="_blank" rel="noopener noreferrer" style={{ display: "block" }}>
+        <Link key={v.id || v.title} href={v.url} target="_blank" rel="noopener noreferrer" style={{ display: "block" }}>
           <div style={{ aspectRatio: "16/9", position: "relative", overflow: "hidden", background: "var(--ka-sand)" }}>
-            <Image src={v.image} alt={v.title} fill style={{ objectFit: "cover" }} sizes="33vw" />
+            <Image src={v.thumbnail} alt={v.title} fill style={{ objectFit: "cover" }} sizes="33vw" unoptimized={v.thumbnail.includes("ytimg.com")} />
             <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(10,10,10,0.15)" }}><PlayButton size={44} /></div>
-            <span style={{ position: "absolute", bottom: "10px", right: "10px", fontFamily: "var(--ka-mono)", fontSize: "10px", background: "var(--ka-ink)", color: "var(--ka-bg)", padding: "2px 6px" }}>{v.length}</span>
+            {v.length !== "—" && (
+              <span style={{ position: "absolute", bottom: "10px", right: "10px", fontFamily: "var(--ka-mono)", fontSize: "10px", background: "var(--ka-ink)", color: "var(--ka-bg)", padding: "2px 6px" }}>{v.length}</span>
+            )}
           </div>
           <div style={{ padding: "14px 0 0" }}>
-            <span className="ka-eyebrow">{v.category}&nbsp;&nbsp;·&nbsp;&nbsp;{v.date}</span>
+            <span className="ka-eyebrow">{[v.category, v.date].filter(Boolean).join("  ·  ")}</span>
             <p style={{ fontFamily: "var(--ka-display)", fontSize: "20px", fontStyle: "italic", marginTop: "8px", marginBottom: "10px", lineHeight: 1.2 }}>{v.title}</p>
-            <p style={{ fontSize: "12px", color: "var(--ka-muted)", lineHeight: 1.6, fontWeight: 300 }}>
-              <span style={{ fontFamily: "var(--ka-mono)", fontSize: "9px", letterSpacing: "0.1em", textTransform: "uppercase" as const }}>AI ·&nbsp;</span>
-              {v.summary}
-            </p>
+            {v.summary && (
+              <p style={{ fontSize: "12px", color: "var(--ka-muted)", lineHeight: 1.6, fontWeight: 300 }}>{v.summary}</p>
+            )}
           </div>
         </Link>
       ))}
@@ -94,15 +100,20 @@ export function VideoGridSection({ rest }: { rest: (typeof VIDEOS)[number][] }) 
 export function MetaSection() {
   return (
     <div style={{ padding: "32px 64px", borderTop: "1px solid var(--ka-line)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-      <p style={{ fontFamily: "var(--ka-mono)", fontSize: "10px", color: "var(--ka-muted)", letterSpacing: "0.08em", textTransform: "uppercase" as const }}>Video summaries are AI-generated · Content syncs automatically from YouTube</p>
-      <a href="https://www.youtube.com/@karenalexandrac" target="_blank" rel="noopener noreferrer" className="ka-arrow-link">Subscribe <span className="ka-arrow">→</span></a>
+      <p style={{ fontFamily: "var(--ka-mono)", fontSize: "10px", color: "var(--ka-muted)", letterSpacing: "0.08em", textTransform: "uppercase" as const }}>Films sync automatically from YouTube · @KarenAlexandra</p>
+      <a href={YT_CHANNEL_URL} target="_blank" rel="noopener noreferrer" className="ka-arrow-link">Subscribe <span className="ka-arrow">→</span></a>
     </div>
   );
 }
 
-export function buildWatchSectionMap(c: WatchContent): Record<string, ReactNode> {
-  const featured = VIDEOS[0];
-  const rest = VIDEOS.slice(1);
+export interface WatchExtraProps {
+  videos: VideoCard[];
+}
+
+export function buildWatchSectionMap(c: WatchContent, extra: WatchExtraProps): Record<string, ReactNode> {
+  const videos = extra.videos.length > 0 ? extra.videos : FALLBACK_VIDEOS;
+  const featured = videos[0];
+  const rest = videos.slice(1);
   return {
     "hero":       <HeroSection c={c} />,
     "featured":   <FeaturedSection featured={featured} />,

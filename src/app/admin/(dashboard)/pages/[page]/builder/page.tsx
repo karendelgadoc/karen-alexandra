@@ -23,6 +23,7 @@ import { buildWatchSectionMap }     from "@/components/sections/watch";
 import { buildAboutSectionMap }     from "@/components/sections/about";
 import { getFeaturedBlogPosts, getAllBlogPosts } from "@/lib/blog-db";
 import { getAllPosts } from "@/lib/posts-db";
+import { getLatestVideos } from "@/lib/youtube";
 import PageBuilder from "./PageBuilder";
 
 export const dynamic = "force-dynamic";
@@ -60,9 +61,12 @@ async function buildSections(page: PageKey) {
       return { c, sectionMap: buildContactSectionMap(c), defaults: CONTACT_DEFAULTS };
     }
     case "watch": {
-      const content = await getWatchContent().catch(() => null);
+      const [content, videos] = await Promise.all([
+        getWatchContent().catch(() => null),
+        getLatestVideos(12),
+      ]);
       const c = content ?? WATCH_DEFAULTS;
-      return { c, sectionMap: buildWatchSectionMap(c), defaults: WATCH_DEFAULTS };
+      return { c, sectionMap: buildWatchSectionMap(c, { videos }), defaults: WATCH_DEFAULTS };
     }
   }
 }

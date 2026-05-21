@@ -18,7 +18,7 @@ const securityHeaders = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "img-src 'self' data: blob: https://*.insforge.app https://*.insforge.dev https://karenalexandra.com",
+      "img-src 'self' data: blob: https://*.insforge.app https://*.insforge.dev https://karenalexandra.com https://i.ytimg.com https://*.ytimg.com",
       "font-src 'self' https://fonts.gstatic.com",
       "connect-src 'self' https://*.insforge.app https://accounts.google.com",
       "frame-src 'none'",
@@ -48,6 +48,8 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "karenalexandra.com" },
       { protocol: "https", hostname: "*.insforge.app" },
       { protocol: "https", hostname: "*.insforge.dev" },
+      { protocol: "https", hostname: "i.ytimg.com" },
+      { protocol: "https", hostname: "*.ytimg.com" },
     ],
   },
 };
