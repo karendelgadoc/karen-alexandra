@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
+import { compressImageForUpload, formatBytes } from "@/lib/image-compress";
 
 interface Photo {
   id: string;
@@ -71,14 +72,41 @@ export default function PhotoGallery({ initialPhotos, adminKey }: Props) {
     const uploaded: Photo[] = [];
 
     for (const file of Array.from(files)) {
-      if (!file.type.startsWith("image/")) continue;
-      if (file.size > 20 * 1024 * 1024) {
-        setUploadError(`${file.name} exceeds 20 MB limit`);
+      if (!file.type.startsWith("image/")) {
+        setUploadError(`${file.name} is not an image (type: ${file.type || "unknown"}). Skipped.`);
         continue;
       }
+      if (file.size > 50 * 1024 * 1024) {
+        setUploadError(`${file.name} is ${formatBytes(file.size)} — larger than 50 MB. Compress or resize before uploading.`);
+        continue;
+      }
+
+      // Browser-side compression. Vercel serverless functions cap the request
+      // body at ~4.5 MB, so anything bigger than that uploaded raw will fail
+      // with a 413 BEFORE hitting our route. Compress here first.
+      let toUpload = file;
+      try {
+        const result = await compressImageForUpload(file);
+        toUpload = result.file;
+        if (result.warning) {
+          // Non-fatal — note it but try the upload anyway.
+          console.warn(`[upload] ${file.name}: ${result.warning}`);
+        }
+        if (toUpload.size > 4.4 * 1024 * 1024) {
+          setUploadError(
+            `${file.name} is still ${formatBytes(toUpload.size)} after compression — too large for the upload limit. ` +
+            (result.warning ?? "Try a smaller image, or convert HEIC to JPEG first.")
+          );
+          continue;
+        }
+      } catch (e) {
+        setUploadError(`Compression failed for ${file.name}: ${e instanceof Error ? e.message : "unknown"}. Skipped.`);
+        continue;
+      }
+
       try {
         const fd = new FormData();
-        fd.append("file", file);
+        fd.append("file", toUpload);
         const res = await fetch("/api/admin/photos/upload", {
           method: "POST",
           headers: { "x-admin-key": adminKey },
@@ -86,7 +114,12 @@ export default function PhotoGallery({ initialPhotos, adminKey }: Props) {
         });
         if (!res.ok) {
           const errBody = await res.json().catch(() => ({}));
-          throw new Error(errBody.error ?? `Upload failed (${res.status})`);
+          const detail = errBody.error
+            ? errBody.error
+            : res.status === 413
+            ? `request body too large (uploaded ${formatBytes(toUpload.size)})`
+            : `HTTP ${res.status}`;
+          throw new Error(`${file.name}: ${detail}`);
         }
         const photo = await res.json();
         uploaded.push(photo);

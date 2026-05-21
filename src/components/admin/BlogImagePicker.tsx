@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { compressImageForUpload, formatBytes } from "@/lib/image-compress";
 
 interface Photo {
   id: string;
@@ -41,17 +42,43 @@ export default function BlogImagePicker({ open, onClose, onPick }: Props) {
     setError(null);
     let lastUploaded: Photo | null = null;
     for (const file of Array.from(files)) {
-      if (!file.type.startsWith("image/")) continue;
+      if (!file.type.startsWith("image/")) {
+        setError(`${file.name} is not an image (type: ${file.type || "unknown"}).`);
+        continue;
+      }
+
+      // Compress client-side to stay under Vercel's ~4.5 MB body limit.
+      let toUpload = file;
+      try {
+        const result = await compressImageForUpload(file);
+        toUpload = result.file;
+        if (toUpload.size > 4.4 * 1024 * 1024) {
+          setError(
+            `${file.name} is still ${formatBytes(toUpload.size)} after compression. ` +
+            (result.warning ?? "Try a smaller image, or convert HEIC to JPEG first.")
+          );
+          continue;
+        }
+      } catch (e) {
+        setError(`Compression failed for ${file.name}: ${e instanceof Error ? e.message : "unknown"}.`);
+        continue;
+      }
+
       try {
         const fd = new FormData();
-        fd.append("file", file);
+        fd.append("file", toUpload);
         const res = await fetch("/api/admin/photos/upload", {
           method: "POST",
           body: fd,
         });
         if (!res.ok) {
           const err = await res.json().catch(() => ({}));
-          throw new Error(err.error ?? "Upload failed");
+          const detail = err.error
+            ? err.error
+            : res.status === 413
+            ? `request body too large (uploaded ${formatBytes(toUpload.size)})`
+            : `HTTP ${res.status}`;
+          throw new Error(`${file.name}: ${detail}`);
         }
         lastUploaded = await res.json();
         if (lastUploaded) setPhotos((prev) => [lastUploaded as Photo, ...prev]);

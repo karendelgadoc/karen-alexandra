@@ -43,15 +43,16 @@ next-env.d.ts
 # large media archives
 uploads.zip
 
-# claude memory
-.claude/
+# claude memory (everything under .claude/ EXCEPT shared skills)
+.claude/*
+!.claude/skills/
+.claude/skills/*/.*
 
-# InsForge & AI agent skills
+# Other AI agent caches/configs (but Claude skills ARE tracked; see above)
 .insforge
 .agent
 .agents
 .augment
-.claude
 .cline
 .github/copilot*
 .kilocode
