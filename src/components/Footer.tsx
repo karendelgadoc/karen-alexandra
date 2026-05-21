@@ -37,7 +37,7 @@ export default function Footer() {
 
         {/* Collaborate */}
         <div>
-          <h4>Collaborate</h4>
+          <h4>Work</h4>
           <ul>
             <li><Link href="/portfolio">Portfolio</Link></li>
             <li><Link href="/media-kit">Media Kit</Link></li>
