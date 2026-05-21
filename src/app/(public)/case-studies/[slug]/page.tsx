@@ -204,6 +204,44 @@ export default async function CaseStudyPage({ params }: Props) {
         {post.sections.map((section, i) => renderSection(section, i))}
       </article>
 
+      {/* ── Work with Me CTA ─────────────────────────────────────────── */}
+      <div style={{ maxWidth: "820px", margin: "0 auto", padding: "0 32px 64px" }}>
+        <div className="ka-rule" style={{ marginBottom: "48px" }} />
+        <div style={{ border: "1px solid var(--ka-line)", padding: "48px 40px", textAlign: "center" }}>
+          <p className="ka-eyebrow" style={{ marginBottom: "16px" }}>Work with Me</p>
+          <h2
+            style={{
+              fontFamily: "var(--ka-display)",
+              fontWeight: 400,
+              fontSize: "clamp(28px, 4vw, 40px)",
+              marginBottom: "16px",
+            }}
+          >
+            Interested in similar work?
+          </h2>
+          <p
+            style={{
+              color: "var(--ka-ink-soft)",
+              fontSize: "15px",
+              lineHeight: 1.7,
+              maxWidth: "440px",
+              margin: "0 auto 32px",
+              fontFamily: "var(--ka-body)",
+            }}
+          >
+            I help luxury and premium fashion brands grow their e-commerce and digital presence — on retainer or project basis.
+          </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "24px", justifyContent: "center" }}>
+            <Link href="/services" className="ka-arrow-link">
+              View Services <span className="ka-arrow">→</span>
+            </Link>
+            <Link href="/contact" className="ka-arrow-link">
+              Get in Touch <span className="ka-arrow">→</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+
       {/* ── Back link ────────────────────────────────────────────────── */}
       <div style={{ maxWidth: "820px", margin: "0 auto", padding: "0 32px 80px" }}>
         <div className="ka-rule" style={{ marginBottom: "32px" }} />

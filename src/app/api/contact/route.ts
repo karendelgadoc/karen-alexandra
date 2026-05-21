@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const TO_ADDRESS = "delgado.alexandra.karen@gmail.com";
+const TO_ADDRESS = "karendelgadoc2@gmail.com";
 const FROM_ADDRESS = "Karen Alexandra <studio@karenalexandra.com>";
 
 // ── Lightweight in-memory rate limiter ────────────────────────────────────────
@@ -39,8 +39,7 @@ function escapeHtml(s: string): string {
     .replace(/'/g, "&#39;");
 }
 
-// Same-origin redirect helper. Without this an attacker can craft a Referer
-// header pointing at evil.com and use this endpoint as a phishing redirect.
+// Same-origin redirect helper
 function safeRedirectUrl(req: NextRequest, fallbackPath = "/contact"): URL {
   const base = new URL(req.url);
   const refererRaw = req.headers.get("referer");
@@ -70,8 +69,9 @@ export async function POST(req: NextRequest) {
   // ── Parse body ─────────────────────────────────────────────────────────────
   let body: Record<string, string>;
   const contentType = req.headers.get("content-type") ?? "";
+  const isJson = contentType.includes("application/json");
   try {
-    if (contentType.includes("application/json")) {
+    if (isJson) {
       body = await req.json();
     } else {
       const formData = await req.formData();
@@ -86,7 +86,9 @@ export async function POST(req: NextRequest) {
   // Honeypot — silent success
   if (body._honeypot) return NextResponse.json({ ok: true });
 
-  const { name, email, message, type, brand } = body;
+  // Support both "company" (ContactForm) and "brand" (legacy form)
+  const { name, email, message, type } = body;
+  const company = body.company || body.brand || "";
 
   // ── Validation ────────────────────────────────────────────────────────────
   if (!name?.trim() || !email?.trim() || !message?.trim()) {
@@ -96,13 +98,12 @@ export async function POST(req: NextRequest) {
     );
   }
   if (name.length > 200 || email.length > 320 || message.length > 10_000 ||
-      (brand?.length ?? 0) > 200 || (type?.length ?? 0) > 100) {
+      company.length > 200 || (type?.length ?? 0) > 100) {
     return NextResponse.json({ error: "One or more fields are too long." }, { status: 400 });
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return NextResponse.json({ error: "Invalid email address." }, { status: 400 });
   }
-  // Prevent CRLF in name/email — protects against any downstream header injection
   if (/[\r\n]/.test(email) || /[\r\n]/.test(name)) {
     return NextResponse.json({ error: "Invalid characters in name or email." }, { status: 400 });
   }
@@ -114,7 +115,7 @@ export async function POST(req: NextRequest) {
   // ── Build HTML email — ALL user input is HTML-escaped ────────────────────
   const html = `
     <p><strong>From:</strong> ${escapeHtml(name)} &lt;${escapeHtml(email)}&gt;</p>
-    ${brand ? `<p><strong>Brand / Publication:</strong> ${escapeHtml(brand)}</p>` : ""}
+    ${company ? `<p><strong>Brand / Company:</strong> ${escapeHtml(company)}</p>` : ""}
     ${type ? `<p><strong>Inquiry type:</strong> ${escapeHtml(type)}</p>` : ""}
     <hr/>
     <p style="white-space:pre-wrap">${escapeHtml(message)}</p>
@@ -137,6 +138,10 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // JSON clients (ContactForm) get a JSON response; HTML form submissions get a redirect
+  if (isJson) {
+    return NextResponse.json({ ok: true });
+  }
   const url = safeRedirectUrl(req, "/contact");
   url.searchParams.set("sent", "1");
   return NextResponse.redirect(url.toString(), { status: 303 });

@@ -223,9 +223,10 @@ export const MENU_DEFAULTS: MenuContent = {
     { label: "Case Studies", href: "/case-studies" },
   ],
   rightLinks: [
-    { label: "Watch",   href: "/watch" },
-    { label: "About",   href: "/about" },
-    { label: "Contact", href: "/contact" },
+    { label: "Services", href: "/services" },
+    { label: "Watch",    href: "/watch" },
+    { label: "About",    href: "/about" },
+    { label: "Contact",  href: "/contact" },
   ],
 };
 

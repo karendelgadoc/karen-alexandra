@@ -77,9 +77,38 @@ export default async function BlogPostPage({ params }: Props) {
         </div>
       </article>
 
+      {/* Work with Me CTA */}
+      <div className="max-w-2xl mx-auto px-6 pb-4">
+        <hr className="border-[var(--beige)] mb-12" />
+        <div className="border border-[var(--beige)] p-10 text-center space-y-5">
+          <p className="text-xs tracking-[0.3em] uppercase text-[var(--taupe)]">
+            Work with Me
+          </p>
+          <h2 className="text-2xl font-light">
+            Interested in a collaboration?
+          </h2>
+          <p className="text-sm text-[var(--muted)] leading-relaxed max-w-sm mx-auto">
+            I partner with luxury and premium lifestyle brands on blog, YouTube, and social — and work with fashion brands on e-commerce strategy.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
+            <Link
+              href="/services"
+              className="text-xs tracking-[0.2em] uppercase border border-[var(--charcoal)] px-8 py-3 hover:bg-[var(--charcoal)] hover:text-[var(--cream)] transition-colors"
+            >
+              View Services
+            </Link>
+            <Link
+              href="/contact"
+              className="text-xs tracking-[0.2em] uppercase bg-[var(--charcoal)] text-[var(--cream)] px-8 py-3 hover:bg-[var(--taupe)] transition-colors"
+            >
+              Get in Touch
+            </Link>
+          </div>
+        </div>
+      </div>
+
       {/* Back link */}
-      <div className="max-w-2xl mx-auto px-6 pb-20">
-        <hr className="border-[var(--beige)] mb-10" />
+      <div className="max-w-2xl mx-auto px-6 pb-20 pt-10">
         <Link
           href="/blog"
           className="text-xs tracking-[0.2em] uppercase text-[var(--taupe)] hover:text-[var(--charcoal)] transition-colors"
