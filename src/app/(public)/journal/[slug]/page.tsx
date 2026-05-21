@@ -184,21 +184,29 @@ export default async function JournalPostPage({ params }: Props) {
               );
             }
 
-            // [!GRID src="…" alt="…" text="…"]
+            // [!GRID src="…" alt="…" text="…" caption="…"]
             // Right-aligned image, text to the left — editorial asymmetric layout
             if (para.startsWith("[!GRID")) {
               const src = para.match(/src="([^"]+)"/)?.[1];
               const alt = para.match(/alt="([^"]+)"/)?.[1] ?? "";
               const text = para.match(/text="([^"]+)"/)?.[1] ?? "";
+              const caption = para.match(/caption="([^"]+)"/)?.[1];
               if (!src) return null;
               return (
-                <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px", alignItems: "start", margin: "24px -32px", padding: "0 32px" }}>
-                  <p style={{ fontSize: 18, lineHeight: 1.75, color: "var(--ka-ink-soft)", fontWeight: 300, fontFamily: "var(--ka-display)", fontStyle: "italic", margin: 0 }}>
-                    {text}
-                  </p>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={src} alt={alt} style={{ width: "100%", height: "auto", display: "block" }} loading="lazy" />
-                </div>
+                <figure key={i} style={{ margin: "24px -32px" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px", alignItems: "start", padding: "0 32px" }}>
+                    <p style={{ fontSize: 18, lineHeight: 1.75, color: "var(--ka-ink-soft)", fontWeight: 300, fontFamily: "var(--ka-display)", fontStyle: "italic", margin: 0 }}>
+                      {text}
+                    </p>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={src} alt={alt} style={{ width: "100%", height: "auto", display: "block" }} loading="lazy" />
+                  </div>
+                  {caption && (
+                    <figcaption style={{ padding: "10px 32px 0", fontSize: 12, color: "var(--ka-muted)", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "var(--ka-body)" }}>
+                      {caption}
+                    </figcaption>
+                  )}
+                </figure>
               );
             }
 
