@@ -29,12 +29,20 @@ export default function Footer() {
           <h4>Explore</h4>
           <ul>
             <li><Link href="/">Home</Link></li>
-            <li><Link href="/portfolio">Portfolio</Link></li>
-            <li><Link href="/case-studies">Case Studies</Link></li>
-            <li><Link href="/services">Services</Link></li>
-            <li><Link href="/media-kit">Media Kit</Link></li>
             <li><Link href="/journal">Journal</Link></li>
             <li><Link href="/watch">Watch</Link></li>
+            <li><Link href="/contact">Contact</Link></li>
+          </ul>
+        </div>
+
+        {/* Collaborate */}
+        <div>
+          <h4>Collaborate</h4>
+          <ul>
+            <li><Link href="/portfolio">Portfolio</Link></li>
+            <li><Link href="/media-kit">Media Kit</Link></li>
+            <li><Link href="/services">Services</Link></li>
+            <li><Link href="/case-studies">Case Studies</Link></li>
           </ul>
         </div>
 
