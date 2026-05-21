@@ -38,8 +38,13 @@ export async function POST(request: NextRequest) {
 
   let userEmail: string | null = null;
   try {
+    // isServerMode: true is REQUIRED here. Without it, getCurrentUser()
+    // reads from tokenManager.getSession() (browser sessionStorage), which
+    // is empty in a Node route → returns { user: null }. Server mode makes
+    // it hit /api/auth/sessions/current with the bearer token directly.
     const insforge = createClient({
       baseUrl: process.env.NEXT_PUBLIC_INSFORGE_URL,
+      isServerMode: true,
     });
     insforge.setAccessToken(token);
     const { data, error } = await insforge.auth.getCurrentUser();
