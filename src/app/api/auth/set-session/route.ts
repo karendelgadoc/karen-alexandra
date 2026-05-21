@@ -28,25 +28,43 @@ export async function POST(request: NextRequest) {
   // Previously this endpoint accepted ANY string as `token` and set it as the
   // admin cookie. The middleware only checks for cookie *presence*, so anyone
   // could POST `{ "token": "x" }` and become admin.
+  if (!process.env.NEXT_PUBLIC_INSFORGE_URL) {
+    console.error("[set-session] NEXT_PUBLIC_INSFORGE_URL env var not set");
+    return NextResponse.json(
+      { error: "Server misconfigured: NEXT_PUBLIC_INSFORGE_URL is not set" },
+      { status: 500 }
+    );
+  }
+
   let userEmail: string | null = null;
   try {
     const insforge = createClient({
-      baseUrl: process.env.NEXT_PUBLIC_INSFORGE_URL!,
+      baseUrl: process.env.NEXT_PUBLIC_INSFORGE_URL,
     });
     insforge.setAccessToken(token);
     const { data, error } = await insforge.auth.getCurrentUser();
     if (error || !data?.user?.email) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+      console.error("[set-session] getCurrentUser failed", { error, hasUser: !!data?.user });
+      return NextResponse.json(
+        { error: `Token verification failed: ${error?.message ?? "no user returned"}` },
+        { status: 401 }
+      );
     }
     userEmail = String(data.user.email).toLowerCase();
-  } catch {
-    return NextResponse.json({ error: "Could not verify token" }, { status: 401 });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("[set-session] verification threw", msg);
+    return NextResponse.json(
+      { error: `Could not verify token: ${msg}` },
+      { status: 401 }
+    );
   }
 
   // Email allowlist — even a valid Google sign-in must match an admin email
   if (!userEmail || !ADMIN_EMAILS.includes(userEmail)) {
+    console.warn("[set-session] email not on allowlist", { userEmail, allowlist: ADMIN_EMAILS });
     return NextResponse.json(
-      { error: "This account is not authorized for admin access." },
+      { error: `Account ${userEmail ?? "(unknown)"} is not on the admin allowlist. Allowed: ${ADMIN_EMAILS.join(", ")}` },
       { status: 403 }
     );
   }

@@ -26,8 +26,19 @@ export default function AuthCallbackPage() {
       const code = params.get("insforge_code") ?? params.get("code");
       const codeVerifier = getCookie("pkce_verifier") ?? undefined;
 
+      const oauthError = params.get("error") ?? params.get("error_description");
+      if (oauthError) {
+        setError(`Google sign-in was cancelled or failed: ${oauthError}`);
+        return;
+      }
+
       if (!code) {
-        setError("No authorization code received.");
+        setError("No authorization code received from Google. Try signing in again.");
+        return;
+      }
+
+      if (!codeVerifier) {
+        setError("Login session expired (no PKCE verifier cookie). Please try signing in again.");
         return;
       }
 
@@ -45,7 +56,11 @@ export default function AuthCallbackPage() {
       );
 
       if (exchangeError || !data?.accessToken) {
-        setError(exchangeError?.message ?? "Authentication failed.");
+        setError(
+          exchangeError?.message
+            ? `OAuth code exchange failed: ${exchangeError.message}`
+            : "OAuth code exchange returned no access token. The code may have expired — try again."
+        );
         return;
       }
 
@@ -59,7 +74,20 @@ export default function AuthCallbackPage() {
         body: JSON.stringify({ token: data.accessToken }),
       });
       if (!res.ok) {
-        setError("Failed to establish session.");
+        let serverMsg = `HTTP ${res.status}`;
+        try {
+          const body = await res.json();
+          if (body?.error) serverMsg = String(body.error);
+        } catch {
+          // ignore — keep status-code message
+        }
+        if (res.status === 403) {
+          setError(`Not authorized: ${serverMsg}. Your Google account email isn't on the admin allowlist.`);
+        } else if (res.status === 401) {
+          setError(`Token rejected by server: ${serverMsg}. The access token may have expired.`);
+        } else {
+          setError(`Failed to establish session (${res.status}): ${serverMsg}`);
+        }
         return;
       }
 
