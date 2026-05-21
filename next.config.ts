@@ -18,7 +18,7 @@ const securityHeaders = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://assets.calendly.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://assets.calendly.com",
-      "img-src 'self' data: blob: https://*.insforge.app https://*.insforge.dev https://karenalexandra.com https://i.ytimg.com https://*.ytimg.com https://assets.calendly.com",
+      "img-src 'self' data: blob: https://*.insforge.app https://*.insforge.dev https://karenalexandra.com https://i.ytimg.com https://*.ytimg.com https://assets.calendly.com https://www.dior.com https://*.dior.com https://cdn.mos.cms.futurecdn.net https://www.businesstoday.com.my https://api.factmagazines.com https://cms.factmagazines.com",
       "font-src 'self' https://fonts.gstatic.com",
       "connect-src 'self' https://*.insforge.app https://accounts.google.com https://calendly.com https://api.calendly.com",
       "frame-src https://calendly.com",
@@ -50,6 +50,9 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "*.insforge.dev" },
       { protocol: "https", hostname: "i.ytimg.com" },
       { protocol: "https", hostname: "*.ytimg.com" },
+      { protocol: "https", hostname: "www.dior.com" },
+      { protocol: "https", hostname: "api.factmagazines.com" },
+      { protocol: "https", hostname: "cdn.mos.cms.futurecdn.net" },
     ],
   },
 };
