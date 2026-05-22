@@ -100,7 +100,7 @@ export function FeaturedStoriesSection({ featuredPosts }: { featuredPosts: Featu
   return (
     <section style={{ padding: "96px 0" }}>
       <KaSectionHead num="01" title="From the Journal" href="/journal" />
-      <div style={{ display: "grid", gridTemplateColumns: "5fr 4fr 4fr", gap: "2px", padding: "0 64px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "5fr 4fr 4fr", gap: "40px", padding: "0 64px" }}>
         {posts.map((post, i) => (
           <Link key={post.slug + i} href={`/journal/${post.slug}`} className="group" style={{ display: "block" }}>
             <div style={{ aspectRatio: i === 0 ? "5/6" : "4/5", position: "relative", overflow: "hidden", background: "var(--ka-sand)" }}>

@@ -46,7 +46,7 @@ export function BioSection({ c }: { c: AboutContent }) {
             Most recently, I co-founded{" "}
             <span className="text-[var(--charcoal)] font-medium">Mia The New Yorker</span>, a Peruvian-inspired fashion e-commerce brand launched October 2024. I led buying, digital merchandising, and Shopify store management — translating traditional merchandising principles into a data-driven digital environment.
           </p>
-          <p>Today I bring this cross-industry expertise to tech and travel companies, helping brands build authentic digital presences that convert.</p>
+          <p>Today I bring this cross-industry expertise to luxury and premium fashion brands, helping them build authentic digital presences that convert — from e-commerce strategy to brand partnerships that resonate.</p>
           <div className="pt-4">
             <Link href="/contact" className="text-xs tracking-[0.2em] uppercase border border-[var(--charcoal)] px-8 py-3 hover:bg-[var(--charcoal)] hover:text-[var(--cream)] transition-colors inline-block">
               Work with Me
