@@ -19,7 +19,7 @@ const COLLAGE_POSITIONS = [
   { col: "1 / 6", row: "1", aspect: "5/6", mt: 0 },
   { col: "6 / 10", row: "1", aspect: "4/5", mt: 0 },
   { col: "10 / 13", row: "1 / 3", aspect: "3/4", mt: 0 },
-  { col: "2 / 6", row: "2 / 4", aspect: "5/6", mt: -60 },
+  { col: "2 / 6", row: "2 / 4", aspect: "5/6", mt: 0 },
   { col: "6 / 10", row: "2", aspect: "5/4", mt: 0 },
   { col: "1 / 4", row: "3", aspect: "4/5", mt: 0 },
   { col: "7 / 11", row: "3", aspect: "4/5", mt: 0 },
@@ -268,6 +268,7 @@ export default async function JournalPage({
               display: "grid",
               gridTemplateColumns: "repeat(12, 1fr)",
               gap: "24px",
+              alignItems: "start",
             }}
           >
             {collapsePosts.map((post, i) => (
