@@ -35,7 +35,6 @@ const nextConfig: NextConfig = {
     return [
       { source: "/blog", destination: "/journal", permanent: true },
       { source: "/blog/:slug", destination: "/journal/:slug", permanent: true },
-      { source: "/about", destination: "/portfolio", permanent: true },
     ];
   },
 

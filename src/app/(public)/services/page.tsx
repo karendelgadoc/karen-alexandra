@@ -73,9 +73,8 @@ const SV_CASE_LINKS = [
 ];
 
 const SV_TESTIMONIALS = [
-  { q: "Karen reshaped how we thought about our direct storefront for the next three years — slowly, with conviction.",             who: "— Founder, Glent Shoes" },
-  { q: "The rare voice brands actually want to be edited by. Sharper, slower, entirely her own.",                                   who: "— Communications Director, Aman Resorts" },
-  { q: "Six months later, we still reach for the document she left us. It reads like a thesis on the brand.",                       who: "— VP Marketing, an independent house" },
+  { q: "I so appreciated your time! And after our call, I already got started on our new TikTok posting strategy. You're a rock star!", who: "Stacy Flax · Founder, Bored Rebel" },
+  { q: "Had an insightful and inspiring chat with Karen today. We talked about my marketing strategy, pivots to a new ideal client, and emerging trends. I highly recommend connecting with her if you're looking to scale or pivot — her expertise in brand marketing and her kindness are off the charts!", who: "Sandra Kaye · Consulting client" },
 ];
 
 const SV_FAQ = [

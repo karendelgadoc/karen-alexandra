@@ -1098,8 +1098,8 @@ img {
 }
 .ka-mk-testimonials-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(40px, 6vw, 96px);
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(32px, 4vw, 64px);
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -1146,8 +1146,10 @@ img {
 }
 .ka-sv-testimonials-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(24px, 4vw, 56px);
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(32px, 5vw, 80px);
+  max-width: 1100px;
+  margin: 0 auto;
 }
 .ka-sv-cta-grid {
   display: grid;

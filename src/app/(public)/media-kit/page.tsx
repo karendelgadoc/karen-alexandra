@@ -35,8 +35,9 @@ const MK_PRESS = [
 ];
 
 const MK_TESTIMONIALS = [
-  { q: "She's the rare voice that brands actually want to be edited by — sharper, slower, and entirely her own.", who: "— Communications Director, Aman Resorts" },
-  { q: "A six-month engagement reshaped how we thought about our direct storefront for the next three years.",   who: "— Founder, Glent Shoes" },
+  { q: "Karen provides feel good content from all over the spectrum — whether it's a business hack, mindset tip, travel inspiration, or design. She knows how to capture an audience by being raw and providing insight we all love to hear.", who: "@alexmcguire · Community member" },
+  { q: "She shows up all the time and I can really relate to what she's going through and the adventures she's choosing. She is not acting for the camera — she's really sharing her journey.", who: "@elizabethmanette · Community member" },
+  { q: "She has a 'real girl in the real world' vibe, hustling to bring her dreams to fruition in true, understandable and attainable ways.", who: "@deannanfox · Community member" },
 ];
 
 const MK_SAMPLES = [
@@ -187,7 +188,7 @@ export default function MediaKitPage() {
 
       {/* Testimonials */}
       <section style={{ padding: "clamp(56px,10vw,140px) clamp(20px,5vw,64px)", textAlign: "center", borderTop: "1px solid var(--ka-line)" }}>
-        <div className="ka-eyebrow" style={{ marginBottom: 48 }}>N° 05 — Brand partners, on the work</div>
+        <div className="ka-eyebrow" style={{ marginBottom: 48 }}>N° 05 — The community, on the work</div>
         <div className="ka-mk-testimonials-grid">
           {MK_TESTIMONIALS.map((t, i) => (
             <div key={i}>
