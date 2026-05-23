@@ -219,14 +219,12 @@ export const ABOUT_DEFAULTS: AboutContent = {
 export const MENU_DEFAULTS: MenuContent = {
   leftLinks: [
     { label: "The Edit",      href: "/journal" },
-    { label: "Portfolio",    href: "/portfolio" },
-    { label: "Case Studies", href: "/case-studies" },
+    { label: "Fashion News",  href: "/fashion-news" },
+    { label: "On Film",       href: "/watch" },
   ],
   rightLinks: [
-    { label: "Services", href: "/services" },
-    { label: "On Film",  href: "/watch" },
-    { label: "About",    href: "/about" },
-    { label: "Contact",  href: "/contact" },
+    { label: "About",   href: "/about" },
+    { label: "Contact", href: "/contact" },
   ],
 };
 

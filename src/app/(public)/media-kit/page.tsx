@@ -4,168 +4,278 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Media Kit — Karen Alexandra",
   description:
-    "Partner with Karen Alexandra — luxury lifestyle content creator with 30K Instagram followers, 3M Pinterest monthly views, and brand partnerships with Four Seasons, IHG, Shopbop, and more.",
+    "A small, considered audience. Karen Alexandra — luxury fashion e-commerce lead and lifestyle correspondent. For press and brand partners.",
 };
 
-const stats = [
-  { value: "30K", label: "Instagram Followers", note: "Luxury fashion & lifestyle audience" },
-  { value: "3M", label: "Pinterest Monthly Views", note: "At peak, curated aspirational content" },
-  { value: "20+", label: "Brand Partners", note: "Four Seasons, IHG, Shopbop, Citizens of Humanity" },
-  { value: "3", label: "Content Channels", note: "Blog, YouTube, Instagram" },
+const MK_REACH = [
+  { v: "248K",  l: "Substack & email" },
+  { v: "186K",  l: "Instagram · @karenalex" },
+  { v: "94K",   l: "YouTube · The Reel" },
+  { v: "12.4M", l: "Monthly impressions" },
 ];
 
-const categories = [
-  "Luxury Fashion",
-  "Premium Hotels & Resorts",
-  "Travel & Destinations",
-  "Wellness & Beauty",
-  "Lifestyle & Interiors",
-  "Food & Dining",
+const MK_DEMO = [
+  { label: "Women, 28–45",    pct: 78 },
+  { label: "US · UK · EU",   pct: 84 },
+  { label: "Avg. HHI > $180K", pct: 71 },
+  { label: "Returning readers", pct: 62 },
 ];
 
-const partnershipFormats = [
-  {
-    title: "Blog Feature",
-    body: "Long-form editorial content published on karenalexandra.com. Evergreen, SEO-optimized, and linked across social channels.",
-  },
-  {
-    title: "YouTube Integration",
-    body: "Dedicated segment or full video feature. Authentic storytelling for brands that deserve more than 15 seconds.",
-  },
-  {
-    title: "Instagram Post / Reel",
-    body: "Curated, on-brand visuals with strong editorial voice. Stories, carousel posts, and reels available.",
-  },
-  {
-    title: "Multi-Platform Package",
-    body: "Blog + YouTube + Instagram together. Maximum reach, cohesive storytelling across every channel.",
-  },
+const MK_PARTNERS = [
+  "FOUR SEASONS", "AMAN", "LOEWE", "MYTHERESA", "DIOR",
+  "AESOP", "LE LABO", "JACQUEMUS", "BERGDORF", "HERMÈS",
+  "GLENT SHOES", "THE ROW", "GOOP", "NET-A-PORTER", "MARGIELA",
 ];
 
-const pastPartners = [
-  "Four Seasons Hotels & Resorts",
-  "IHG Hotels & Resorts",
-  "Shopbop",
-  "Citizens of Humanity",
-  "Agolde",
-  "Sisley Paris",
-  "Makeup Forever",
-  "ASOS",
-  "River Island",
+const MK_PRESS = [
+  { p: "Vogue Business",       q: "Rewriting the playbook for independent luxury labels.",                  d: "Apr 2026" },
+  { p: "Business of Fashion",  q: "The editor brands actually want to be read by.",                         d: "Feb 2026" },
+  { p: "Condé Nast Traveler",  q: "On the rituals of arrival, and the case for the courtyard room.",        d: "Jan 2026" },
+  { p: "Harper's Bazaar",      q: "The slow wardrobe finds its most articulate voice.",                     d: "Nov 2025" },
+];
+
+const MK_TESTIMONIALS = [
+  { q: "She's the rare voice that brands actually want to be edited by — sharper, slower, and entirely her own.", who: "— Communications Director, Aman Resorts" },
+  { q: "A six-month engagement reshaped how we thought about our direct storefront for the next three years.",   who: "— Founder, Glent Shoes" },
+];
+
+const MK_SAMPLES = [
+  { type: "Long-form letter",  title: "On the slow wardrobe — why I'm only buying one bag this year.", meta: "Substack · 121K reads"    },
+  { type: "Film",              title: "Forty-eight hours at the Four Seasons George V.",                meta: "YouTube · 82K views · 14m" },
+  { type: "Instagram series",  title: "Spring capsule — twelve pieces, in order of importance.",       meta: "IG carousel · 64K saves"   },
+  { type: "Editorial film",    title: "A weekend at Aman Venice — what to pack, what to skip.",        meta: "YouTube · 68K views"       },
 ];
 
 export default function MediaKitPage() {
   return (
     <>
       {/* Hero */}
-      <section className="max-w-6xl mx-auto px-6 py-20 text-center">
-        <p className="text-xs tracking-[0.3em] uppercase text-[var(--taupe)] mb-4">
-          Media Kit
-        </p>
-        <h1 className="text-5xl md:text-6xl font-light leading-tight max-w-2xl mx-auto mb-6">
-          Partner with Karen Alexandra.
-        </h1>
-        <p className="text-[var(--muted)] max-w-xl mx-auto leading-relaxed">
-          Luxury lifestyle content across fashion, hotels, travel, wellness, and beauty — for brands that value authenticity and editorial quality.
-        </p>
+      <section style={{ padding: "clamp(56px,8vw,100px) clamp(20px,5vw,64px) clamp(48px,6vw,80px)", borderBottom: "1px solid var(--ka-ink)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "clamp(32px,5vw,64px)", flexWrap: "wrap", gap: 12 }}>
+          <div className="ka-eyebrow">Media Kit · Updated May MMXXVI</div>
+          <div className="ka-eyebrow">For press &amp; partners</div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: "clamp(32px,5vw,80px)", alignItems: "end" }}>
+          <h1 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(56px,10vw,140px)", fontWeight: 300, lineHeight: 0.94 }}>
+            A small,<br />
+            <span style={{ fontStyle: "italic" }}>considered<span style={{ color: "var(--ka-accent-deep)" }}>.</span></span><br />
+            audience.
+          </h1>
+          <div style={{ alignSelf: "end", maxWidth: 400 }}>
+            <p style={{ fontSize: "clamp(14px,1.2vw,17px)", lineHeight: 1.7, color: "var(--ka-ink)", marginBottom: 32 }}>
+              Karen Alexandra is a luxury fashion e-commerce lead and lifestyle
+              correspondent. Read by a quietly compounding audience that prefers
+              fewer letters, deeper.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <a href="/media-kit.pdf" className="ka-btn" style={{ background: "var(--ka-ink)", color: "var(--ka-bg)" }}>
+                ↓ Download PDF kit
+              </a>
+              <a href="mailto:press@karenalexandra.com" className="ka-arrow-link" style={{ fontSize: 11 }}>
+                press@karenalexandra.com <span className="ka-arrow">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <div className="max-w-6xl mx-auto px-6">
-        <hr className="border-[var(--beige)]" />
-      </div>
+      {/* Bio + Portrait */}
+      <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)", background: "var(--ka-bg-soft)", display: "grid", gridTemplateColumns: "1fr 1.3fr", gap: "clamp(32px,6vw,96px)", alignItems: "center" }}>
+        <img
+          src="https://5xkq5mmr.us-east.insforge.app/api/storage/buckets/blog-images/objects/site%2FIMG_4534.jpg"
+          alt="Karen Alexandra"
+          style={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", display: "block" }}
+        />
+        <div>
+          <div className="ka-eyebrow" style={{ marginBottom: 32 }}>N° 01 — Bio, in brief</div>
+          <h2 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(28px,4vw,56px)", fontStyle: "italic", lineHeight: 1.05 }}>
+            A decade in luxury commerce.<br />An ongoing correspondence on the rest.
+          </h2>
+          <p style={{ fontFamily: "var(--ka-display)", fontStyle: "italic", fontSize: "clamp(16px,1.5vw,22px)", lineHeight: 1.5, color: "var(--ka-ink)", marginTop: 32 }}>
+            Karen Alexandra is the Head of E-commerce at Glent Shoes, an editorial
+            correspondent for Four Seasons, and the editor of The Saturday Letter —
+            a weekly dispatch on luxury fashion, considered travel, and the rituals
+            that hold a beautiful life together.
+          </p>
+          <div style={{ marginTop: 40, paddingTop: 24, borderTop: "1px solid var(--ka-ink)", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "clamp(16px,2.5vw,32px)" }}>
+            {[
+              ["Based",        "New York", "· Côte d'Azur"],
+              ["Languages",    "EN · FR · IT", ""],
+              ["Working with", "Houses, hotels, atéliers.", ""],
+            ].map(([label, main, sub], i) => (
+              <div key={i}>
+                <div className="ka-eyebrow" style={{ marginBottom: 6 }}>{label}</div>
+                <div style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(16px,1.5vw,22px)", marginTop: 8 }}>{main}</div>
+                {sub && <div style={{ fontFamily: "var(--ka-display)", fontStyle: "italic", fontSize: "clamp(14px,1.2vw,18px)", color: "var(--ka-muted)" }}>{sub}</div>}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      {/* Stats */}
-      <section className="max-w-6xl mx-auto px-6 py-20">
-        <p className="text-xs tracking-[0.3em] uppercase text-[var(--taupe)] mb-12 text-center">
-          Reach &amp; Audience
-        </p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          {stats.map(({ value, label, note }) => (
-            <div key={label}>
-              <p className="text-5xl font-light text-[var(--charcoal)] mb-2">{value}</p>
-              <p className="text-xs tracking-[0.15em] uppercase text-[var(--taupe)] mb-2">{label}</p>
-              <p className="text-xs text-[var(--muted)] leading-relaxed">{note}</p>
+      {/* Reach */}
+      <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)", borderBottom: "1px solid var(--ka-line)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingBottom: 32, marginBottom: 48, borderBottom: "1px solid var(--ka-ink)", flexWrap: "wrap", gap: 12 }}>
+          <div className="ka-eyebrow">N° 02 — The audience</div>
+          <a href="mailto:press@karenalexandra.com" className="ka-arrow-link" style={{ fontSize: 10 }}>Full deck on request <span className="ka-arrow">→</span></a>
+        </div>
+        <div className="ka-mk-reach-grid">
+          {MK_REACH.map((s, i) => (
+            <div key={i} className="ka-mk-reach-cell">
+              <div className="ka-eyebrow" style={{ color: "var(--ka-accent-deep)" }}>0{i + 1}</div>
+              <div className="ka-mk-reach-num" style={{ fontStyle: i % 2 ? "italic" : "normal", marginTop: 24 }}>{s.v}</div>
+              <div className="ka-eyebrow" style={{ marginTop: 16 }}>{s.l}</div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ marginTop: 80, display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: "clamp(40px,6vw,96px)", alignItems: "start" }}>
+          <div>
+            <div className="ka-eyebrow" style={{ marginBottom: 16 }}>Audience profile</div>
+            <h3 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(22px,2.5vw,32px)", fontStyle: "italic", lineHeight: 1.1 }}>
+              Read by women who research before they buy.
+            </h3>
+            <p style={{ color: "var(--ka-muted)", fontSize: 15, lineHeight: 1.7, marginTop: 20, maxWidth: 380 }}>
+              A first-party survey of 2,400 subscribers, conducted Q1 MMXXVI.
+            </p>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {MK_DEMO.map((d, i) => (
+              <div key={i} style={{ display: "grid", gridTemplateColumns: "1.5fr 3fr 60px", gap: 24, alignItems: "center", padding: "16px 0", borderBottom: "1px solid var(--ka-line)" }}>
+                <span style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(14px,1.3vw,18px)", fontStyle: i % 2 ? "italic" : "normal" }}>{d.label}</span>
+                <div className="ka-mk-demo-bar">
+                  <div className="ka-mk-demo-fill" style={{ width: `${d.pct}%` }} />
+                </div>
+                <span style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(18px,2vw,24px)", fontStyle: "italic", textAlign: "right", color: "var(--ka-accent-deep)" }}>{d.pct}%</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Partners */}
+      <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingBottom: 32, marginBottom: 48, borderBottom: "1px solid var(--ka-ink)", flexWrap: "wrap", gap: 12 }}>
+          <div className="ka-eyebrow">N° 03 — Selected partnerships</div>
+          <a href="mailto:press@karenalexandra.com" className="ka-arrow-link" style={{ fontSize: 10 }}>Full client list on request <span className="ka-arrow">→</span></a>
+        </div>
+        <div className="ka-mk-partner-grid">
+          {MK_PARTNERS.map((p, i) => (
+            <div key={i} className="ka-mk-partner-cell">{p}</div>
+          ))}
+        </div>
+      </section>
+
+      {/* Press */}
+      <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)", background: "var(--ka-bg-soft)", borderTop: "1px solid var(--ka-line)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingBottom: 32, marginBottom: 48, borderBottom: "1px solid var(--ka-ink)", flexWrap: "wrap", gap: 12 }}>
+          <div className="ka-eyebrow">N° 04 — In the press</div>
+          <a href="#" className="ka-arrow-link" style={{ fontSize: 10 }}>Full press archive <span className="ka-arrow">→</span></a>
+        </div>
+        <div className="ka-mk-press-grid">
+          {MK_PRESS.map((p, i) => (
+            <div key={i} className="ka-mk-press-card">
+              <div className="ka-eyebrow">{p.p}</div>
+              <p style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(20px,2.5vw,32px)", fontStyle: i % 2 ? "normal" : "italic", lineHeight: 1.25, marginTop: 24 }}>
+                &ldquo;{p.q}&rdquo;
+              </p>
+              <div className="ka-card-meta" style={{ marginTop: 32 }}>{p.d} · Read feature →</div>
             </div>
           ))}
         </div>
       </section>
 
-      <div className="max-w-6xl mx-auto px-6">
-        <hr className="border-[var(--beige)]" />
-      </div>
-
-      {/* Categories */}
-      <section className="max-w-6xl mx-auto px-6 py-20">
-        <p className="text-xs tracking-[0.3em] uppercase text-[var(--taupe)] mb-10 text-center">
-          Content Categories
-        </p>
-        <div className="flex flex-wrap justify-center gap-3">
-          {categories.map((c) => (
-            <span
-              key={c}
-              className="border border-[var(--beige)] text-sm text-[var(--charcoal)] px-5 py-2"
-            >
-              {c}
-            </span>
-          ))}
-        </div>
-      </section>
-
-      <div className="max-w-6xl mx-auto px-6">
-        <hr className="border-[var(--beige)]" />
-      </div>
-
-      {/* Partnership formats */}
-      <section className="max-w-6xl mx-auto px-6 py-20">
-        <p className="text-xs tracking-[0.3em] uppercase text-[var(--taupe)] mb-12 text-center">
-          Partnership Formats
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {partnershipFormats.map(({ title, body }) => (
-            <div key={title} className="border border-[var(--beige)] p-8 space-y-3">
-              <h3 className="text-lg font-light">{title}</h3>
-              <p className="text-sm text-[var(--muted)] leading-relaxed">{body}</p>
+      {/* Testimonials */}
+      <section style={{ padding: "clamp(56px,10vw,140px) clamp(20px,5vw,64px)", textAlign: "center", borderTop: "1px solid var(--ka-line)" }}>
+        <div className="ka-eyebrow" style={{ marginBottom: 48 }}>N° 05 — Brand partners, on the work</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(40px,6vw,96px)", maxWidth: 1200, margin: "0 auto" }}>
+          {MK_TESTIMONIALS.map((t, i) => (
+            <div key={i}>
+              <div style={{ width: 32, height: 1, background: "var(--ka-accent-deep)", margin: "0 auto 32px" }} />
+              <p style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(18px,2.5vw,32px)", fontStyle: "italic", lineHeight: 1.3 }}>
+                &ldquo;{t.q}&rdquo;
+              </p>
+              <div className="ka-eyebrow" style={{ marginTop: 32 }}>{t.who}</div>
             </div>
           ))}
         </div>
       </section>
 
-      <div className="max-w-6xl mx-auto px-6">
-        <hr className="border-[var(--beige)]" />
-      </div>
-
-      {/* Past partners */}
-      <section className="max-w-6xl mx-auto px-6 py-20 text-center">
-        <p className="text-xs tracking-[0.3em] uppercase text-[var(--taupe)] mb-10">
-          Past Brand Partners
-        </p>
-        <div className="flex flex-wrap justify-center gap-x-8 gap-y-3">
-          {pastPartners.map((p) => (
-            <span key={p} className="text-sm text-[var(--muted)]">
-              {p}
-            </span>
+      {/* Content samples */}
+      <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)", borderTop: "1px solid var(--ka-line)", background: "var(--ka-bg-soft)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingBottom: 32, marginBottom: 48, borderBottom: "1px solid var(--ka-ink)", flexWrap: "wrap", gap: 12 }}>
+          <div className="ka-eyebrow">N° 06 — Recent content</div>
+          <Link href="/journal" className="ka-arrow-link" style={{ fontSize: 10 }}>Full library <span className="ka-arrow">→</span></Link>
+        </div>
+        <div className="ka-mk-content-grid">
+          {MK_SAMPLES.map((s, i) => (
+            <article key={i}>
+              <div className="ka-img" style={{ aspectRatio: i === 1 || i === 3 ? "16/9" : "4/5" }}>
+                <span className="ka-img-label">{s.type}</span>
+              </div>
+              <div className="ka-eyebrow" style={{ marginTop: 16, color: "var(--ka-accent-deep)" }}>{s.type}</div>
+              <h4 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(16px,1.5vw,20px)", fontStyle: i % 2 ? "italic" : "normal", lineHeight: 1.3, marginTop: 8 }}>
+                {s.title}
+              </h4>
+              <div className="ka-card-meta" style={{ marginTop: 12 }}>{s.meta}</div>
+            </article>
           ))}
         </div>
       </section>
 
-      <div className="max-w-6xl mx-auto px-6">
-        <hr className="border-[var(--beige)]" />
-      </div>
+      {/* Instagram grid */}
+      <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "end", marginBottom: 56, paddingBottom: 24, borderBottom: "1px solid var(--ka-ink)", flexWrap: "wrap", gap: 16 }}>
+          <div>
+            <div className="ka-eyebrow" style={{ marginBottom: 12 }}>N° 07 — On Instagram</div>
+            <h2 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(28px,4vw,56px)", fontStyle: "italic" }}>@karenalexandra</h2>
+            <div style={{ fontFamily: "var(--ka-display)", fontStyle: "italic", color: "var(--ka-muted)", fontSize: "clamp(15px,1.5vw,20px)", marginTop: 12 }}>
+              186K followers · 9.2% avg. engagement
+            </div>
+          </div>
+          <a href="https://instagram.com/karenalexandra" target="_blank" rel="noopener noreferrer" className="ka-arrow-link">
+            Open on Instagram <span className="ka-arrow">↗</span>
+          </a>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 8 }}>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="ka-img" style={{ aspectRatio: "1/1" }}>
+              <span className="ka-img-label">IG · 0{i + 1}</span>
+            </div>
+          ))}
+        </div>
+      </section>
 
-      {/* CTA */}
-      <section className="max-w-6xl mx-auto px-6 py-24 text-center">
-        <p className="text-xs tracking-[0.3em] uppercase text-[var(--taupe)] mb-4">
-          Interested?
-        </p>
-        <h2 className="text-4xl md:text-5xl font-light mb-10 max-w-md mx-auto">
-          Let&apos;s create something together.
-        </h2>
-        <Link
-          href="/contact?type=partnership"
-          className="inline-block text-xs tracking-[0.2em] uppercase bg-[var(--charcoal)] text-[var(--cream)] px-12 py-4 hover:bg-[var(--taupe)] transition-colors"
-        >
-          Get in Touch
-        </Link>
+      {/* Download CTA */}
+      <section style={{ padding: "clamp(56px,10vw,140px) clamp(20px,5vw,64px)", background: "var(--ka-ink)", color: "var(--ka-bg)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: "clamp(40px,6vw,96px)", alignItems: "center" }}>
+          <div>
+            <div className="ka-eyebrow" style={{ color: "rgba(250,247,242,0.5)", marginBottom: 24 }}>Press · Partnership inquiries</div>
+            <h2 style={{ fontFamily: "var(--ka-display)", color: "var(--ka-bg)", fontSize: "clamp(44px,6vw,88px)", fontStyle: "italic", lineHeight: 1 }}>
+              Take the kit<br />with you.
+            </h2>
+            <p style={{ color: "rgba(250,247,242,0.7)", maxWidth: 480, marginTop: 24, fontSize: "clamp(14px,1.2vw,16px)", lineHeight: 1.7 }}>
+              Twenty-page PDF with audience demographics, partnership formats, sample
+              deliverables, and rate ranges. Updated quarterly.
+            </p>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            <a href="/media-kit.pdf" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "clamp(16px,2vw,28px) clamp(20px,2.5vw,32px)", border: "1px solid var(--ka-bg)", textDecoration: "none", color: "var(--ka-bg)" }}>
+              <div>
+                <div className="ka-eyebrow" style={{ color: "rgba(250,247,242,0.5)", marginBottom: 8 }}>PDF · 12 MB</div>
+                <div style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(18px,2vw,24px)" }}>Download Media Kit</div>
+              </div>
+              <span style={{ fontSize: 28 }}>↓</span>
+            </a>
+            <a href="mailto:press@karenalexandra.com" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "clamp(16px,2vw,28px) clamp(20px,2.5vw,32px)", border: "1px solid rgba(250,247,242,0.3)", textDecoration: "none", color: "var(--ka-bg)" }}>
+              <div>
+                <div className="ka-eyebrow" style={{ color: "rgba(250,247,242,0.5)", marginBottom: 8 }}>Or write directly</div>
+                <div style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(16px,1.8vw,22px)", fontStyle: "italic" }}>press@karenalexandra.com</div>
+              </div>
+              <span style={{ fontSize: 22 }}>→</span>
+            </a>
+          </div>
+        </div>
       </section>
     </>
   );

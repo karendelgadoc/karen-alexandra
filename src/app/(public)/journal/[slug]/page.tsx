@@ -336,6 +336,19 @@ export default async function JournalPostPage({ params }: Props) {
           Back to The Edit
         </Link>
       </div>
+
+      {/* ── Work with me CTA ─────────────────────────────────────────── */}
+      <div style={{ maxWidth: "720px", margin: "0 auto", padding: "0 32px 96px" }}>
+        <div className="ka-work-with-me">
+          <h3>Work with Karen?</h3>
+          <p>
+            Editorial partnerships, e-commerce strategy, and brand direction — selectively offered, long-form by design.
+          </p>
+          <Link href="/services" className="ka-arrow-link" style={{ fontSize: 10 }}>
+            The studio <span className="ka-arrow">→</span>
+          </Link>
+        </div>
+      </div>
     </>
   );
 }

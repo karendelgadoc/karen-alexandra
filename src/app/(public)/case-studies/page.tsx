@@ -172,6 +172,19 @@ export default async function CaseStudiesPage() {
           </div>
         )}
       </section>
+
+      {/* Work with me CTA */}
+      <section style={{ padding: "0 clamp(20px,5vw,64px) 96px" }}>
+        <div className="ka-work-with-me">
+          <h3>Begin a correspondence.</h3>
+          <p>
+            Strategy, creative direction, editorial partnerships — four engagements, taken on at a time.
+          </p>
+          <Link href="/services" className="ka-arrow-link" style={{ fontSize: 10 }}>
+            The studio <span className="ka-arrow">→</span>
+          </Link>
+        </div>
+      </section>
     </>
   );
 }
