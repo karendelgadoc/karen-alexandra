@@ -55,7 +55,7 @@ export default function MediaKitPage() {
           <div className="ka-eyebrow">Media Kit · Updated May MMXXVI</div>
           <div className="ka-eyebrow">For press &amp; partners</div>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: "clamp(32px,5vw,80px)", alignItems: "end" }}>
+        <div className="ka-mk-hero-grid">
           <h1 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(56px,10vw,140px)", fontWeight: 300, lineHeight: 0.94 }}>
             A small,<br />
             <span style={{ fontStyle: "italic" }}>considered<span style={{ color: "var(--ka-accent-deep)" }}>.</span></span><br />
@@ -80,7 +80,7 @@ export default function MediaKitPage() {
       </section>
 
       {/* Bio + Portrait */}
-      <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)", background: "var(--ka-bg-soft)", display: "grid", gridTemplateColumns: "1fr 1.3fr", gap: "clamp(32px,6vw,96px)", alignItems: "center" }}>
+      <section className="ka-mk-bio-section" style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)", background: "var(--ka-bg-soft)" }}>
         <img
           src="https://5xkq5mmr.us-east.insforge.app/api/storage/buckets/blog-images/objects/site%2FIMG_4534.jpg"
           alt="Karen Alexandra"
@@ -97,7 +97,7 @@ export default function MediaKitPage() {
             a weekly dispatch on luxury fashion, considered travel, and the rituals
             that hold a beautiful life together.
           </p>
-          <div style={{ marginTop: 40, paddingTop: 24, borderTop: "1px solid var(--ka-ink)", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "clamp(16px,2.5vw,32px)" }}>
+          <div className="ka-mk-bio-facts" style={{ marginTop: 40, paddingTop: 24, borderTop: "1px solid var(--ka-ink)" }}>
             {[
               ["Based",        "New York", "· Côte d'Azur"],
               ["Languages",    "EN · FR · IT", ""],
@@ -129,7 +129,7 @@ export default function MediaKitPage() {
           ))}
         </div>
 
-        <div style={{ marginTop: 80, display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: "clamp(40px,6vw,96px)", alignItems: "start" }}>
+        <div className="ka-mk-audience-section" style={{ marginTop: 80 }}>
           <div>
             <div className="ka-eyebrow" style={{ marginBottom: 16 }}>Audience profile</div>
             <h3 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(22px,2.5vw,32px)", fontStyle: "italic", lineHeight: 1.1 }}>
@@ -141,7 +141,7 @@ export default function MediaKitPage() {
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {MK_DEMO.map((d, i) => (
-              <div key={i} style={{ display: "grid", gridTemplateColumns: "1.5fr 3fr 60px", gap: 24, alignItems: "center", padding: "16px 0", borderBottom: "1px solid var(--ka-line)" }}>
+              <div key={i} className="ka-mk-audience-row" style={{ padding: "16px 0", borderBottom: "1px solid var(--ka-line)" }}>
                 <span style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(14px,1.3vw,18px)", fontStyle: i % 2 ? "italic" : "normal" }}>{d.label}</span>
                 <div className="ka-mk-demo-bar">
                   <div className="ka-mk-demo-fill" style={{ width: `${d.pct}%` }} />
@@ -188,7 +188,7 @@ export default function MediaKitPage() {
       {/* Testimonials */}
       <section style={{ padding: "clamp(56px,10vw,140px) clamp(20px,5vw,64px)", textAlign: "center", borderTop: "1px solid var(--ka-line)" }}>
         <div className="ka-eyebrow" style={{ marginBottom: 48 }}>N° 05 — Brand partners, on the work</div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(40px,6vw,96px)", maxWidth: 1200, margin: "0 auto" }}>
+        <div className="ka-mk-testimonials-grid">
           {MK_TESTIMONIALS.map((t, i) => (
             <div key={i}>
               <div style={{ width: 32, height: 1, background: "var(--ka-accent-deep)", margin: "0 auto 32px" }} />
@@ -237,7 +237,7 @@ export default function MediaKitPage() {
             Open on Instagram <span className="ka-arrow">↗</span>
           </a>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 8 }}>
+        <div className="ka-mk-ig-grid">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="ka-img" style={{ aspectRatio: "1/1" }}>
               <span className="ka-img-label">IG · 0{i + 1}</span>
@@ -248,7 +248,7 @@ export default function MediaKitPage() {
 
       {/* Download CTA */}
       <section style={{ padding: "clamp(56px,10vw,140px) clamp(20px,5vw,64px)", background: "var(--ka-ink)", color: "var(--ka-bg)" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: "clamp(40px,6vw,96px)", alignItems: "center" }}>
+        <div className="ka-mk-cta-grid">
           <div>
             <div className="ka-eyebrow" style={{ color: "rgba(250,247,242,0.5)", marginBottom: 24 }}>Press · Partnership inquiries</div>
             <h2 style={{ fontFamily: "var(--ka-display)", color: "var(--ka-bg)", fontSize: "clamp(44px,6vw,88px)", fontStyle: "italic", lineHeight: 1 }}>

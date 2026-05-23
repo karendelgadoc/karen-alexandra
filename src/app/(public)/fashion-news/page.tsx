@@ -75,7 +75,7 @@ export default function FashionNewsPage() {
         <div className="ka-eyebrow" style={{ marginBottom: 28, color: "var(--ka-accent-deep)" }}>
           Fashion News · MMXXVI
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(24px,5vw,80px)", alignItems: "end" }}>
+        <div className="ka-fn-hero-grid">
           <h1 className="ka-fn-hero-headline">
             Fashion<br />
             <span style={{ fontStyle: "italic" }}>
@@ -165,7 +165,7 @@ export default function FashionNewsPage() {
           </div>
           <a href="#" className="ka-arrow-link">Full calendar <span className="ka-arrow">→</span></a>
         </div>
-        <div className="ka-fn-calendar-grid" style={{ gridTemplateColumns: "repeat(7, 1fr)" }}>
+        <div className="ka-fn-calendar-grid">
           {FN_CALENDAR.map((d, i) => (
             <div
               key={i}
@@ -207,9 +207,9 @@ export default function FashionNewsPage() {
           </div>
           <a href="#" className="ka-arrow-link">All fashion news <span className="ka-arrow">→</span></a>
         </div>
-        <div className="ka-fn-long-grid" style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+        <div>
           {FN_GRID_POSTS.map((p, i) => (
-            <article key={i} style={{ display: "grid", gridTemplateColumns: "1fr clamp(200px,38%,400px)", gap: "clamp(20px,4vw,48px)", alignItems: "start", padding: "clamp(28px,4vw,48px) 0", borderBottom: "1px solid var(--ka-line)" }}>
+            <article key={i} className="ka-fn-long-article" style={{ padding: "clamp(28px,4vw,48px) 0", borderBottom: "1px solid var(--ka-line)" }}>
               <div>
                 <div className="ka-card-meta" style={{ marginBottom: 12 }}>
                   <span style={{ color: "var(--ka-accent-deep)" }}>{p.tag}</span> · {p.date} · {p.read}
@@ -232,7 +232,7 @@ export default function FashionNewsPage() {
 
       {/* Most Read */}
       <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)", borderTop: "1px solid var(--ka-line)", background: "var(--ka-bg-soft)" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "clamp(200px,28%,360px) 1fr", gap: "clamp(40px,6vw,96px)", alignItems: "start" }}>
+        <div className="ka-fn-most-read-section">
           <div>
             <div className="ka-eyebrow" style={{ marginBottom: 24 }}>N° 04 — Karen&apos;s staff picks</div>
             <h2 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(32px,4vw,56px)", fontStyle: "italic", lineHeight: 1 }}>

@@ -150,7 +150,7 @@ export default function AboutContent() {
       {/* Hero */}
       <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px) clamp(32px,5vw,64px)", borderBottom: "1px solid var(--ka-line)" }}>
         <div className="ka-eyebrow" style={{ marginBottom: "clamp(24px,4vw,48px)" }}>About · The author &amp; the project</div>
-        <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: "clamp(24px,5vw,80px)", alignItems: "end" }}>
+        <div className="ka-about-hero-grid">
           <h1 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(64px,12vw,144px)", fontWeight: 300, lineHeight: 0.93 }}>
             Hello,<br />I&apos;m <span style={{ fontStyle: "italic" }}>Karen<span style={{ color: "var(--ka-accent-deep)" }}>.</span></span>
           </h1>
@@ -163,14 +163,14 @@ export default function AboutContent() {
 
       {/* Manifesto */}
       <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)", background: "var(--ka-bg-soft)" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "clamp(160px,25%,280px) 1fr", gap: "clamp(32px,6vw,96px)" }}>
+        <div className="ka-about-manifesto-grid">
           <div className="ka-eyebrow">N° 01 — On this place</div>
           <div>
             <p style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(22px,3vw,36px)", fontStyle: "italic", lineHeight: 1.3, color: "var(--ka-ink)", marginBottom: 32 }}>
               This site is a slow correspondence — a Saturday letter on luxury fashion, considered travel,
               and the rituals that hold a beautiful life together.
             </p>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(24px,4vw,48px)", paddingTop: 32, borderTop: "1px solid var(--ka-ink)" }}>
+            <div className="ka-about-manifesto-cols" style={{ paddingTop: 32, borderTop: "1px solid var(--ka-ink)" }}>
               <p style={{ fontSize: "clamp(14px,1.2vw,16px)", lineHeight: 1.75, color: "var(--ka-ink)" }}>
                 I started writing here in 2019, the year I returned to Barcelona for the second time.
                 The premise has not changed since: fewer letters, written more carefully, in a register
@@ -192,7 +192,7 @@ export default function AboutContent() {
           <div className="ka-eyebrow">N° 02 — About the author</div>
           <Link href="/media-kit" className="ka-arrow-link" style={{ fontSize: 10 }}>Press kit <span className="ka-arrow">→</span></Link>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "clamp(240px,35%,480px) 1fr", gap: "clamp(32px,6vw,96px)", alignItems: "start" }}>
+        <div className="ka-about-bio-grid">
           <div style={{ position: "sticky", top: 32 }}>
             <img
               src="https://5xkq5mmr.us-east.insforge.app/api/storage/buckets/blog-images/objects/site%2FIMG_4534.jpg"
@@ -232,7 +232,7 @@ export default function AboutContent() {
               I write from Madrid, for the moment. By the time you read this I may have moved again — but
               the letters are sent from somewhere with a balcony, and that is the rule.
             </p>
-            <div style={{ marginTop: 24, paddingTop: 32, borderTop: "1px solid var(--ka-ink)", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "clamp(16px,2.5vw,32px)" }}>
+            <div className="ka-about-bio-facts" style={{ marginTop: 24, paddingTop: 32, borderTop: "1px solid var(--ka-ink)" }}>
               {BIO_FACTS.map(([l, v], i) => (
                 <div key={i}>
                   <div className="ka-eyebrow" style={{ marginBottom: 6, fontSize: 10 }}>{l}</div>
@@ -251,7 +251,7 @@ export default function AboutContent() {
           <div className="ka-eyebrow">11 places · 3 passports</div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "2.2fr 1fr", gap: "clamp(24px,4vw,56px)", alignItems: "start" }}>
+        <div className="ka-about-map-grid">
           <div>
             <WorldMap active={active} setActive={setActive} />
             <p className="ka-eyebrow" style={{ marginTop: 16, color: "var(--ka-muted)" }}>
@@ -300,7 +300,7 @@ export default function AboutContent() {
           <div className="ka-eyebrow">N° 04 — A short list of joys</div>
           <div className="ka-eyebrow" style={{ color: "var(--ka-muted)" }}>In rough order →</div>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", borderTop: "1px solid var(--ka-ink)", borderLeft: "1px solid var(--ka-line)" }}>
+        <div className="ka-about-joys-grid">
           {JOYS.map((j, i) => (
             <div key={i} style={{
               padding: "clamp(24px,3vw,40px) clamp(16px,2vw,24px) clamp(28px,3vw,44px)",

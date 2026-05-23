@@ -124,8 +124,6 @@ export default function HeaderClient({
           <div
             ref={workRef}
             className="ka-work-dropdown"
-            onMouseEnter={() => setWorkOpen(true)}
-            onMouseLeave={() => setWorkOpen(false)}
           >
             <button
               className={`ka-nav-link ka-work-trigger${isWorkActive ? " active" : ""}`}

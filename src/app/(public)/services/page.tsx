@@ -93,7 +93,7 @@ export default function ServicesPage() {
       {/* Hero */}
       <section style={{ padding: "clamp(56px,8vw,120px) clamp(20px,5vw,64px) clamp(40px,6vw,80px)", borderBottom: "1px solid var(--ka-line)" }}>
         <div className="ka-eyebrow" style={{ marginBottom: "clamp(32px,4vw,56px)" }}>Services · The studio · MMXXVI</div>
-        <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: "clamp(24px,5vw,80px)", alignItems: "end" }}>
+        <div className="ka-sv-hero-grid">
           <h1 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(48px,9vw,132px)", fontWeight: 300, lineHeight: 0.96 }}>
             Four ways to<br />
             <span style={{ fontStyle: "italic" }}>begin a correspondence</span><span style={{ color: "var(--ka-accent-deep)" }}>.</span>
@@ -107,7 +107,7 @@ export default function ServicesPage() {
 
       {/* Principle strip */}
       <section style={{ padding: "clamp(24px,3.5vw,48px) clamp(20px,5vw,64px)", borderBottom: "1px solid var(--ka-line)", background: "var(--ka-bg-soft)" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "auto 1fr auto", gap: "clamp(24px,4vw,64px)", alignItems: "center" }}>
+        <div className="ka-sv-principle-grid">
           <span className="ka-eyebrow" style={{ color: "var(--ka-accent-deep)" }}>How the studio operates</span>
           <p style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(17px,2vw,26px)", fontStyle: "italic", lineHeight: 1.4 }}>
             Four engagements, taken on at a time. No discovery calls before a written brief. One thesis per project, repeated until it&apos;s true.
@@ -123,7 +123,7 @@ export default function ServicesPage() {
           <Link href="/contact" className="ka-arrow-link" style={{ fontSize: 10 }}>Or send a brief <span className="ka-arrow">→</span></Link>
         </div>
         {SV_SERVICES.map((s, i) => (
-          <article key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1.4fr 1fr", gap: "clamp(24px,4vw,64px)", padding: "clamp(32px,5vw,56px) 0", borderTop: i === 0 ? "none" : "1px solid var(--ka-ink)", borderBottom: "1px solid var(--ka-ink)" }}>
+          <article key={i} className="ka-sv-card-article" style={{ padding: "clamp(32px,5vw,56px) 0", borderTop: i === 0 ? "none" : "1px solid var(--ka-ink)", borderBottom: "1px solid var(--ka-ink)" }}>
             <div>
               <div style={{ fontFamily: "var(--ka-display)", fontSize: 14, color: "var(--ka-muted)", marginBottom: 24 }}>N° {s.n}</div>
               <h3 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(28px,3.5vw,48px)", fontStyle: s.italic ? "italic" : "normal", lineHeight: 1 }}>
@@ -172,7 +172,7 @@ export default function ServicesPage() {
         </div>
         <div style={{ position: "relative" }}>
           <div style={{ position: "absolute", top: 12, left: "9%", right: "9%", height: 1, background: "var(--ka-ink)", opacity: 0.4 }} />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 32, position: "relative" }}>
+          <div className="ka-sv-process-grid">
             {SV_PROCESS.map((p, i) => (
               <div key={i}>
                 <div style={{ width: 24, height: 24, borderRadius: "50%", background: "var(--ka-bg-soft)", border: "1px solid var(--ka-ink)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontFamily: "var(--ka-mono)", color: "var(--ka-accent-deep)", marginBottom: 32 }}>
@@ -195,7 +195,7 @@ export default function ServicesPage() {
           <div className="ka-eyebrow">N° 03 — Recent engagements, in depth</div>
           <Link href="/case-studies" className="ka-arrow-link" style={{ fontSize: 10 }}>All case studies <span className="ka-arrow">→</span></Link>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 48 }}>
+        <div className="ka-sv-case-grid">
           {SV_CASE_LINKS.map((c, i) => (
             <Link key={i} href={`/case-studies/${c.slug}`} style={{ display: "block", textDecoration: "none", color: "inherit", paddingTop: 32, borderTop: "1px solid var(--ka-ink)" }}>
               <div className="ka-img" style={{ aspectRatio: "4/5", marginBottom: 28 }}>
@@ -222,7 +222,7 @@ export default function ServicesPage() {
         <div className="ka-eyebrow" style={{ color: "rgba(250,247,242,0.5)", textAlign: "center", marginBottom: 80 }}>
           N° 04 — On the work
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "clamp(24px,4vw,56px)" }}>
+        <div className="ka-sv-testimonials-grid">
           {SV_TESTIMONIALS.map((t, i) => (
             <div key={i} style={{ paddingTop: 32, borderTop: "1px solid rgba(250,247,242,0.3)" }}>
               <div style={{ fontFamily: "var(--ka-display)", fontSize: 56, fontStyle: "italic", color: "var(--ka-accent)", lineHeight: 0.5, marginBottom: 24 }}>&ldquo;</div>

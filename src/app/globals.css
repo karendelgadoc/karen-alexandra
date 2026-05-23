@@ -1008,3 +1008,185 @@ img {
   .ka-sv-faq { columns: 1; }
   .ka-sv-testimonials { padding: 40px 32px; }
 }
+
+/* ── Responsive grid helpers for new pages ──────────────── */
+
+/* Fashion News */
+.ka-fn-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(24px, 5vw, 80px);
+  align-items: end;
+}
+.ka-fn-long-article {
+  display: grid;
+  grid-template-columns: 1fr clamp(200px, 38%, 400px);
+  gap: clamp(20px, 4vw, 48px);
+  align-items: start;
+}
+.ka-fn-most-read-section {
+  display: grid;
+  grid-template-columns: clamp(200px, 28%, 360px) 1fr;
+  gap: clamp(40px, 6vw, 96px);
+  align-items: start;
+}
+
+/* About */
+.ka-about-hero-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: clamp(24px, 5vw, 80px);
+  align-items: end;
+}
+.ka-about-manifesto-grid {
+  display: grid;
+  grid-template-columns: clamp(160px, 25%, 280px) 1fr;
+  gap: clamp(32px, 6vw, 96px);
+}
+.ka-about-manifesto-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(24px, 4vw, 48px);
+}
+.ka-about-bio-grid {
+  display: grid;
+  grid-template-columns: clamp(240px, 35%, 480px) 1fr;
+  gap: clamp(32px, 6vw, 96px);
+  align-items: start;
+}
+.ka-about-bio-facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(16px, 2.5vw, 32px);
+}
+.ka-about-map-grid {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr;
+  gap: clamp(24px, 4vw, 56px);
+  align-items: start;
+}
+
+/* Media Kit */
+.ka-mk-hero-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: clamp(32px, 5vw, 80px);
+  align-items: end;
+}
+.ka-mk-bio-section {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: clamp(32px, 6vw, 96px);
+  align-items: center;
+}
+.ka-mk-bio-facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(16px, 2.5vw, 32px);
+}
+.ka-mk-audience-section {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: clamp(40px, 6vw, 96px);
+  align-items: start;
+}
+.ka-mk-audience-row {
+  display: grid;
+  grid-template-columns: 1.5fr 3fr 60px;
+  gap: 24px;
+  align-items: center;
+}
+.ka-mk-testimonials-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 6vw, 96px);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.ka-mk-ig-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+}
+.ka-mk-cta-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: clamp(40px, 6vw, 96px);
+  align-items: center;
+}
+
+/* Services */
+.ka-sv-hero-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: clamp(24px, 5vw, 80px);
+  align-items: end;
+}
+.ka-sv-principle-grid {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: clamp(24px, 4vw, 64px);
+  align-items: center;
+}
+.ka-sv-card-article {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1fr;
+  gap: clamp(24px, 4vw, 64px);
+}
+.ka-sv-process-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 32px;
+  position: relative;
+}
+.ka-sv-case-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+}
+.ka-sv-testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(24px, 4vw, 56px);
+}
+.ka-sv-cta-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: clamp(40px, 6vw, 96px);
+  align-items: center;
+}
+
+/* ── Tablet overrides (768–1023px) for new page classes ── */
+@media (max-width: 1023px) {
+  .ka-fn-hero-grid        { grid-template-columns: 1fr; }
+  .ka-fn-most-read-section { grid-template-columns: 1fr; }
+  .ka-about-hero-grid     { grid-template-columns: 1fr; }
+  .ka-about-manifesto-grid { grid-template-columns: 1fr; }
+  .ka-about-bio-grid      { grid-template-columns: 1fr; }
+  .ka-about-map-grid      { grid-template-columns: 1fr; }
+  .ka-mk-hero-grid        { grid-template-columns: 1fr; }
+  .ka-mk-bio-section      { grid-template-columns: 1fr; }
+  .ka-mk-audience-section { grid-template-columns: 1fr; }
+  .ka-mk-testimonials-grid { grid-template-columns: 1fr; }
+  .ka-mk-cta-grid         { grid-template-columns: 1fr; }
+  .ka-mk-ig-grid          { grid-template-columns: repeat(3, 1fr); }
+  .ka-sv-hero-grid        { grid-template-columns: 1fr; }
+  .ka-sv-principle-grid   { grid-template-columns: 1fr; gap: 16px; }
+  .ka-sv-card-article     { grid-template-columns: 1fr; }
+  .ka-sv-process-grid     { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .ka-sv-case-grid        { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .ka-sv-testimonials-grid { grid-template-columns: 1fr; }
+  .ka-sv-cta-grid         { grid-template-columns: 1fr; }
+}
+
+/* ── Mobile overrides (<768px) for new page classes ──────── */
+@media (max-width: 767px) {
+  .ka-fn-long-article     { grid-template-columns: 1fr; }
+  .ka-about-manifesto-cols { grid-template-columns: 1fr; }
+  .ka-about-bio-facts     { grid-template-columns: 1fr 1fr; }
+  .ka-mk-bio-facts        { grid-template-columns: 1fr 1fr; }
+  .ka-mk-audience-row     { grid-template-columns: 1fr auto; }
+  .ka-mk-ig-grid          { grid-template-columns: repeat(2, 1fr); }
+  .ka-sv-process-grid     { grid-template-columns: 1fr; }
+  .ka-sv-case-grid        { grid-template-columns: 1fr; gap: 24px; }
+}
