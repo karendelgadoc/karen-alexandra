@@ -117,6 +117,7 @@ export default async function JournalPage({
     <>
       {/* ── Hero ─────────────────────────────────────────────────────── */}
       <section
+        className="ka-rp"
         style={{
           padding: "96px 64px 64px",
           borderBottom: "1px solid var(--ka-line)",
@@ -155,6 +156,7 @@ export default async function JournalPage({
 
       {/* ── Filters ──────────────────────────────────────────────────── */}
       <div
+        className="ka-rp ka-r-wrap"
         style={{
           padding: "28px 64px",
           display: "flex",
@@ -181,6 +183,7 @@ export default async function JournalPage({
       {/* ── Featured Letter ──────────────────────────────────────────── */}
       {featured && (
         <section
+          className="ka-rp ka-r-stack"
           style={{
             background: "var(--ka-bg-soft)",
             padding: "64px",
@@ -262,8 +265,9 @@ export default async function JournalPage({
 
       {/* ── Collage Grid ─────────────────────────────────────────────── */}
       {collapsePosts.length > 0 && (
-        <section style={{ padding: "80px 64px" }}>
+        <section className="ka-rp" style={{ padding: "80px 64px" }}>
           <div
+            className="ka-r-collage"
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(12, 1fr)",
@@ -283,7 +287,7 @@ export default async function JournalPage({
       )}
 
       {allPosts.length === 0 && (
-        <section style={{ padding: "96px 64px", textAlign: "center" }}>
+        <section className="ka-rp" style={{ padding: "96px 64px", textAlign: "center" }}>
           <p style={{ color: "var(--ka-muted)", fontFamily: "var(--ka-display)", fontSize: "24px", fontStyle: "italic" }}>
             No entries yet — check back soon.
           </p>
@@ -292,6 +296,7 @@ export default async function JournalPage({
 
       {/* ── Pull Quote ───────────────────────────────────────────────── */}
       <section
+        className="ka-rp"
         style={{
           padding: "80px 64px",
           textAlign: "center",
@@ -322,7 +327,7 @@ export default async function JournalPage({
       </section>
 
       {/* ── Load More ────────────────────────────────────────────────── */}
-      <div style={{ padding: "56px 64px", textAlign: "center" }}>
+      <div className="ka-rp" style={{ padding: "56px 64px", textAlign: "center" }}>
         <button className="ka-btn" disabled>
           Load older entries
         </button>

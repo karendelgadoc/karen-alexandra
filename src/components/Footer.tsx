@@ -5,7 +5,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="ka-footer">
+    <footer className="ka-footer ka-rp">
       <div className="ka-footer-grid">
         {/* Brand */}
         <div>

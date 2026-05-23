@@ -1192,3 +1192,71 @@ img {
   .ka-sv-process-grid     { grid-template-columns: 1fr; }
   .ka-sv-case-grid        { grid-template-columns: 1fr; gap: 24px; }
 }
+
+/* ════════════════════════════════════════════════════════════
+   Responsive utilities for EXISTING pages (home, portfolio,
+   contact, watch, journal, case-studies). These override the
+   inline desktop styles only at tablet/mobile widths via
+   !important, so desktop layouts stay pixel-identical.
+   ════════════════════════════════════════════════════════════ */
+
+/* Horizontal padding shrink — overrides the inline `padding`
+   shorthand's left/right via longhand !important, preserving
+   each section's own vertical padding. */
+@media (max-width: 1023px) {
+  .ka-rp { padding-left: 40px !important; padding-right: 40px !important; }
+}
+@media (max-width: 767px) {
+  .ka-rp { padding-left: 20px !important; padding-right: 20px !important; }
+}
+
+/* Collapse a multi-column grid OR a row flex to one column at mobile */
+@media (max-width: 767px) {
+  .ka-r-stack {
+    grid-template-columns: 1fr !important;
+    flex-direction: column !important;
+  }
+}
+
+/* Collapse already at tablet — for 2-col heroes/content too cramped at 768px */
+@media (max-width: 1023px) {
+  .ka-r-stack-md {
+    grid-template-columns: 1fr !important;
+    flex-direction: column !important;
+    gap: 40px !important;
+    align-items: stretch !important;
+  }
+}
+
+/* Force two columns from tablet down (4-col grids → 2×N) */
+@media (max-width: 1023px) {
+  .ka-r-2 { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* Brand-logo grid: 3 on tablet, 2 on mobile */
+@media (max-width: 1023px) {
+  .ka-r-logos { grid-template-columns: repeat(3, 1fr) !important; }
+}
+@media (max-width: 767px) {
+  .ka-r-logos { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* 12-col collage grids → single column, clearing each child's span */
+@media (max-width: 767px) {
+  .ka-r-collage { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .ka-r-collage > * {
+    grid-column: auto !important;
+    grid-row: auto !important;
+    margin-top: 0 !important;
+  }
+}
+
+/* Let a flex row wrap (filter chip rows) */
+@media (max-width: 767px) {
+  .ka-r-wrap { flex-wrap: wrap !important; }
+}
+
+/* Footer meta row stacks on mobile so copyright + links don't collide */
+@media (max-width: 767px) {
+  .ka-footer-meta { flex-direction: column; gap: 16px; align-items: flex-start; }
+}

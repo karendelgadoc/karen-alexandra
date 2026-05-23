@@ -19,7 +19,7 @@ function PlayButton({ size = 52 }: { size?: number }) {
 
 export function HeroSection({ c }: { c: WatchContent }) {
   return (
-    <section style={{ padding: "96px 64px 64px", borderBottom: "1px solid var(--ka-line)", display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "48px" }}>
+    <section className="ka-rp ka-r-stack" style={{ padding: "96px 64px 64px", borderBottom: "1px solid var(--ka-line)", display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "48px" }}>
       <div>
         <span className="ka-eyebrow" style={{ display: "block", marginBottom: "20px" }}>{c.hero.eyebrow}</span>
         <h1 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(56px, 7vw, 96px)", fontStyle: "italic", fontWeight: 400, lineHeight: 1.0, letterSpacing: "-0.02em" }}>{c.hero.headline}</h1>
@@ -34,7 +34,7 @@ export function FeaturedSection({ featured }: { featured: VideoCard }) {
     .filter(Boolean)
     .join("  ·  ");
   return (
-    <section style={{ background: "var(--ka-bg-soft)", padding: "64px", borderBottom: "1px solid var(--ka-line)", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "64px", alignItems: "center" }}>
+    <section className="ka-rp ka-r-stack" style={{ background: "var(--ka-bg-soft)", padding: "64px", borderBottom: "1px solid var(--ka-line)", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "64px", alignItems: "center" }}>
       <a href={featured.url} target="_blank" rel="noopener noreferrer" style={{ aspectRatio: "16/9", position: "relative", overflow: "hidden", background: "var(--ka-sand)", cursor: "pointer", display: "block" }}>
         <Image src={featured.thumbnail} alt={featured.title} fill style={{ objectFit: "cover" }} sizes="50vw" priority unoptimized={featured.thumbnail.includes("ytimg.com")} />
         <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(10,10,10,0.2)" }}><PlayButton size={68} /></div>
@@ -64,7 +64,7 @@ export function FeaturedSection({ featured }: { featured: VideoCard }) {
 
 export function MetaSection() {
   return (
-    <div style={{ padding: "32px 64px", borderTop: "1px solid var(--ka-line)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    <div className="ka-rp ka-r-stack" style={{ padding: "32px 64px", borderTop: "1px solid var(--ka-line)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px" }}>
       <p style={{ fontFamily: "var(--ka-mono)", fontSize: "10px", color: "var(--ka-muted)", letterSpacing: "0.08em", textTransform: "uppercase" as const }}>Films sync automatically from YouTube · @KarenAlexandra</p>
       <a href={YT_CHANNEL_URL} target="_blank" rel="noopener noreferrer" className="ka-arrow-link">Subscribe <span className="ka-arrow">→</span></a>
     </div>

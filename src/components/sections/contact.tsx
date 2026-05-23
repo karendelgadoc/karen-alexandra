@@ -25,9 +25,9 @@ const fieldStyle: React.CSSProperties = {
 
 export function HeroSection({ c }: { c: ContactContent }) {
   return (
-    <section style={{ padding: "120px 64px 80px", borderBottom: "1px solid var(--ka-line)" }}>
+    <section className="ka-rp" style={{ padding: "120px 64px 80px", borderBottom: "1px solid var(--ka-line)" }}>
       <div className="ka-eyebrow" style={{ marginBottom: 56 }}>{c.hero.eyebrow}</div>
-      <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 80, alignItems: "end" }}>
+      <div className="ka-r-stack-md" style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 80, alignItems: "end" }}>
         <h1 style={{ fontFamily: "var(--ka-display)", fontWeight: 400, fontSize: "clamp(56px, 9vw, 132px)", lineHeight: 0.96, letterSpacing: "-0.02em" }}>
           {c.hero.headlineLine1}
           <br />
@@ -43,7 +43,7 @@ export function HeroSection({ c }: { c: ContactContent }) {
 export function FormSection({ c }: { c: ContactContent }) {
   return (
     <>
-      <section style={{ padding: "120px 64px" }}>
+      <section className="ka-rp" style={{ padding: "120px 64px" }}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 64, borderBottom: "1px solid var(--ka-line)", paddingBottom: 24 }}>
           <div style={{ display: "flex", gap: 24, alignItems: "baseline" }}>
             <span style={{ fontFamily: "var(--ka-mono)", fontSize: 11, letterSpacing: "0.12em", color: "var(--ka-accent-deep)" }}>N° 01</span>
@@ -51,7 +51,7 @@ export function FormSection({ c }: { c: ContactContent }) {
           </div>
           <a href="mailto:studio@karenalexandra.com" className="ka-arrow-link">Or write directly <span className="ka-arrow">→</span></a>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 64 }}>
+        <div className="ka-r-stack" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 64 }}>
           {INQUIRY_ITEMS.map((item, i) => (
             <div key={item.n} style={{ paddingTop: 32, borderTop: "1px solid var(--ka-ink)" }}>
               <div className="ka-eyebrow" style={{ marginBottom: 16 }}>N° {item.n} · {item.who}</div>
@@ -63,8 +63,8 @@ export function FormSection({ c }: { c: ContactContent }) {
         </div>
       </section>
 
-      <section style={{ padding: "120px 64px", borderTop: "1px solid var(--ka-line)", background: "var(--ka-bg-soft)" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.4fr", gap: 96, alignItems: "start" }}>
+      <section className="ka-rp" style={{ padding: "120px 64px", borderTop: "1px solid var(--ka-line)", background: "var(--ka-bg-soft)" }}>
+        <div className="ka-r-stack-md" style={{ display: "grid", gridTemplateColumns: "1fr 1.4fr", gap: 96, alignItems: "start" }}>
           <aside>
             <div className="ka-eyebrow" style={{ marginBottom: 32 }}>A note from Karen</div>
             <p style={{ fontFamily: "var(--ka-display)", fontSize: 30, lineHeight: 1.35, fontStyle: "italic", marginBottom: 32 }}>&ldquo;{c.sidebar.quote}&rdquo;</p>
@@ -86,7 +86,7 @@ export function FormSection({ c }: { c: ContactContent }) {
             </div>
           </aside>
 
-          <form method="POST" action="/api/contact" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "48px 48px" }}>
+          <form method="POST" action="/api/contact" className="ka-r-stack" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "48px 48px" }}>
             <input type="text" name="_honeypot" tabIndex={-1} aria-hidden="true" style={{ display: "none" }} />
             <label style={{ display: "block" }}>
               <div className="ka-eyebrow" style={{ marginBottom: 12 }}>01 — Your name</div>
@@ -127,7 +127,7 @@ export function FormSection({ c }: { c: ContactContent }) {
         </div>
       </section>
 
-      <section style={{ padding: "120px 64px", borderTop: "1px solid var(--ka-line)" }}>
+      <section className="ka-rp" style={{ padding: "120px 64px", borderTop: "1px solid var(--ka-line)" }}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 64, borderBottom: "1px solid var(--ka-line)", paddingBottom: 24 }}>
           <div style={{ display: "flex", gap: 24, alignItems: "baseline" }}>
             <span style={{ fontFamily: "var(--ka-mono)", fontSize: 11, letterSpacing: "0.12em", color: "var(--ka-accent-deep)" }}>N° 02</span>
@@ -156,7 +156,7 @@ export function FormSection({ c }: { c: ContactContent }) {
 
 export function CloseQuoteSection({ c }: { c: ContactContent }) {
   return (
-    <section style={{ padding: "140px 64px", borderTop: "1px solid var(--ka-line)", textAlign: "center" }}>
+    <section className="ka-rp" style={{ padding: "140px 64px", borderTop: "1px solid var(--ka-line)", textAlign: "center" }}>
       <div style={{ width: 56, height: 1, background: "var(--ka-accent-deep)", margin: "0 auto 48px" }} />
       <p style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(32px, 4vw, 56px)", fontStyle: "italic", maxWidth: 1100, margin: "0 auto", lineHeight: 1.15 }}>
         &ldquo;{c.close.quote}&rdquo;

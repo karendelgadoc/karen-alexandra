@@ -101,6 +101,7 @@ export default async function CaseStudiesPage() {
     <>
       {/* ── Hero ─────────────────────────────────────────────────────── */}
       <section
+        className="ka-rp"
         style={{
           padding: "120px 64px 80px",
           borderBottom: "1px solid var(--ka-line)",
@@ -125,6 +126,7 @@ export default async function CaseStudiesPage() {
 
       {/* ── Filters ──────────────────────────────────────────────────── */}
       <div
+        className="ka-rp ka-r-wrap"
         style={{
           padding: "28px 64px",
           display: "flex",
@@ -140,7 +142,7 @@ export default async function CaseStudiesPage() {
       </div>
 
       {/* ── Case Grid ────────────────────────────────────────────────── */}
-      <section style={{ padding: "80px 64px" }}>
+      <section className="ka-rp" style={{ padding: "80px 64px" }}>
         {posts.length === 0 ? (
           <p
             style={{
@@ -156,6 +158,7 @@ export default async function CaseStudiesPage() {
           </p>
         ) : (
           <div
+            className="ka-r-collage"
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(12, 1fr)",

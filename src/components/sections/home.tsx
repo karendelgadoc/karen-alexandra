@@ -30,6 +30,7 @@ export function HeroSection({ c, letterTitle, letterSlug, letterImage }: {
   const heroImageAlt = letterImage ? letterTitle : "Karen Alexandra";
   return (
     <section
+      className="ka-rp ka-r-stack-md"
       style={{
         padding: "80px 64px 96px",
         borderBottom: "1px solid var(--ka-line)",
@@ -48,7 +49,7 @@ export function HeroSection({ c, letterTitle, letterSlug, letterImage }: {
             {c.hero.headlineItalic}<span style={{ color: "var(--ka-accent-deep)" }}>.</span>
           </span>
         </h1>
-        <div style={{ display: "flex", gap: 40, marginTop: 64, paddingTop: 32, borderTop: "1px solid var(--ka-line)" }}>
+        <div className="ka-r-stack" style={{ display: "flex", gap: 40, marginTop: 64, paddingTop: 32, borderTop: "1px solid var(--ka-line)" }}>
           <p style={{ fontSize: 16, lineHeight: 1.7, color: "var(--ka-muted)", maxWidth: 360, flex: 1, fontFamily: "var(--ka-body)" }}>{c.hero.subhead1}</p>
           <p style={{ fontSize: 16, lineHeight: 1.7, color: "var(--ka-muted)", maxWidth: 360, flex: 1, fontFamily: "var(--ka-body)" }}>{c.hero.subhead2}</p>
         </div>
@@ -100,7 +101,7 @@ export function FeaturedStoriesSection({ featuredPosts }: { featuredPosts: Featu
   return (
     <section style={{ padding: "96px 0" }}>
       <KaSectionHead num="01" title="From the Journal" href="/journal" />
-      <div style={{ display: "grid", gridTemplateColumns: "5fr 4fr 4fr", gap: "40px", padding: "0 64px" }}>
+      <div className="ka-rp ka-r-stack" style={{ display: "grid", gridTemplateColumns: "5fr 4fr 4fr", gap: "40px", padding: "0 64px" }}>
         {posts.map((post, i) => (
           <Link key={post.slug + i} href={`/journal/${post.slug}`} className="group" style={{ display: "block" }}>
             <div style={{ aspectRatio: i === 0 ? "5/6" : "4/5", position: "relative", overflow: "hidden", background: "var(--ka-sand)" }}>
@@ -120,7 +121,7 @@ export function FeaturedStoriesSection({ featuredPosts }: { featuredPosts: Featu
 
 export function EditorNoteSection({ c }: { c: HomeContent }) {
   return (
-    <section style={{ background: "var(--ka-bg-soft)", padding: "96px 64px", textAlign: "center", borderTop: "1px solid var(--ka-line)", borderBottom: "1px solid var(--ka-line)" }}>
+    <section className="ka-rp" style={{ background: "var(--ka-bg-soft)", padding: "96px 64px", textAlign: "center", borderTop: "1px solid var(--ka-line)", borderBottom: "1px solid var(--ka-line)" }}>
       <span className="ka-eyebrow" style={{ display: "block", marginBottom: "28px" }}>Letter from the editor</span>
       <blockquote style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 400, fontStyle: "italic", maxWidth: "780px", margin: "0 auto 40px", lineHeight: 1.15, letterSpacing: "-0.01em" }}>
         &ldquo;{c.quote.text}&rdquo;
@@ -134,7 +135,7 @@ export function FromTheReelSection() {
   return (
     <section style={{ padding: "96px 0" }}>
       <KaSectionHead num="02" title="From the Reel" href="/watch" linkLabel="Watch all" />
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px", padding: "0 64px" }}>
+      <div className="ka-rp ka-r-stack" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px", padding: "0 64px" }}>
         {VIDEOS.map((v, i) => (
           <Link key={i} href="/watch" style={{ display: "block" }}>
             <div style={{ aspectRatio: "16/9", position: "relative", overflow: "hidden", background: "var(--ka-sand)" }}>
@@ -161,7 +162,7 @@ export function CategoriesSection() {
   return (
     <section style={{ padding: "96px 0", background: "var(--ka-bg-soft)", borderTop: "1px solid var(--ka-line)" }}>
       <KaSectionHead num="03" title="By Category" />
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "2px", padding: "0 64px" }}>
+      <div className="ka-rp ka-r-2" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "2px", padding: "0 64px" }}>
         {CATEGORIES.map((cat) => (
           <Link key={cat.slug} href={`/journal?category=${cat.slug}`} style={{ display: "block", position: "relative", overflow: "hidden" }}>
             <div style={{ aspectRatio: "3/4", position: "relative", overflow: "hidden" }}>
@@ -181,7 +182,7 @@ export function CategoriesSection() {
 
 export function NewsletterSection() {
   return (
-    <section style={{ background: "var(--ka-ink)", color: "var(--ka-bg)", padding: "96px 64px", textAlign: "center" }}>
+    <section className="ka-rp" style={{ background: "var(--ka-ink)", color: "var(--ka-bg)", padding: "96px 64px", textAlign: "center" }}>
       <span className="ka-eyebrow" style={{ color: "var(--ka-accent)", display: "block", marginBottom: "20px" }}>The Letter</span>
       <h2 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(40px, 5vw, 64px)", fontStyle: "italic", fontWeight: 400, marginBottom: "16px", color: "var(--ka-bg)" }}>
         Join the conversation

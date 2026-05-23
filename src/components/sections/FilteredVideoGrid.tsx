@@ -34,7 +34,7 @@ export default function FilteredVideoGrid({ videos }: { videos: VideoCard[] }) {
 
   return (
     <>
-      <div style={{ padding: "28px 64px", display: "flex", gap: "10px", alignItems: "center", borderBottom: "1px solid var(--ka-line)", justifyContent: "space-between", flexWrap: "wrap" }}>
+      <div className="ka-rp" style={{ padding: "28px 64px", display: "flex", gap: "10px", alignItems: "center", borderBottom: "1px solid var(--ka-line)", justifyContent: "space-between", flexWrap: "wrap" }}>
         <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
           {categories.map((c) => (
             <button
@@ -55,11 +55,11 @@ export default function FilteredVideoGrid({ videos }: { videos: VideoCard[] }) {
       </div>
 
       {filtered.length === 0 ? (
-        <section style={{ padding: "80px 64px", textAlign: "center", color: "var(--ka-muted)", fontFamily: "var(--ka-body)" }}>
+        <section className="ka-rp" style={{ padding: "80px 64px", textAlign: "center", color: "var(--ka-muted)", fontFamily: "var(--ka-body)" }}>
           No videos in <span style={{ fontStyle: "italic" }}>{active}</span> yet.
         </section>
       ) : (
-        <section style={{ padding: "64px", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "40px" }}>
+        <section className="ka-rp ka-r-stack" style={{ padding: "64px", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "40px" }}>
           {filtered.map((v) => (
             <Link key={v.id || v.title} href={v.url} target="_blank" rel="noopener noreferrer" style={{ display: "block" }}>
               <div style={{ aspectRatio: "16/9", position: "relative", overflow: "hidden", background: "var(--ka-sand)" }}>

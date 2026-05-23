@@ -81,7 +81,7 @@ export default function HeaderClient({
   return (
     <>
       {/* ── Desktop / Tablet nav ─────────────────────────────────── */}
-      <nav className="ka-nav">
+      <nav className="ka-nav ka-rp">
         {/* Hamburger — mobile only */}
         <button
           className="ka-nav-hamburger"
