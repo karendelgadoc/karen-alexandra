@@ -192,6 +192,8 @@ function WorldMap({ active, setActive }: { active: number; setActive: (i: number
                 transition: "all .2s ease",
                 zIndex: isActive ? 5 : 2,
                 boxShadow: isActive ? "0 6px 20px rgba(0,0,0,0.18)" : "none",
+                transform: `scale(${1 / zoom})`,
+                transformOrigin: "center center",
               }}
             >
               {p.n}
@@ -199,17 +201,19 @@ function WorldMap({ active, setActive }: { active: number; setActive: (i: number
           );
         })}
 
-        {/* Currently here badge */}
-        <div style={{
-          position: "absolute", right: 16, top: 16,
-          padding: "6px 12px",
-          background: "var(--ka-bg)", border: "1px solid var(--ka-line)",
-          fontFamily: "var(--ka-mono)", fontSize: 9, letterSpacing: "0.16em", textTransform: "uppercase",
-          color: "var(--ka-accent-deep)", display: "flex", alignItems: "center", gap: 8,
-        }}>
-          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--ka-accent-deep)", display: "inline-block" }} />
-          Currently · Madrid
-        </div>
+      </div>
+
+      {/* Currently here badge — outside scaled div so it stays fixed */}
+      <div style={{
+        position: "absolute", right: 16, top: 16,
+        padding: "6px 12px",
+        background: "var(--ka-bg)", border: "1px solid var(--ka-line)",
+        fontFamily: "var(--ka-mono)", fontSize: 9, letterSpacing: "0.16em", textTransform: "uppercase",
+        color: "var(--ka-accent-deep)", display: "flex", alignItems: "center", gap: 8,
+        zIndex: 10,
+      }}>
+        <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--ka-accent-deep)", display: "inline-block" }} />
+        Currently · Madrid
       </div>
 
       {/* Zoom controls */}

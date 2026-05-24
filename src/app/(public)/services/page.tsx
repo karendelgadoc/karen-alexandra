@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
+import { getAllPosts } from "@/lib/posts-db";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Services — Karen Alexandra",
@@ -66,12 +70,6 @@ const SV_PROCESS = [
   { num: "05", title: "Close & handover", when: "Final week", note: "A written handover, two months of after-care, and an open door." },
 ];
 
-const SV_CASE_LINKS = [
-  { brand: "Glent Shoes",       title: "Building a direct storefront from zero",   stat: "+218%", sub: "Return-customer rate",     slug: "case-study-little-black-shell" },
-  { brand: "Aman Resorts",      title: "A whisper-quiet content strategy",          stat: "3.2×",  sub: "Direct-bookings via editorial", slug: "case-studies" },
-  { brand: "Four Seasons × KA", title: "An ongoing editorial correspondence",       stat: "47",    sub: "Properties profiled",      slug: "case-studies" },
-];
-
 const SV_TESTIMONIALS = [
   { q: "I so appreciated your time! And after our call, I already got started on our new TikTok posting strategy. You're a rock star!", who: "Stacy Flax · Founder, Bored Rebel" },
   { q: "Had an insightful and inspiring chat with Karen today. We talked about my marketing strategy, pivots to a new ideal client, and emerging trends. I highly recommend connecting with her if you're looking to scale or pivot — her expertise in brand marketing and her kindness are off the charts!", who: "Sandra Kaye · Consulting client" },
@@ -86,7 +84,10 @@ const SV_FAQ = [
   { q: "How does this work with my existing team?", a: "I write for your team, not over them. The end-of-engagement document is designed to be handed off and lived with after I'm gone." },
 ];
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const allPosts = await getAllPosts().catch(() => []);
+  const casePosts = allPosts.slice(0, 3);
+
   return (
     <>
       {/* Hero */}
@@ -195,20 +196,18 @@ export default function ServicesPage() {
           <Link href="/case-studies" className="ka-arrow-link" style={{ fontSize: 10 }}>All case studies <span className="ka-arrow">→</span></Link>
         </div>
         <div className="ka-sv-case-grid">
-          {SV_CASE_LINKS.map((c, i) => (
-            <Link key={i} href={`/case-studies/${c.slug}`} style={{ display: "block", textDecoration: "none", color: "inherit", paddingTop: 32, borderTop: "1px solid var(--ka-ink)" }}>
-              <div className="ka-img" style={{ aspectRatio: "4/5", marginBottom: 28 }}>
-                <span className="ka-img-label">{c.brand}</span>
+          {casePosts.map((post, i) => (
+            <Link key={post.slug} href={`/case-studies/${post.slug}`} style={{ display: "block", textDecoration: "none", color: "inherit", paddingTop: 32, borderTop: "1px solid var(--ka-ink)" }}>
+              <div style={{ aspectRatio: "4/5", marginBottom: 28, position: "relative", overflow: "hidden", background: "var(--ka-sand)" }}>
+                {post.heroImage && (
+                  <Image src={post.heroImage} alt={post.heroAlt ?? post.title} fill style={{ objectFit: "cover" }} sizes="(max-width:767px) 100vw, 33vw" />
+                )}
               </div>
-              <div className="ka-eyebrow">{c.brand}</div>
+              <div className="ka-eyebrow">{post.category}</div>
               <h3 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(18px,2.5vw,30px)", fontStyle: i % 2 ? "italic" : "normal", lineHeight: 1.15, marginTop: 14 }}>
-                {c.title}
+                {post.title}
               </h3>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 24, paddingTop: 16, borderTop: "1px solid var(--ka-line)" }}>
-                <div>
-                  <div style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(24px,3vw,36px)", fontStyle: "italic", color: "var(--ka-accent-deep)", lineHeight: 1 }}>{c.stat}</div>
-                  <div className="ka-eyebrow" style={{ marginTop: 8 }}>{c.sub}</div>
-                </div>
+              <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "baseline", marginTop: 24, paddingTop: 16, borderTop: "1px solid var(--ka-line)" }}>
                 <span className="ka-eyebrow">Read →</span>
               </div>
             </Link>
