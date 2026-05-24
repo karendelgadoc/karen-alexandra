@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { WORLD_MAP_PATHS, WORLD_MAP_VIEWBOX } from "@/lib/world-map-paths";
 
@@ -60,6 +60,8 @@ function WorldMap({ active, setActive }: { active: number; setActive: (i: number
   const lastTouch = useRef<{ x: number; y: number } | null>(null);
   const lastPinchDist = useRef<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const isMouseDragging = useRef(false);
+  const lastMousePos = useRef<{ x: number; y: number } | null>(null);
   const MAX_ZOOM = 4;
 
   function clampPan(x: number, y: number, z: number) {
@@ -68,6 +70,58 @@ function WorldMap({ active, setActive }: { active: number; setActive: (i: number
     const lx = W * (z - 1) / (2 * z);
     const ly = H * (z - 1) / (2 * z);
     return { x: Math.max(-lx, Math.min(lx, x)), y: Math.max(-ly, Math.min(ly, y)) };
+  }
+
+  // Non-passive wheel listener so we can call preventDefault and stop page scroll
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const rect = el.getBoundingClientRect();
+      const dx = e.clientX - rect.left - rect.width / 2;
+      const dy = e.clientY - rect.top - rect.height / 2;
+      const factor = e.deltaY < 0 ? 1.15 : 1 / 1.15;
+      setZoom(z => {
+        const next = Math.max(1, Math.min(MAX_ZOOM, z * factor));
+        if (next === 1) { setPan({ x: 0, y: 0 }); return 1; }
+        const W2 = el.offsetWidth;
+        const H2 = el.offsetHeight;
+        setPan(p => {
+          const nx = p.x + dx * (1 / next - 1 / z);
+          const ny = p.y + dy * (1 / next - 1 / z);
+          const lx = W2 * (next - 1) / (2 * next);
+          const ly = H2 * (next - 1) / (2 * next);
+          return { x: Math.max(-lx, Math.min(lx, nx)), y: Math.max(-ly, Math.min(ly, ny)) };
+        });
+        return next;
+      });
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, []);
+
+  function handleMouseDown(e: React.MouseEvent) {
+    if (zoom <= 1) return;
+    e.preventDefault();
+    isMouseDragging.current = true;
+    lastMousePos.current = { x: e.clientX, y: e.clientY };
+    setIsDragging(true);
+  }
+
+  function handleMouseMove(e: React.MouseEvent) {
+    if (!isMouseDragging.current || !lastMousePos.current) return;
+    const dx = e.clientX - lastMousePos.current.x;
+    const dy = e.clientY - lastMousePos.current.y;
+    lastMousePos.current = { x: e.clientX, y: e.clientY };
+    setPan(p => clampPan(p.x + dx / zoom, p.y + dy / zoom, zoom));
+  }
+
+  function handleMouseUp() {
+    if (!isMouseDragging.current) return;
+    isMouseDragging.current = false;
+    lastMousePos.current = null;
+    setIsDragging(false);
   }
 
   function handleTouchStart(e: React.TouchEvent) {
@@ -137,10 +191,20 @@ function WorldMap({ active, setActive }: { active: number; setActive: (i: number
   return (
     <div
       ref={containerRef}
-      style={{ position: "relative", width: "100%", aspectRatio: `${1066 / 632}`, background: "var(--ka-bg)", border: "1px solid var(--ka-line)", overflow: "hidden", touchAction: zoom > 1 ? "none" : "auto" }}
+      style={{
+        position: "relative", width: "100%", aspectRatio: `${1066 / 632}`,
+        background: "var(--ka-bg)", border: "1px solid var(--ka-line)",
+        overflow: "hidden", touchAction: zoom > 1 ? "none" : "auto",
+        cursor: isDragging ? "grabbing" : (zoom > 1 ? "grab" : "default"),
+        userSelect: "none",
+      }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
     >
       {/* Scalable + pannable content */}
       <div style={{
