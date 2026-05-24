@@ -194,6 +194,12 @@ const fetchWOWEvents          = () => scrapeSiteEvents("https://wowconcept.com/b
 const fetchPedroDelHierroEvents = () => scrapeSiteEvents("https://www.pedrodelhierro.com/es/events",   "Pedro del Hierro, Madrid",             () => true);
 const fetchESDENEvents        = () => scrapeSiteEvents("https://www.esden.es/blog/",                    "ESDEN Business School, Madrid",        isFashionRelated);
 
+// MODAES agenda lists fashion events across all of Spain; keep Madrid only.
+const fetchMODAESEvents = async (): Promise<MadridEvent[]> => {
+  const events = await scrapeSiteEvents("https://www.modaes.com/agenda", "Madrid", isFashionRelated);
+  return events.filter((e) => /madrid/i.test(`${e.venue} ${e.name}`));
+};
+
 // ── Deduplication ──────────────────────────────────────────────────────────────
 
 function normalizeKey(name: string): string {
@@ -235,7 +241,7 @@ export async function GET(req: NextRequest) {
   try {
     const [
       ifema, ifemaFashion, museoTraje, romanticismo, casaEncendida,
-      isem, loewe, wow, pedroHierro, esden,
+      isem, loewe, wow, pedroHierro, esden, modaes,
     ] = await Promise.all([
       fetchIFEMAEvents(),
       fetchIFEMAFashionPages(),
@@ -247,12 +253,13 @@ export async function GET(req: NextRequest) {
       fetchWOWEvents(),
       fetchPedroDelHierroEvents(),
       fetchESDENEvents(),
+      fetchMODAESEvents(),
     ]);
 
     // Every event here comes from a real source with a real date — no fabrication.
     const merged = deduplicateEvents([
       ...ifema, ...ifemaFashion, ...museoTraje, ...romanticismo, ...casaEncendida,
-      ...isem, ...loewe, ...wow, ...pedroHierro, ...esden,
+      ...isem, ...loewe, ...wow, ...pedroHierro, ...esden, ...modaes,
     ]);
 
     // Drop any event whose link is broken so we never publish a dead URL.
@@ -269,6 +276,7 @@ export async function GET(req: NextRequest) {
       casaEncendida: casaEncendida.length, isem: isem.length,
       loewe: loewe.length, wow: wow.length,
       pedroHierro: pedroHierro.length, esden: esden.length,
+      modaes: modaes.length,
       droppedBrokenLinks: merged.length - valid.length,
     };
 

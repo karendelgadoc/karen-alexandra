@@ -58,22 +58,26 @@ export async function extractEventsWithLLM(
   sourceUrl: string,
 ): Promise<ExtractedEvent[]> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey || text.length < 50) return [];
+  if (!apiKey || text.length < 30) return [];
 
   const today = new Date().toISOString().slice(0, 10);
-  const prompt = `Extract upcoming fashion/design events in Madrid, Spain from this webpage text.
+  const prompt = `Extract upcoming fashion/design events that physically take place in MADRID, Spain from this webpage text.
 
 Today: ${today}
 Source URL: ${sourceUrl}
 
 Webpage text:
-${text.slice(0, 3500)}
+${text.slice(0, 9000)}
 
-Return ONLY a JSON array. Each item must have a specific future date (>= ${today}). Include fashion shows, exhibitions, pop-ups, workshops, fairs, boutique events, and design events in Madrid.
+Rules:
+- ONLY include events held in Madrid. EXCLUDE events in any other city (Barcelona, Valencia, Sevilla, Paris, Milan, London, Copenhagen, São Paulo, etc.).
+- Each event must have a specific future date (>= ${today}). If a year is missing, infer it from today's date.
+- Include fashion shows, exhibitions, pop-ups, workshops, fairs, conferences, boutique events, and design events.
 
+Return ONLY a JSON array:
 [{"name":"event name","startDate":"YYYY-MM-DD","venue":"venue name in Madrid","url":"direct event URL or ${sourceUrl}","type":"Show|Fair|Expo|Talk|Pop-up|Festival|Event"}]
 
-If no relevant upcoming events found, return [].`;
+If no upcoming Madrid events found, return [].`;
 
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), 15000);
@@ -88,7 +92,7 @@ If no relevant upcoming events found, return [].`;
       },
       body: JSON.stringify({
         model: "claude-haiku-4-5-20251001",
-        max_tokens: 512,
+        max_tokens: 900,
         messages: [{ role: "user", content: prompt }],
       }),
     });
