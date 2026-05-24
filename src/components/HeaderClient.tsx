@@ -19,7 +19,7 @@ const WORK_ITEMS = [
 
 const MOBILE_GROUPS = [
   {
-    label: "Read",
+    label: "Stories",
     items: [
       { name: "The Edit",      href: "/journal" },
       { name: "Fashion News",  href: "/fashion-news" },
@@ -205,7 +205,7 @@ export default function HeaderClient({
                   href={item.href}
                   className="ka-mobile-link"
                   style={{
-                    fontSize: group.label === "Read" ? 36 : 26,
+                    fontSize: group.label === "Stories" ? 36 : 26,
                     fontStyle: isActive(item.href) ? "italic" : "normal",
                   }}
                   onClick={() => setMobileOpen(false)}
