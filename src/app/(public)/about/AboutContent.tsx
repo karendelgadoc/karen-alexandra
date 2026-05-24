@@ -59,11 +59,15 @@ function WorldMap({ active, setActive }: { active: number; setActive: (i: number
   const [isDragging, setIsDragging] = useState(false);
   const lastTouch = useRef<{ x: number; y: number } | null>(null);
   const lastPinchDist = useRef<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const MAX_ZOOM = 4;
 
   function clampPan(x: number, y: number, z: number) {
-    const limit = ((z - 1) / z) * 50;
-    return { x: Math.max(-limit, Math.min(limit, x)), y: Math.max(-limit, Math.min(limit, y)) };
+    const W = containerRef.current?.offsetWidth ?? 400;
+    const H = containerRef.current?.offsetHeight ?? 240;
+    const lx = W * (z - 1) / (2 * z);
+    const ly = H * (z - 1) / (2 * z);
+    return { x: Math.max(-lx, Math.min(lx, x)), y: Math.max(-ly, Math.min(ly, y)) };
   }
 
   function handleTouchStart(e: React.TouchEvent) {
@@ -132,6 +136,7 @@ function WorldMap({ active, setActive }: { active: number; setActive: (i: number
 
   return (
     <div
+      ref={containerRef}
       style={{ position: "relative", width: "100%", aspectRatio: `${1066 / 632}`, background: "var(--ka-bg)", border: "1px solid var(--ka-line)", overflow: "hidden", touchAction: zoom > 1 ? "none" : "auto" }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
@@ -366,8 +371,9 @@ export default function AboutContent() {
         {/* Timeline */}
         <div style={{ marginTop: 80, paddingTop: 32, borderTop: "1px solid var(--ka-ink)" }}>
           <div className="ka-eyebrow" style={{ marginBottom: 24 }}>Chronological — the long version</div>
-          <div style={{ display: "grid", gridTemplateColumns: `repeat(${PLACES.length}, 1fr)`, position: "relative", overflowX: "auto" }}>
-            <div style={{ position: "absolute", top: 6, left: "4%", right: "4%", height: 1, background: "var(--ka-ink)", opacity: 0.4 }} />
+          <div style={{ overflowX: "auto" }}>
+          <div style={{ display: "grid", gridTemplateColumns: `repeat(${PLACES.length}, 1fr)`, position: "relative", minWidth: `${PLACES.length * 80}px` }}>
+            <div style={{ position: "absolute", top: 6, left: `${100 / (PLACES.length * 2)}%`, right: `${100 / (PLACES.length * 2)}%`, height: 1, background: "var(--ka-ink)", opacity: 0.4 }} />
             {PLACES.map((p, i) => (
               <button key={i}
                 onMouseEnter={() => setActive(i)}
@@ -392,6 +398,7 @@ export default function AboutContent() {
                 </div>
               </button>
             ))}
+          </div>
           </div>
         </div>
       </section>

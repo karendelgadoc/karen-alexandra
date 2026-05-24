@@ -17,6 +17,17 @@ const WORK_ITEMS = [
   { name: "Media Kit",    href: "/media-kit",    note: "Press" },
 ];
 
+const LEFT_LINKS: NavLink[] = [
+  { label: "The Edit",     href: "/journal" },
+  { label: "Fashion News", href: "/fashion-news" },
+  { label: "On Film",      href: "/watch" },
+];
+
+const RIGHT_LINKS: NavLink[] = [
+  { label: "About",   href: "/about" },
+  { label: "Contact", href: "/contact" },
+];
+
 const MOBILE_GROUPS = [
   {
     label: "Stories",
@@ -45,12 +56,14 @@ const MOBILE_GROUPS = [
 ];
 
 export default function HeaderClient({
-  leftLinks,
-  rightLinks,
+  leftLinks: _leftLinks,
+  rightLinks: _rightLinks,
 }: {
   leftLinks: NavLink[];
   rightLinks: NavLink[];
 }) {
+  const leftLinks = LEFT_LINKS;
+  const rightLinks = RIGHT_LINKS;
   const pathname = usePathname();
   const [workOpen, setWorkOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);

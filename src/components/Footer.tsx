@@ -33,7 +33,6 @@ export default function Footer() {
             <li><Link href="/fashion-news">Fashion News</Link></li>
             <li><Link href="/watch">On Film</Link></li>
             <li><Link href="/about">About</Link></li>
-            <li><Link href="/contact">Contact</Link></li>
           </ul>
         </div>
 
@@ -45,6 +44,7 @@ export default function Footer() {
             <li><Link href="/media-kit">Media Kit</Link></li>
             <li><Link href="/services">Services</Link></li>
             <li><Link href="/case-studies">Case Studies</Link></li>
+            <li><Link href="/contact">Contact</Link></li>
           </ul>
         </div>
 
