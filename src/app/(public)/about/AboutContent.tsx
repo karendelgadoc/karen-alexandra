@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { WORLD_MAP_PATHS, WORLD_MAP_VIEWBOX } from "@/lib/world-map-paths";
 
@@ -54,73 +54,171 @@ function WorldMapSVG() {
 }
 
 function WorldMap({ active, setActive }: { active: number; setActive: (i: number) => void }) {
-  return (
-    <div style={{ position: "relative", width: "100%", aspectRatio: `${1066 / 632}`, background: "var(--ka-bg)", border: "1px solid var(--ka-line)", overflow: "hidden" }}>
-      <div style={{ position: "absolute", inset: 0 }}>
-        <WorldMapSVG />
-      </div>
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const lastTouch = useRef<{ x: number; y: number } | null>(null);
+  const lastPinchDist = useRef<number | null>(null);
+  const MAX_ZOOM = 4;
 
-      {/* Connecting lines */}
-      <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}>
-        {PLACES.slice(0, -1).map((p, i) => {
-          const next = PLACES[i + 1];
-          const dim = active !== null && active !== i && active !== i + 1;
+  function clampPan(x: number, y: number, z: number) {
+    const limit = ((z - 1) / z) * 50;
+    return { x: Math.max(-limit, Math.min(limit, x)), y: Math.max(-limit, Math.min(limit, y)) };
+  }
+
+  function handleTouchStart(e: React.TouchEvent) {
+    setIsDragging(true);
+    if (e.touches.length === 1) {
+      lastTouch.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    } else if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      lastPinchDist.current = Math.hypot(dx, dy);
+    }
+  }
+
+  function handleTouchMove(e: React.TouchEvent) {
+    if (e.touches.length === 1 && zoom > 1 && lastTouch.current) {
+      e.preventDefault();
+      const dx = e.touches[0].clientX - lastTouch.current.x;
+      const dy = e.touches[0].clientY - lastTouch.current.y;
+      lastTouch.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      setPan(p => clampPan(p.x + dx / zoom, p.y + dy / zoom, zoom));
+    } else if (e.touches.length === 2 && lastPinchDist.current !== null) {
+      e.preventDefault();
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.hypot(dx, dy);
+      const scale = dist / lastPinchDist.current;
+      lastPinchDist.current = dist;
+      setZoom(z => {
+        const next = Math.max(1, Math.min(MAX_ZOOM, z * scale));
+        if (next === 1) setPan({ x: 0, y: 0 });
+        return next;
+      });
+    }
+  }
+
+  function handleTouchEnd() {
+    setIsDragging(false);
+    lastTouch.current = null;
+    lastPinchDist.current = null;
+  }
+
+  function zoomIn() {
+    setZoom(z => Math.min(z + 0.75, MAX_ZOOM));
+  }
+
+  function zoomOut() {
+    setZoom(z => {
+      const next = Math.max(z - 0.75, 1);
+      if (next === 1) setPan({ x: 0, y: 0 });
+      return next;
+    });
+  }
+
+  const btnStyle: React.CSSProperties = {
+    width: 32, height: 32,
+    background: "var(--ka-bg)",
+    border: "1px solid var(--ka-ink)",
+    cursor: "pointer",
+    fontSize: 18,
+    fontWeight: 300,
+    display: "flex", alignItems: "center", justifyContent: "center",
+    color: "var(--ka-ink)",
+    lineHeight: 1,
+    fontFamily: "var(--ka-body)",
+  };
+
+  return (
+    <div
+      style={{ position: "relative", width: "100%", aspectRatio: `${1066 / 632}`, background: "var(--ka-bg)", border: "1px solid var(--ka-line)", overflow: "hidden", touchAction: zoom > 1 ? "none" : "auto" }}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Scalable + pannable content */}
+      <div style={{
+        position: "absolute", inset: 0,
+        transform: `scale(${zoom}) translate(${pan.x}px, ${pan.y}px)`,
+        transformOrigin: "center center",
+        transition: isDragging ? "none" : "transform 0.25s ease",
+      }}>
+        <div style={{ position: "absolute", inset: 0 }}>
+          <WorldMapSVG />
+        </div>
+
+        {/* Connecting lines */}
+        <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}>
+          {PLACES.slice(0, -1).map((p, i) => {
+            const next = PLACES[i + 1];
+            const dim = active !== null && active !== i && active !== i + 1;
+            return (
+              <line key={i}
+                x1={`${p.x}%`} y1={`${p.y}%`} x2={`${next.x}%`} y2={`${next.y}%`}
+                stroke="var(--ka-accent-deep)" strokeOpacity={dim ? "0.15" : "0.5"}
+                strokeWidth="1" strokeDasharray="3 4"
+              />
+            );
+          })}
+        </svg>
+
+        {/* Dots */}
+        {PLACES.map((p, i) => {
+          const isActive = active === i;
+          const isCurrent = i === PLACES.length - 1;
+          const sz = isActive ? 36 : 24;
           return (
-            <line key={i}
-              x1={`${p.x}%`} y1={`${p.y}%`} x2={`${next.x}%`} y2={`${next.y}%`}
-              stroke="var(--ka-accent-deep)" strokeOpacity={dim ? "0.15" : "0.5"}
-              strokeWidth="1" strokeDasharray="3 4"
-            />
+            <button
+              key={i}
+              onMouseEnter={() => setActive(i)}
+              onFocus={() => setActive(i)}
+              onClick={() => setActive(i)}
+              aria-label={`${p.city}, ${p.country}`}
+              style={{
+                position: "absolute",
+                left: `calc(${p.x}% - ${sz / 2}px)`,
+                top: `calc(${p.y}% - ${sz / 2}px)`,
+                width: sz, height: sz,
+                borderRadius: "50%",
+                background: isActive ? "var(--ka-ink)" : (isCurrent ? "var(--ka-accent-deep)" : "var(--ka-bg)"),
+                color: isActive || isCurrent ? "var(--ka-bg)" : "var(--ka-ink)",
+                border: `1.5px solid ${isCurrent ? "var(--ka-accent-deep)" : "var(--ka-ink)"}`,
+                cursor: "pointer",
+                fontFamily: "var(--ka-mono)",
+                fontSize: 10,
+                letterSpacing: "0.04em",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                transition: "all .2s ease",
+                zIndex: isActive ? 5 : 2,
+                boxShadow: isActive ? "0 6px 20px rgba(0,0,0,0.18)" : "none",
+              }}
+            >
+              {p.n}
+            </button>
           );
         })}
-      </svg>
 
-      {/* Dots */}
-      {PLACES.map((p, i) => {
-        const isActive = active === i;
-        const isCurrent = i === PLACES.length - 1;
-        const sz = isActive ? 36 : 24;
-        return (
-          <button
-            key={i}
-            onMouseEnter={() => setActive(i)}
-            onFocus={() => setActive(i)}
-            onClick={() => setActive(i)}
-            aria-label={`${p.city}, ${p.country}`}
-            style={{
-              position: "absolute",
-              left: `calc(${p.x}% - ${sz / 2}px)`,
-              top: `calc(${p.y}% - ${sz / 2}px)`,
-              width: sz, height: sz,
-              borderRadius: "50%",
-              background: isActive ? "var(--ka-ink)" : (isCurrent ? "var(--ka-accent-deep)" : "var(--ka-bg)"),
-              color: isActive || isCurrent ? "var(--ka-bg)" : "var(--ka-ink)",
-              border: `1.5px solid ${isCurrent ? "var(--ka-accent-deep)" : "var(--ka-ink)"}`,
-              cursor: "pointer",
-              fontFamily: "var(--ka-mono)",
-              fontSize: 10,
-              letterSpacing: "0.04em",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              transition: "all .2s ease",
-              zIndex: isActive ? 5 : 2,
-              boxShadow: isActive ? "0 6px 20px rgba(0,0,0,0.18)" : "none",
-            }}
-          >
-            {p.n}
-          </button>
-        );
-      })}
+        {/* Currently here badge */}
+        <div style={{
+          position: "absolute", right: 16, top: 16,
+          padding: "6px 12px",
+          background: "var(--ka-bg)", border: "1px solid var(--ka-line)",
+          fontFamily: "var(--ka-mono)", fontSize: 9, letterSpacing: "0.16em", textTransform: "uppercase",
+          color: "var(--ka-accent-deep)", display: "flex", alignItems: "center", gap: 8,
+        }}>
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--ka-accent-deep)", display: "inline-block" }} />
+          Currently · Madrid
+        </div>
+      </div>
 
-      {/* Currently here badge */}
-      <div style={{
-        position: "absolute", right: 16, top: 16,
-        padding: "6px 12px",
-        background: "var(--ka-bg)", border: "1px solid var(--ka-line)",
-        fontFamily: "var(--ka-mono)", fontSize: 9, letterSpacing: "0.16em", textTransform: "uppercase",
-        color: "var(--ka-accent-deep)", display: "flex", alignItems: "center", gap: 8,
-      }}>
-        <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--ka-accent-deep)", display: "inline-block" }} />
-        Currently · Madrid
+      {/* Zoom controls */}
+      <div style={{ position: "absolute", right: 12, bottom: 12, display: "flex", flexDirection: "column", gap: 2, zIndex: 10 }}>
+        <button onClick={zoomIn} style={btnStyle} aria-label="Zoom in">+</button>
+        <button onClick={zoomOut} disabled={zoom <= 1} style={{ ...btnStyle, opacity: zoom <= 1 ? 0.35 : 1, cursor: zoom <= 1 ? "default" : "pointer" }} aria-label="Zoom out">−</button>
+        {zoom > 1 && (
+          <button onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }} style={{ ...btnStyle, fontSize: 12 }} aria-label="Reset zoom">↺</button>
+        )}
       </div>
     </div>
   );
@@ -193,7 +291,7 @@ export default function AboutContent() {
           <Link href="/media-kit" className="ka-arrow-link" style={{ fontSize: 10 }}>Press kit <span className="ka-arrow">→</span></Link>
         </div>
         <div className="ka-about-bio-grid">
-          <div style={{ position: "sticky", top: 32 }}>
+          <div className="ka-about-bio-sticky" style={{ position: "sticky", top: 32 }}>
             <img
               src="https://5xkq5mmr.us-east.insforge.app/api/storage/buckets/blog-images/objects/site%2FIMG_4534.jpg"
               alt="Karen Alexandra"

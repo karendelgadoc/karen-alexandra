@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
+import { getAllBlogPosts } from "@/lib/blog-db";
+import { getLatestVideos } from "@/lib/youtube";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Media Kit — Karen Alexandra",
@@ -47,7 +52,14 @@ const MK_SAMPLES = [
   { type: "Editorial film",    title: "A weekend at Aman Venice — what to pack, what to skip.",        meta: "YouTube · 68K views"       },
 ];
 
-export default function MediaKitPage() {
+export default async function MediaKitPage() {
+  const [blogPosts, videos] = await Promise.all([
+    getAllBlogPosts().catch(() => []),
+    getLatestVideos(2).catch(() => []),
+  ]);
+  const recentPosts = blogPosts.slice(0, 2);
+  const recentVideos = videos.slice(0, 2);
+
   return (
     <>
       {/* Hero */}
@@ -209,15 +221,47 @@ export default function MediaKitPage() {
           <Link href="/journal" className="ka-arrow-link" style={{ fontSize: 10 }}>Full library <span className="ka-arrow">→</span></Link>
         </div>
         <div className="ka-mk-content-grid">
-          {MK_SAMPLES.map((s, i) => (
+          {recentPosts.map((post, i) => (
+            <Link key={post.slug} href={`/journal/${post.slug}`} style={{ textDecoration: "none", color: "inherit" }}>
+              <article>
+                <div style={{ aspectRatio: "4/5", position: "relative", overflow: "hidden", background: "var(--ka-sand)" }}>
+                  {post.heroImage
+                    ? <Image src={post.heroImage} alt={post.heroAlt} fill style={{ objectFit: "cover" }} sizes="25vw" />
+                    : <div className="ka-img" style={{ position: "absolute", inset: 0 }}><span className="ka-img-label">Long-form letter</span></div>
+                  }
+                </div>
+                <div className="ka-eyebrow" style={{ marginTop: 16, color: "var(--ka-accent-deep)" }}>Long-form letter</div>
+                <h4 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(16px,1.5vw,20px)", fontStyle: i % 2 ? "italic" : "normal", lineHeight: 1.3, marginTop: 8 }}>
+                  {post.title}
+                </h4>
+                <div className="ka-card-meta" style={{ marginTop: 12 }}>The Edit · {post.date}</div>
+              </article>
+            </Link>
+          ))}
+          {recentVideos.map((video, i) => (
+            <a key={video.id} href={video.url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", color: "inherit" }}>
+              <article>
+                <div style={{ aspectRatio: "16/9", position: "relative", overflow: "hidden", background: "var(--ka-sand)" }}>
+                  <Image src={video.thumbnail} alt={video.title} fill style={{ objectFit: "cover" }} sizes="25vw" />
+                </div>
+                <div className="ka-eyebrow" style={{ marginTop: 16, color: "var(--ka-accent-deep)" }}>Film · {video.category}</div>
+                <h4 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(16px,1.5vw,20px)", fontStyle: i % 2 ? "normal" : "italic", lineHeight: 1.3, marginTop: 8 }}>
+                  {video.title}
+                </h4>
+                <div className="ka-card-meta" style={{ marginTop: 12 }}>
+                  YouTube{video.views ? ` · ${video.views} views` : ""}{video.length !== "—" ? ` · ${video.length}` : ""}
+                </div>
+              </article>
+            </a>
+          ))}
+          {/* Fallback placeholders if fewer than 4 items fetched */}
+          {recentPosts.length === 0 && recentVideos.length === 0 && MK_SAMPLES.map((s, i) => (
             <article key={i}>
               <div className="ka-img" style={{ aspectRatio: i === 1 || i === 3 ? "16/9" : "4/5" }}>
                 <span className="ka-img-label">{s.type}</span>
               </div>
               <div className="ka-eyebrow" style={{ marginTop: 16, color: "var(--ka-accent-deep)" }}>{s.type}</div>
-              <h4 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(16px,1.5vw,20px)", fontStyle: i % 2 ? "italic" : "normal", lineHeight: 1.3, marginTop: 8 }}>
-                {s.title}
-              </h4>
+              <h4 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(16px,1.5vw,20px)", fontStyle: i % 2 ? "italic" : "normal", lineHeight: 1.3, marginTop: 8 }}>{s.title}</h4>
               <div className="ka-card-meta" style={{ marginTop: 12 }}>{s.meta}</div>
             </article>
           ))}

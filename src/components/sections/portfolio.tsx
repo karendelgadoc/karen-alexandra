@@ -80,9 +80,9 @@ export function SelectedWorkSection({ posts }: { posts: Post[] }) {
         <Link href="/case-studies" className="ka-arrow-link">All case studies <span className="ka-arrow">→</span></Link>
       </div>
       {posts.map((post, i) => (
-        <Link key={post.slug} href={`/case-studies/${post.slug}`} className="ka-rp ka-r-stack"
+        <Link key={post.slug} href={`/case-studies/${post.slug}`} className="ka-rp ka-r-stack ka-case-row"
           style={{ display: "grid", gridTemplateColumns: "1fr 1fr", padding: "0 64px", marginBottom: "64px", gap: "64px", alignItems: "center", textDecoration: "none" }}>
-          <div style={{ aspectRatio: "4/3", position: "relative", overflow: "hidden", background: "var(--ka-sand)", order: i % 2 === 0 ? 0 : 1 }}>
+          <div className="ka-case-image" style={{ aspectRatio: "4/3", position: "relative", overflow: "hidden", background: "var(--ka-sand)", order: i % 2 === 0 ? 0 : 1 }}>
             {post.heroImage && <Image src={post.heroImage} alt={post.heroAlt} fill style={{ objectFit: "cover" }} sizes="50vw" />}
           </div>
           <div style={{ order: i % 2 === 0 ? 1 : 0 }}>

@@ -165,7 +165,8 @@ export default function FashionNewsPage() {
           </div>
           <a href="#" className="ka-arrow-link">Full calendar <span className="ka-arrow">→</span></a>
         </div>
-        <div className="ka-fn-calendar-grid">
+        <div style={{ overflowX: "auto" }}>
+        <div className="ka-fn-calendar-grid" style={{ minWidth: 560 }}>
           {FN_CALENDAR.map((d, i) => (
             <div
               key={i}
@@ -195,6 +196,7 @@ export default function FashionNewsPage() {
               </div>
             </div>
           ))}
+        </div>
         </div>
       </section>
 

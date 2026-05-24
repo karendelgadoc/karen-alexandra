@@ -539,10 +539,14 @@ img {
 
 /* ── Responsive: Mobile (<768px) ────────────────────────── */
 @media (max-width: 767px) {
-  /* Footer — stacked, collapsible */
+  /* Footer — stacked with clear section spacing */
   .ka-footer-grid {
     grid-template-columns: 1fr !important;
-    gap: 0 !important;
+    gap: 28px !important;
+  }
+  .ka-footer-grid > div:not(:first-child) {
+    padding-top: 8px;
+    border-top: 1px solid var(--ka-line);
   }
   .ka-footer-col:nth-child(n) {
     display: block;
@@ -1179,6 +1183,16 @@ img {
   .ka-sv-case-grid        { grid-template-columns: 1fr 1fr; gap: 32px; }
   .ka-sv-testimonials-grid { grid-template-columns: 1fr; }
   .ka-sv-cta-grid         { grid-template-columns: 1fr; }
+}
+
+/* About bio: remove sticky positioning on tablet/mobile so portrait doesn't overlap text */
+@media (max-width: 1023px) {
+  .ka-about-bio-sticky { position: static !important; top: auto !important; }
+}
+
+/* Portfolio case studies: always show image above text on mobile */
+@media (max-width: 767px) {
+  .ka-case-row .ka-case-image { order: -1 !important; }
 }
 
 /* ── Mobile overrides (<768px) for new page classes ──────── */
