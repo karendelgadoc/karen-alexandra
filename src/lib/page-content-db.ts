@@ -267,7 +267,16 @@ export const getPortfolioContent = () => fetchPageContent<PortfolioContent>("por
 export const getContactContent   = () => fetchPageContent<ContactContent>("contact", CONTACT_DEFAULTS);
 export const getWatchContent     = () => fetchPageContent<WatchContent>("watch", WATCH_DEFAULTS);
 export const getAboutContent     = () => fetchPageContent<AboutContent>("about", ABOUT_DEFAULTS);
-export const getMenuContent      = () => fetchPageContent<MenuContent>("menu", MENU_DEFAULTS);
+export async function getMenuContent(): Promise<MenuContent> {
+  const stored = await fetchPageContent<MenuContent>("menu", MENU_DEFAULTS);
+  // If DB has stale arrays that are missing new default links, merge them in
+  const storedLeft  = new Set(stored.leftLinks.map((l) => l.href));
+  const storedRight = new Set(stored.rightLinks.map((l) => l.href));
+  return {
+    leftLinks:  [...stored.leftLinks,  ...MENU_DEFAULTS.leftLinks.filter( (l) => !storedLeft.has(l.href))],
+    rightLinks: [...stored.rightLinks, ...MENU_DEFAULTS.rightLinks.filter((l) => !storedRight.has(l.href))],
+  };
+}
 
 // ── Admin write API ───────────────────────────────────────────────────────────
 

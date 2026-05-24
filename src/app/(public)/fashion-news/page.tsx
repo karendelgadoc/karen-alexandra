@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { getAllFashionNewsPosts } from "@/lib/blog-db";
+import { getMadridCalendarEvents } from "@/lib/madrid-events-db";
 
 export const dynamic = "force-dynamic";
 
@@ -37,15 +38,6 @@ const FN_SECONDARY = [
 
 const FN_TAGS = ["All news", "Runway", "Couture Week", "Street Style", "Drops", "Designer", "Critique", "Houses", "Beauty", "Industry"];
 
-const FN_CALENDAR = [
-  { d: "MON 26", e: "Schiaparelli Couture",   loc: "Paris",    type: "Show",  cur: false },
-  { d: "TUE 27", e: "Phoebe Philo C03 drop",  loc: "Online",   type: "Drop",  cur: true  },
-  { d: "WED 28", e: "Margiela Artisanal",      loc: "Paris",    type: "Show",  cur: false },
-  { d: "THU 29", e: "The Row resort preview",  loc: "New York", type: "Press", cur: false },
-  { d: "FRI 30", e: "Hermès leather AW story", loc: "Milan",    type: "Story", cur: false },
-  { d: "SAT 31", e: "Cocoa Brown × KA letter", loc: "Substack", type: "Issue", cur: false },
-  { d: "SUN 01", e: "Loewe pre-fall lookbook", loc: "Madrid",   type: "Book",  cur: false },
-];
 
 const FN_GRID_POSTS = [
   { tag: "Critique",  title: "On the front row's quiet retreat from the phone.",                   excerpt: "Three weeks of shows watched from front, side, and standing — a small case study on attention as the new luxury.", read: "9 min",  date: "May 20" },
@@ -66,7 +58,10 @@ const FN_MOST_READ = [
 ];
 
 export default async function FashionNewsPage() {
-  const dbPosts = await getAllFashionNewsPosts().catch(() => []);
+  const [dbPosts, calendarEvents] = await Promise.all([
+    getAllFashionNewsPosts().catch(() => []),
+    getMadridCalendarEvents(),
+  ]);
   const featuredPost = dbPosts[0] ?? null;
 
   return (
@@ -187,45 +182,52 @@ export default async function FashionNewsPage() {
       <section style={{ padding: "clamp(48px,7vw,96px) clamp(20px,5vw,64px)", borderBottom: "1px solid var(--ka-line)", background: "var(--ka-bg-soft)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "end", marginBottom: 56, paddingBottom: 24, borderBottom: "1px solid var(--ka-ink)", flexWrap: "wrap", gap: 16 }}>
           <div>
-            <div className="ka-eyebrow" style={{ marginBottom: 16 }}>N° 02 — This week&apos;s calendar</div>
+            <div className="ka-eyebrow" style={{ marginBottom: 16 }}>N° 02 — Madrid fashion calendar</div>
             <h2 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(28px,4vw,56px)", fontStyle: "italic" }}>
-              Couture week, in seven dates.
+              Upcoming events in the city.
             </h2>
           </div>
-          <a href="#" className="ka-arrow-link">Full calendar <span className="ka-arrow">→</span></a>
+          <a href="https://www.ifema.es" target="_blank" rel="noopener noreferrer" className="ka-arrow-link">
+            All events <span className="ka-arrow">→</span>
+          </a>
         </div>
-        <div style={{ overflowX: "auto" }}>
-        <div className="ka-fn-calendar-grid" style={{ minWidth: 560 }}>
-          {FN_CALENDAR.map((d, i) => (
-            <div
-              key={i}
-              className={`ka-fn-calendar-day${d.cur ? " today" : ""}`}
-              style={{
-                background: d.cur ? "var(--ka-ink)" : "var(--ka-bg)",
-                color: d.cur ? "var(--ka-bg)" : "var(--ka-ink)",
-                border: `1px solid ${d.cur ? "var(--ka-ink)" : "var(--ka-line)"}`,
-                minHeight: "clamp(140px,15vw,200px)",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                padding: "clamp(14px,2vw,24px) clamp(8px,1.2vw,16px)",
-                textAlign: "left",
-              }}
-            >
-              <div>
-                <div className="ka-eyebrow" style={{ color: d.cur ? "rgba(250,247,242,0.6)" : "var(--ka-muted)", fontSize: "clamp(8px,0.9vw,10px)" }}>
-                  {d.d}
+        <div className="ka-fn-calendar-wrap">
+          <div className="ka-fn-calendar-grid">
+            {calendarEvents.map((ev, i) => (
+              <a
+                key={ev.id}
+                href={ev.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`ka-fn-calendar-day${ev.isNext ? " today" : ""}`}
+                style={{
+                  background: ev.isNext ? "var(--ka-ink)" : "var(--ka-bg)",
+                  color: ev.isNext ? "var(--ka-bg)" : "var(--ka-ink)",
+                  border: `1px solid ${ev.isNext ? "var(--ka-ink)" : "var(--ka-line)"}`,
+                  minHeight: "clamp(140px,15vw,200px)",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  padding: "clamp(14px,2vw,24px) clamp(8px,1.2vw,16px)",
+                  textAlign: "left",
+                  textDecoration: "none",
+                  cursor: "pointer",
+                }}
+              >
+                <div>
+                  <div className="ka-eyebrow" style={{ color: ev.isNext ? "rgba(250,247,242,0.6)" : "var(--ka-muted)", fontSize: "clamp(8px,0.9vw,10px)" }}>
+                    {ev.date}
+                  </div>
+                  <h4 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(13px,1.5vw,20px)", lineHeight: 1.2, marginTop: 12, fontStyle: i % 2 ? "italic" : "normal", color: ev.isNext ? "var(--ka-bg)" : "var(--ka-ink)" }}>
+                    {ev.name}
+                  </h4>
                 </div>
-                <h4 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(13px,1.5vw,20px)", lineHeight: 1.2, marginTop: 12, fontStyle: i % 2 ? "italic" : "normal", color: d.cur ? "var(--ka-bg)" : "var(--ka-ink)" }}>
-                  {d.e}
-                </h4>
-              </div>
-              <div className="ka-eyebrow" style={{ fontSize: "clamp(8px,0.8vw,10px)", color: d.cur ? "var(--ka-accent)" : "var(--ka-accent-deep)" }}>
-                {d.type} · {d.loc}
-              </div>
-            </div>
-          ))}
-        </div>
+                <div className="ka-eyebrow" style={{ fontSize: "clamp(8px,0.8vw,10px)", color: ev.isNext ? "var(--ka-accent)" : "var(--ka-accent-deep)" }}>
+                  {ev.type} · {ev.venue}
+                </div>
+              </a>
+            ))}
+          </div>
         </div>
       </section>
 

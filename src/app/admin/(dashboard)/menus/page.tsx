@@ -159,7 +159,7 @@ export default function MenusPage() {
       )}
 
       <div className="mt-8 p-4 bg-stone-50 border border-stone-200 rounded text-sm text-stone-500">
-        <strong className="text-stone-700">Tip:</strong> Use up/down arrows to reorder links. The left nav appears on the left side of the header; the right nav on the right.
+        <strong className="text-stone-700">Tip:</strong> Use up/down arrows to reorder links. The left nav appears on the left side of the header; the right nav on the right (Work dropdown is always fixed). Changes go live within 60 seconds after saving.
       </div>
     </div>
   );

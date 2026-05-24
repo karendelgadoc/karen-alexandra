@@ -30,6 +30,9 @@ export default function AdminBlogPage() {
     });
     if (res.ok) {
       setPosts((prev) => prev.filter((p) => p.id !== id));
+    } else {
+      const err = await res.json().catch(() => ({}));
+      alert(`Failed to move: ${err.error ?? res.status}`);
     }
   }
 

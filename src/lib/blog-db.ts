@@ -263,7 +263,13 @@ export async function updateBlogPost(id: string, input: Partial<BlogPostInput>):
     .select();
 
   if (error) throw new Error(error.message);
-  return toPost((data as DbBlogPost[])[0]);
+  const rows = data as DbBlogPost[] | null;
+  if (rows && rows.length > 0) return toPost(rows[0]);
+
+  // PostgREST returned no rows — re-fetch to confirm the update landed
+  const refetched = await getBlogPostById(id);
+  if (!refetched) throw new Error("Post not found after update");
+  return refetched;
 }
 
 export async function deleteBlogPost(id: string): Promise<void> {

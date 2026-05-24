@@ -11,6 +11,17 @@ const PAGE_DESCRIPTIONS: Record<string, string> = {
   about:     "Hero copy, portrait image, gallery images",
 };
 
+const EXTRA_PAGES = [
+  {
+    key: "fashion-news",
+    label: "Fashion News",
+    description: "Articles, calendar events, and the Madrid fashion digest — managed in the Fashion News section",
+    editHref: "/admin/fashion-news",
+    editLabel: "Manage Articles →",
+    builderHref: null,
+  },
+];
+
 export default function PagesListPage() {
   return (
     <div>
@@ -43,6 +54,26 @@ export default function PagesListPage() {
                 className="text-sm px-4 py-2 bg-stone-900 text-white rounded hover:bg-stone-700 transition-colors font-medium"
               >
                 Edit Content →
+              </Link>
+            </div>
+          </div>
+        ))}
+
+        {EXTRA_PAGES.map((p) => (
+          <div
+            key={p.key}
+            className="flex items-center justify-between p-5 bg-white border border-stone-200 rounded-lg"
+          >
+            <div className="flex-1 min-w-0 mr-6">
+              <p className="font-medium text-stone-900">{p.label}</p>
+              <p className="text-sm text-stone-400 mt-0.5">{p.description}</p>
+            </div>
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <Link
+                href={p.editHref}
+                className="text-sm px-4 py-2 bg-stone-900 text-white rounded hover:bg-stone-700 transition-colors font-medium"
+              >
+                {p.editLabel}
               </Link>
             </div>
           </div>

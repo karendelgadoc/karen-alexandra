@@ -666,7 +666,13 @@ img {
   .ka-fn-long-grid {
     grid-template-columns: 1fr !important;
   }
-  .ka-fn-calendar { overflow-x: auto; }
+  .ka-fn-calendar-wrap { overflow-x: visible; }
+  .ka-fn-calendar-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    border: none !important;
+    gap: 8px !important;
+    min-width: unset !important;
+  }
   .ka-fn-hero-headline { font-size: clamp(56px, 18vw, 96px) !important; }
 
   /* About */
@@ -724,11 +730,15 @@ img {
   text-decoration: none;
 }
 .ka-fn-tag-pill:hover { background: var(--ka-line); }
+.ka-fn-calendar-wrap {
+  overflow-x: auto;
+}
 .ka-fn-calendar-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 0;
   border: 1px solid var(--ka-line);
+  min-width: 480px;
 }
 .ka-fn-calendar-day {
   padding: 12px 8px;
