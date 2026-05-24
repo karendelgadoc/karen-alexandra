@@ -57,19 +57,43 @@ const FN_MOST_READ = [
   "The Loewe whisper, decoded — twelve looks, read in the order shown.",
 ];
 
+function toRoman(n: number): string {
+  const map: [number, string][] = [
+    [1000, "M"], [900, "CM"], [500, "D"], [400, "CD"], [100, "C"], [90, "XC"],
+    [50, "L"], [40, "XL"], [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"],
+  ];
+  let r = "";
+  for (const [v, s] of map) while (n >= v) { r += s; n -= v; }
+  return r;
+}
+
+// Current date in Madrid, formatted like "Saturday 23 May MMXXVI"
+function madridDateLine(): string {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Madrid",
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).formatToParts(new Date());
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
+  return `${get("weekday")} ${get("day")} ${get("month")} ${toRoman(Number(get("year")))}`;
+}
+
 export default async function FashionNewsPage() {
   const [dbPosts, calendarEvents] = await Promise.all([
     getAllFashionNewsPosts().catch(() => []),
     getMadridCalendarEvents(),
   ]);
   const featuredPost = dbPosts[0] ?? null;
+  const dateLine = madridDateLine();
 
   return (
     <>
       {/* Date bar */}
       <div className="ka-fn-date-bar" style={{ padding: "10px clamp(20px,5vw,64px)" }}>
         <span>Vol. I — Issue N° 22</span>
-        <span>Updated daily · Saturday 23 May MMXXVI</span>
+        <span>Updated daily · {dateLine}</span>
         <span style={{ color: "var(--ka-accent-deep)" }}>● Live — Couture Week, Paris</span>
       </div>
 
