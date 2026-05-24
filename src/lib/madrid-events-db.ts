@@ -21,6 +21,9 @@ const STATIC_FALLBACK: MadridEvent[] = [
   { id: "s4", date: "FEB 03", rawDate: "2027-02-03", name: "Intergift",                          venue: "IFEMA Madrid", type: "Fair", url: "https://www.ifema.es/en/intergift",   isNext: false },
 ];
 
+// Major recurring Madrid fashion fairs that should always be featured.
+const MARQUEE_EVENT = /mercedes.?benz fashion week|mbfw|\bmomad\b|bisutex/i;
+
 function normalizeKey(name: string): string {
   return name
     .toLowerCase()
@@ -65,34 +68,44 @@ export async function saveMadridManualEvents(events: MadridEvent[]): Promise<voi
 export async function getMadridCalendarEvents(): Promise<MadridEvent[]> {
   const today = new Date().toISOString().slice(0, 10);
 
+  const LIMIT = 6;
+
   try {
     const [auto, manual] = await Promise.all([
       getMadridAutoEvents().catch(() => []),
       getMadridManualEvents().catch(() => []),
     ]);
 
-    const seen = new Set<string>();
-    const result: MadridEvent[] = [];
-
-    const add = (ev: MadridEvent) => {
-      if (ev.rawDate < today) return;
-      const key = normalizeKey(ev.name);
-      if (seen.has(key)) return;
-      seen.add(key);
-      result.push(ev);
+    // Keep upcoming, dedupe by normalized name, sort soonest first
+    const dedupeFuture = (list: MadridEvent[]): MadridEvent[] => {
+      const seen = new Set<string>();
+      const out: MadridEvent[] = [];
+      for (const ev of list) {
+        if (ev.rawDate < today) continue;
+        const key = normalizeKey(ev.name);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push(ev);
+      }
+      return out.sort((a, b) => a.rawDate.localeCompare(b.rawDate));
     };
 
-    // Manual events first (user-curated, always surface)
-    manual.forEach(add);
-    // Auto-scraped fill remaining slots
-    auto.forEach(add);
+    const manualFuture = dedupeFuture(manual);
+    const manualKeys = new Set(manualFuture.map((e) => normalizeKey(e.name)));
+    const autoFuture = dedupeFuture(auto).filter((e) => !manualKeys.has(normalizeKey(e.name)));
 
-    const sorted = result
+    // Marquee = the major recurring Madrid fashion fairs; always feature these.
+    const marquee = autoFuture.filter((e) => MARQUEE_EVENT.test(e.name));
+    const regular = autoFuture.filter((e) => !MARQUEE_EVENT.test(e.name));
+
+    // Selection priority: manual picks → marquee fairs → soonest regular events.
+    // Each group is already sorted soonest-first; cap at LIMIT, then sort by date.
+    const final = [...manualFuture, ...marquee, ...regular]
+      .slice(0, LIMIT)
       .sort((a, b) => a.rawDate.localeCompare(b.rawDate))
-      .slice(0, 6)
       .map((e, i) => ({ ...e, isNext: i === 0 }));
 
-    return sorted.length > 0 ? sorted : STATIC_FALLBACK;
+    return final.length > 0 ? final : STATIC_FALLBACK;
   } catch {
     return STATIC_FALLBACK;
   }

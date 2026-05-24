@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { saveMadridCalendarEvents, type MadridEvent } from "@/lib/madrid-events-db";
-import { htmlToText, extractMetaContext, extractEventsWithLLM } from "@/lib/event-extractor";
+import { htmlToText, extractMetaContext, extractEventsWithLLM, filterFashionEvents } from "@/lib/event-extractor";
 
 const MONTH_ABBR = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
 
@@ -252,6 +252,66 @@ async function fetchMODAESEvents(): Promise<MadridEvent[]> {
   return events;
 }
 
+// Eventbrite's Madrid fashion discovery page embeds an ItemList JSON-LD with
+// each event's name, date, venue, locality, and its own URL. Parse that directly
+// (no per-event fetches). Keep Madrid events only.
+async function fetchEventbriteEvents(): Promise<MadridEvent[]> {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 8000);
+  let html = "";
+  try {
+    const res = await fetch("https://www.eventbrite.es/d/spain--madrid/fashion/", {
+      cache: "no-store",
+      signal: ctrl.signal,
+      headers: { "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" },
+    });
+    clearTimeout(t);
+    if (!res.ok) return [];
+    html = await res.text();
+  } catch { clearTimeout(t); return []; }
+
+  const today = new Date().toISOString().slice(0, 10);
+  const events: MadridEvent[] = [];
+  const blocks = html.match(/application\/ld\+json[^>]*>([\s\S]*?)<\/script>/g) ?? [];
+
+  for (const block of blocks) {
+    try {
+      const json = block.replace(/application\/ld\+json[^>]*>/, "").replace(/<\/script>/, "").trim();
+      const parsed = JSON.parse(json) as Record<string, unknown>;
+      if (parsed["@type"] !== "ItemList") continue;
+      const list = (parsed.itemListElement as Array<Record<string, unknown>>) ?? [];
+
+      for (const li of list) {
+        const ev = li.item as Record<string, unknown> | undefined;
+        if (!ev) continue;
+        const name = String(ev.name ?? "").trim();
+        const startDate = String(ev.startDate ?? "").slice(0, 10);
+        if (!name || !startDate || startDate < today) continue;
+
+        const loc = ev.location as Record<string, unknown> | undefined;
+        const addr = loc?.address as Record<string, unknown> | undefined;
+        const locality = String(addr?.addressLocality ?? "");
+        if (!/madrid/i.test(locality)) continue; // Madrid only
+
+        const venueName = loc?.name ? String(loc.name) : "Madrid";
+        const url = String(ev.url ?? "https://www.eventbrite.es/d/spain--madrid/fashion/");
+        events.push({
+          id: `eventbrite-${startDate}-${name.slice(0, 20).replace(/\s+/g, "-").toLowerCase()}`,
+          date: toDisplayDate(startDate),
+          rawDate: startDate,
+          name,
+          venue: /madrid/i.test(venueName) ? venueName : `${venueName}, Madrid`,
+          type: guessType(name, String(ev.description ?? "")),
+          url,
+          isNext: false,
+        });
+      }
+    } catch { /* skip malformed block */ }
+  }
+  // Eventbrite's "fashion" category is noisy — keep only genuine fashion events
+  return filterFashionEvents(events);
+}
+
 // ── Deduplication ──────────────────────────────────────────────────────────────
 
 function normalizeKey(name: string): string {
@@ -293,7 +353,7 @@ export async function GET(req: NextRequest) {
   try {
     const [
       ifema, ifemaFashion, museoTraje, romanticismo, casaEncendida,
-      isem, loewe, wow, pedroHierro, esden, modaes,
+      isem, loewe, wow, pedroHierro, esden, modaes, eventbrite,
     ] = await Promise.all([
       fetchIFEMAEvents(),
       fetchIFEMAFashionPages(),
@@ -306,20 +366,22 @@ export async function GET(req: NextRequest) {
       fetchPedroDelHierroEvents(),
       fetchESDENEvents(),
       fetchMODAESEvents(),
+      fetchEventbriteEvents(),
     ]);
 
     // Every event here comes from a real source with a real date — no fabrication.
     const merged = deduplicateEvents([
       ...ifema, ...ifemaFashion, ...museoTraje, ...romanticismo, ...casaEncendida,
-      ...isem, ...loewe, ...wow, ...pedroHierro, ...esden, ...modaes,
+      ...isem, ...loewe, ...wow, ...pedroHierro, ...esden, ...modaes, ...eventbrite,
     ]);
 
     // Drop any event whose link is broken so we never publish a dead URL.
     const valid = await validateEventUrls(merged);
 
+    // Save a broad pool of upcoming events; the page picks what to display.
     const all = valid
       .sort((a, b) => a.rawDate.localeCompare(b.rawDate))
-      .slice(0, 6)
+      .slice(0, 30)
       .map((e, i) => ({ ...e, isNext: i === 0 }));
 
     const sources = {
@@ -328,7 +390,7 @@ export async function GET(req: NextRequest) {
       casaEncendida: casaEncendida.length, isem: isem.length,
       loewe: loewe.length, wow: wow.length,
       pedroHierro: pedroHierro.length, esden: esden.length,
-      modaes: modaes.length,
+      modaes: modaes.length, eventbrite: eventbrite.length,
       droppedBrokenLinks: merged.length - valid.length,
     };
 

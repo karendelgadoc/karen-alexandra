@@ -111,6 +111,57 @@ If no upcoming Madrid events found, return [].`;
   }
 }
 
+// Obvious non-fashion noise common in Eventbrite's loose "fashion" category.
+const NON_FASHION_BLOCK = /peluquer|facial|limpiadora|skincare|colorimetr|microblading|cejas?|u[ñn]as|maquillaje|makeup|concierto|brunch|lectura|gastronom|filipino|religios|meetup|catering|cata\b/i;
+
+// Filters a list of events down to genuine fashion events. First removes obvious
+// noise by keyword, then (if an API key is set) asks Claude to judge the rest —
+// Karen wants premium/high fashion, not beauty/hair/music/food events.
+export async function filterFashionEvents(events: MadridEvent[]): Promise<MadridEvent[]> {
+  const prelim = events.filter((e) => !NON_FASHION_BLOCK.test(e.name));
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey || prelim.length === 0) return prelim;
+
+  const list = prelim.map((e, i) => `${i}: ${e.name}`).join("\n");
+  const prompt = `These events came from Eventbrite's loosely-tagged Madrid "fashion" category. Keep ONLY premium/curated fashion events that a fashion-conscious audience would attend: fashion shows and runway events, designer showrooms, trunk shows, sample sales, fashion pop-up shops and markets, brand or collection launches, fashion exhibitions, fashion business/networking events, and major fashion fairs or festivals.
+
+EXCLUDE:
+- DIY craft, sewing, or pattern-making courses/classes (e.g. "make your own vest", "patronaje", "costura" workshops, learn-to-sew)
+- beauty, skincare, facials, hairdressing, nails, makeup, microblading
+- music concerts, food/gastronomy, book clubs, generic cultural or religious events
+
+Events:
+${list}
+
+Return ONLY a JSON array of integers (the indices to keep), e.g. [0,2,5]. If none qualify, return [].`;
+
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 15000);
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      signal: ctrl.signal,
+      headers: { "Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01" },
+      body: JSON.stringify({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 200,
+        messages: [{ role: "user", content: prompt }],
+      }),
+    });
+    clearTimeout(t);
+    if (!res.ok) return prelim;
+    const data = await res.json() as { content: Array<{ type: string; text: string }> };
+    const raw = (data.content.find((c) => c.type === "text")?.text ?? "").trim();
+    const match = raw.match(/\[[\s\S]*\]/);
+    if (!match) return prelim;
+    const keep = new Set((JSON.parse(match[0]) as number[]).filter((n) => Number.isInteger(n)));
+    return prelim.filter((_, i) => keep.has(i));
+  } catch {
+    clearTimeout(t);
+    return prelim;
+  }
+}
+
 // Fetches a URL and extracts events using LLM. Works on any site including
 // Instagram (limited by JS-rendering, but extracts what meta tags contain).
 export async function extractEventsFromUrl(sourceUrl: string): Promise<MadridEvent[]> {
