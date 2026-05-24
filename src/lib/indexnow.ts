@@ -46,6 +46,8 @@ export function pingIndexNow(urls: string | string[]): void {
 // Helpers — build the canonical URLs we want to ping
 export const indexNowUrl = {
   blogPost: (slug: string) => `https://${HOST}/journal/${slug}`,
+  fashionNews: (slug: string) => `https://${HOST}/fashion-news/${slug}`,
+  fashionNewsIndex: () => `https://${HOST}/fashion-news`,
   caseStudy: (slug: string) => `https://${HOST}/case-studies/${slug}`,
   journalIndex: () => `https://${HOST}/journal`,
   caseStudiesIndex: () => `https://${HOST}/case-studies`,

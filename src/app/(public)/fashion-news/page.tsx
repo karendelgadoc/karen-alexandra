@@ -1,4 +1,9 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { getAllFashionNewsPosts } from "@/lib/blog-db";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Fashion News — Karen Alexandra",
@@ -60,7 +65,10 @@ const FN_MOST_READ = [
   "The Loewe whisper, decoded — twelve looks, read in the order shown.",
 ];
 
-export default function FashionNewsPage() {
+export default async function FashionNewsPage() {
+  const dbPosts = await getAllFashionNewsPosts().catch(() => []);
+  const featuredPost = dbPosts[0] ?? null;
+
   return (
     <>
       {/* Date bar */}
@@ -106,22 +114,43 @@ export default function FashionNewsPage() {
             ))}
           </div>
 
-          {/* Feature */}
+          {/* Feature — latest fashion news article */}
           <div className="ka-fn-top-col">
-            <div className="ka-img" style={{ aspectRatio: "4/3", width: "100%" }}>
-              <span className="ka-img-label">Feature · Schiaparelli mirror room</span>
-            </div>
-            <div className="ka-eyebrow" style={{ marginTop: 28, color: "var(--ka-accent-deep)" }}>{FN_FEATURE.cat}</div>
-            <h2 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(28px,3.5vw,56px)", fontStyle: "italic", lineHeight: 1.04, marginTop: 16 }}>
-              {FN_FEATURE.title}
-            </h2>
-            <p style={{ fontFamily: "var(--ka-display)", fontStyle: "italic", fontSize: "clamp(16px,1.5vw,22px)", lineHeight: 1.45, color: "var(--ka-ink)", marginTop: 24 }}>
-              {FN_FEATURE.dek}
-            </p>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 32, paddingTop: 20, borderTop: "1px solid var(--ka-line)" }}>
-              <span className="ka-eyebrow">{FN_FEATURE.byline}</span>
-              <span className="ka-eyebrow">{FN_FEATURE.date} · {FN_FEATURE.read}</span>
-            </div>
+            {featuredPost ? (
+              <Link href={`/fashion-news/${featuredPost.slug}`} style={{ display: "block", textDecoration: "none", color: "inherit" }}>
+                {featuredPost.heroImage ? (
+                  <div style={{ aspectRatio: "4/3", width: "100%", position: "relative", overflow: "hidden", background: "var(--ka-sand)" }}>
+                    <Image src={featuredPost.heroImage} alt={featuredPost.heroAlt || featuredPost.title} fill style={{ objectFit: "cover" }} sizes="40vw" />
+                  </div>
+                ) : (
+                  <div className="ka-img" style={{ aspectRatio: "4/3", width: "100%" }} />
+                )}
+                <div className="ka-eyebrow" style={{ marginTop: 28, color: "var(--ka-accent-deep)" }}>The Big Read · Fashion News</div>
+                <h2 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(28px,3.5vw,56px)", fontStyle: "italic", lineHeight: 1.04, marginTop: 16 }}>
+                  {featuredPost.title}
+                </h2>
+                <p style={{ fontFamily: "var(--ka-display)", fontStyle: "italic", fontSize: "clamp(16px,1.5vw,22px)", lineHeight: 1.45, color: "var(--ka-ink)", marginTop: 24 }}>
+                  {featuredPost.excerpt}
+                </p>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 32, paddingTop: 20, borderTop: "1px solid var(--ka-line)" }}>
+                  <span className="ka-eyebrow">By {featuredPost.authorName ?? "Karen Alexandra"}</span>
+                  <span className="ka-eyebrow">{featuredPost.date}</span>
+                </div>
+              </Link>
+            ) : (
+              <>
+                <div className="ka-img" style={{ aspectRatio: "4/3", width: "100%" }}>
+                  <span className="ka-img-label">Feature · Schiaparelli mirror room</span>
+                </div>
+                <div className="ka-eyebrow" style={{ marginTop: 28, color: "var(--ka-accent-deep)" }}>{FN_FEATURE.cat}</div>
+                <h2 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(28px,3.5vw,56px)", fontStyle: "italic", lineHeight: 1.04, marginTop: 16 }}>{FN_FEATURE.title}</h2>
+                <p style={{ fontFamily: "var(--ka-display)", fontStyle: "italic", fontSize: "clamp(16px,1.5vw,22px)", lineHeight: 1.45, color: "var(--ka-ink)", marginTop: 24 }}>{FN_FEATURE.dek}</p>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 32, paddingTop: 20, borderTop: "1px solid var(--ka-line)" }}>
+                  <span className="ka-eyebrow">{FN_FEATURE.byline}</span>
+                  <span className="ka-eyebrow">{FN_FEATURE.date} · {FN_FEATURE.read}</span>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Secondary */}
@@ -200,17 +229,38 @@ export default function FashionNewsPage() {
         </div>
       </section>
 
-      {/* Long-form grid */}
+      {/* Long-form grid — real DB articles + static fallback */}
       <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingBottom: 32, marginBottom: 48, borderBottom: "1px solid var(--ka-ink)", flexWrap: "wrap", gap: 16 }}>
           <div>
             <div className="ka-eyebrow" style={{ marginBottom: 8, color: "var(--ka-accent-deep)" }}>N° 03</div>
             <h2 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(28px,4vw,48px)", fontStyle: "italic" }}>The week, in long form.</h2>
           </div>
-          <a href="#" className="ka-arrow-link">All fashion news <span className="ka-arrow">→</span></a>
         </div>
         <div>
-          {FN_GRID_POSTS.map((p, i) => (
+          {dbPosts.length > 0 ? dbPosts.map((p, i) => (
+            <article key={p.slug} className="ka-fn-long-article" style={{ padding: "clamp(28px,4vw,48px) 0", borderBottom: "1px solid var(--ka-line)" }}>
+              <div>
+                <div className="ka-card-meta" style={{ marginBottom: 12 }}>
+                  <span style={{ color: "var(--ka-accent-deep)" }}>Fashion News</span> · {p.date}
+                </div>
+                <h3 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(20px,2.5vw,34px)", fontStyle: i % 2 ? "italic" : "normal", lineHeight: 1.15 }}>
+                  {p.title}
+                </h3>
+                <p style={{ color: "var(--ka-muted)", fontSize: 14, lineHeight: 1.7, marginTop: 12 }}>{p.excerpt}</p>
+                <Link href={`/fashion-news/${p.slug}`} className="ka-arrow-link" style={{ marginTop: 20, fontSize: 10, display: "inline-flex" }}>
+                  Read <span className="ka-arrow">→</span>
+                </Link>
+              </div>
+              {p.heroImage ? (
+                <div style={{ aspectRatio: i % 2 ? "4/5" : "16/10", position: "relative", overflow: "hidden", background: "var(--ka-sand)" }}>
+                  <Image src={p.heroImage} alt={p.heroAlt || p.title} fill style={{ objectFit: "cover" }} sizes="40vw" />
+                </div>
+              ) : (
+                <div className="ka-img" style={{ aspectRatio: i % 2 ? "4/5" : "16/10" }} />
+              )}
+            </article>
+          )) : FN_GRID_POSTS.map((p, i) => (
             <article key={i} className="ka-fn-long-article" style={{ padding: "clamp(28px,4vw,48px) 0", borderBottom: "1px solid var(--ka-line)" }}>
               <div>
                 <div className="ka-card-meta" style={{ marginBottom: 12 }}>
@@ -220,9 +270,6 @@ export default function FashionNewsPage() {
                   {p.title}
                 </h3>
                 <p style={{ color: "var(--ka-muted)", fontSize: 14, lineHeight: 1.7, marginTop: 12 }}>{p.excerpt}</p>
-                <a href="#" className="ka-arrow-link" style={{ marginTop: 20, fontSize: 10, display: "inline-flex" }}>
-                  Read <span className="ka-arrow">→</span>
-                </a>
               </div>
               <div className="ka-img" style={{ aspectRatio: i % 2 ? "4/5" : "16/10" }}>
                 <span className="ka-img-label">{p.tag} · {p.date}</span>

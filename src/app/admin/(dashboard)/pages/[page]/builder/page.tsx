@@ -21,7 +21,7 @@ import { buildPortfolioSectionMap } from "@/components/sections/portfolio";
 import { buildContactSectionMap }   from "@/components/sections/contact";
 import { buildWatchSectionMap }     from "@/components/sections/watch";
 import { buildAboutSectionMap }     from "@/components/sections/about";
-import { getFeaturedBlogPosts, getAllBlogPosts } from "@/lib/blog-db";
+import { getFeaturedBlogPosts } from "@/lib/blog-db";
 import { getAllPosts } from "@/lib/posts-db";
 import { getLatestVideos } from "@/lib/youtube";
 import PageBuilder from "./PageBuilder";
@@ -31,19 +31,13 @@ export const dynamic = "force-dynamic";
 async function buildSections(page: PageKey) {
   switch (page) {
     case "home": {
-      const [content, featuredPosts, allPosts] = await Promise.all([
+      const [content, featuredPosts] = await Promise.all([
         getHomeContent().catch(() => null),
         getFeaturedBlogPosts(3).catch(() => []),
-        getAllBlogPosts().catch(() => []),
       ]);
       const c = content ?? HOME_DEFAULTS;
-      const latestPost = allPosts[0] ?? null;
-      const letterTitle = latestPost
-        ? latestPost.title.length > 40 ? latestPost.title.slice(0, 40).trimEnd() + "…" : latestPost.title
-        : c.hero.letterCardTitle ?? "On dressing for the life you want.";
-      const letterSlug = latestPost?.slug ?? null;
-      const letterImage = latestPost?.heroImage ?? null;
-      return { c, sectionMap: buildHomeSectionMap(c, { featuredPosts, letterTitle, letterSlug, letterImage }), defaults: HOME_DEFAULTS };
+      const newsTitle = c.hero.letterCardTitle ?? "The week in fashion news.";
+      return { c, sectionMap: buildHomeSectionMap(c, { featuredPosts, newsTitle, newsSlug: null, newsImage: null }), defaults: HOME_DEFAULTS };
     }
     case "portfolio": {
       const [posts, content] = await Promise.all([getAllPosts(), getPortfolioContent().catch(() => null)]);

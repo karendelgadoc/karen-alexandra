@@ -1,6 +1,6 @@
 import { getServerClient } from "./insforge";
 
-export type BlogCategory = "fashion" | "lifestyle" | "travel" | "wellness";
+export type BlogCategory = "fashion" | "lifestyle" | "travel" | "wellness" | "fashion-news";
 
 export interface FaqItem { question: string; answer: string; }
 
@@ -88,6 +88,7 @@ export async function getAllBlogPosts(category?: BlogCategory): Promise<BlogPost
     .from("blog_posts")
     .select("*")
     .eq("published", true)
+    .neq("category", "fashion-news")
     .order("date", { ascending: false });
 
   if (category) {
@@ -124,7 +125,8 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
     .from("blog_posts")
     .select("*")
     .eq("slug", slug)
-    .eq("published", true);
+    .eq("published", true)
+    .neq("category", "fashion-news");
 
   if (error) throw new Error(error.message);
   const rows = data as DbBlogPost[];
@@ -136,7 +138,8 @@ export async function getAllBlogSlugs(): Promise<string[]> {
   const { data, error } = await db.database
     .from("blog_posts")
     .select("slug")
-    .eq("published", true);
+    .eq("published", true)
+    .neq("category", "fashion-news");
 
   if (error) return [];
   return (data as { slug: string }[]).map((r) => r.slug);
@@ -149,6 +152,7 @@ export async function getAllBlogPostsAdmin(): Promise<BlogPost[]> {
   const { data, error } = await db.database
     .from("blog_posts")
     .select("*")
+    .neq("category", "fashion-news")
     .order("date", { ascending: false });
 
   if (error) throw new Error(error.message);
@@ -266,4 +270,81 @@ export async function deleteBlogPost(id: string): Promise<void> {
   const db = getServerClient();
   const { error } = await db.database.from("blog_posts").delete().eq("id", id);
   if (error) throw new Error(error.message);
+}
+
+// ── Fashion News ──────────────────────────────────────────────────────────────
+// Fashion news articles live in the same blog_posts table with category="fashion-news".
+// They are excluded from all regular blog/journal queries above.
+
+export async function getAllFashionNewsAdmin(): Promise<BlogPost[]> {
+  const db = getServerClient();
+  const { data, error } = await db.database
+    .from("blog_posts")
+    .select("*")
+    .eq("category", "fashion-news")
+    .order("date", { ascending: false });
+  if (error) throw new Error(error.message);
+  return (data as DbBlogPost[]).map(toPost);
+}
+
+export async function getAllFashionNewsPosts(): Promise<BlogPost[]> {
+  const db = getServerClient();
+  const { data, error } = await db.database
+    .from("blog_posts")
+    .select("*")
+    .eq("category", "fashion-news")
+    .eq("published", true)
+    .order("date", { ascending: false });
+  if (error) throw new Error(error.message);
+  return (data as DbBlogPost[]).map(toPost);
+}
+
+export async function getLatestFashionNewsPost(): Promise<BlogPost | null> {
+  const db = getServerClient();
+  const { data, error } = await db.database
+    .from("blog_posts")
+    .select("*")
+    .eq("category", "fashion-news")
+    .eq("published", true)
+    .order("date", { ascending: false })
+    .limit(1);
+  if (error) return null;
+  const rows = data as DbBlogPost[];
+  return rows.length > 0 ? toPost(rows[0]) : null;
+}
+
+export async function getFashionNewsPostBySlug(slug: string): Promise<BlogPost | null> {
+  const db = getServerClient();
+  const { data, error } = await db.database
+    .from("blog_posts")
+    .select("*")
+    .eq("slug", slug)
+    .eq("category", "fashion-news")
+    .eq("published", true);
+  if (error) throw new Error(error.message);
+  const rows = data as DbBlogPost[];
+  return rows.length > 0 ? toPost(rows[0]) : null;
+}
+
+export async function getAllFashionNewsSlugs(): Promise<string[]> {
+  const db = getServerClient();
+  const { data, error } = await db.database
+    .from("blog_posts")
+    .select("slug")
+    .eq("category", "fashion-news")
+    .eq("published", true);
+  if (error) return [];
+  return (data as { slug: string }[]).map((r) => r.slug);
+}
+
+export async function getFashionNewsPostById(id: string): Promise<BlogPost | null> {
+  const db = getServerClient();
+  const { data, error } = await db.database
+    .from("blog_posts")
+    .select("*")
+    .eq("id", id)
+    .eq("category", "fashion-news");
+  if (error) throw new Error(error.message);
+  const rows = data as DbBlogPost[];
+  return rows.length > 0 ? toPost(rows[0]) : null;
 }

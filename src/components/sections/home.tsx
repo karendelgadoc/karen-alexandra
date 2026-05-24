@@ -20,14 +20,15 @@ const CATEGORIES = [
   { label: "Lifestyle", desc: "Home, culture and everything in between", image: "/photos/mykonos-cocktail.jpg", slug: "lifestyle" },
 ];
 
-export function HeroSection({ c, letterTitle, letterSlug, letterImage }: {
+export function HeroSection({ c, newsTitle, newsSlug, newsImage }: {
   c: HomeContent;
-  letterTitle: string;
-  letterSlug: string | null;
-  letterImage: string | null;
+  newsTitle: string;
+  newsSlug: string | null;
+  newsImage: string | null;
 }) {
-  const heroImageSrc = letterImage || c.hero.portraitUrl;
-  const heroImageAlt = letterImage ? letterTitle : "Karen Alexandra";
+  const heroImageSrc = newsImage || c.hero.portraitUrl;
+  const heroImageAlt = newsImage ? newsTitle : "Karen Alexandra";
+  const newsHref = newsSlug ? `/fashion-news/${newsSlug}` : "/fashion-news";
   return (
     <section
       className="ka-rp ka-r-stack-md"
@@ -59,25 +60,16 @@ export function HeroSection({ c, letterTitle, letterSlug, letterImage }: {
         </div>
       </div>
       <div style={{ position: "relative" }}>
-        {letterSlug ? (
-          <Link href={`/journal/${letterSlug}`} style={{ display: "block", aspectRatio: "4 / 5", width: "100%", position: "relative", overflow: "hidden" }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={heroImageSrc} alt={heroImageAlt} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-          </Link>
-        ) : (
-          <div style={{ aspectRatio: "4 / 5", width: "100%", position: "relative", overflow: "hidden" }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={heroImageSrc} alt={heroImageAlt} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-          </div>
-        )}
+        <Link href={newsHref} style={{ display: "block", aspectRatio: "4 / 5", width: "100%", position: "relative", overflow: "hidden" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={heroImageSrc} alt={heroImageAlt} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        </Link>
         <div style={{ position: "absolute", bottom: -32, left: -32, background: "var(--ka-bg)", padding: "20px 24px", borderLeft: "2px solid var(--ka-accent-deep)", maxWidth: 280 }}>
-          <div className="ka-eyebrow" style={{ marginBottom: 6 }}>This week&apos;s letter</div>
-          <div style={{ fontFamily: "var(--ka-display)", fontStyle: "italic", fontSize: 20, lineHeight: 1.3 }}>{letterTitle}</div>
-          {letterSlug && (
-            <Link href={`/journal/${letterSlug}`} className="ka-arrow-link" style={{ fontSize: 11, display: "block", marginTop: 12 }}>
-              Read now <span className="ka-arrow">→</span>
-            </Link>
-          )}
+          <div className="ka-eyebrow" style={{ marginBottom: 6 }}>This week&apos;s news</div>
+          <div style={{ fontFamily: "var(--ka-display)", fontStyle: "italic", fontSize: 20, lineHeight: 1.3 }}>{newsTitle}</div>
+          <Link href={newsHref} className="ka-arrow-link" style={{ fontSize: 11, display: "block", marginTop: 12 }}>
+            Read now <span className="ka-arrow">→</span>
+          </Link>
         </div>
       </div>
     </section>
@@ -200,14 +192,14 @@ export function NewsletterSection() {
 
 export interface HomeExtraProps {
   featuredPosts: FeaturedPosts;
-  letterTitle: string;
-  letterSlug: string | null;
-  letterImage: string | null;
+  newsTitle: string;
+  newsSlug: string | null;
+  newsImage: string | null;
 }
 
 export function buildHomeSectionMap(c: HomeContent, extra: HomeExtraProps): Record<string, ReactNode> {
   return {
-    "hero":             <HeroSection c={c} letterTitle={extra.letterTitle} letterSlug={extra.letterSlug} letterImage={extra.letterImage} />,
+    "hero":             <HeroSection c={c} newsTitle={extra.newsTitle} newsSlug={extra.newsSlug} newsImage={extra.newsImage} />,
     "marquee":          <MarqueeSection c={c} />,
     "featured-stories": <FeaturedStoriesSection featuredPosts={extra.featuredPosts} />,
     "editor-note":      <EditorNoteSection c={c} />,

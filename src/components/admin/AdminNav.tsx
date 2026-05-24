@@ -39,6 +39,9 @@ export default function AdminNav() {
         <Link href="/admin/blog" className={linkClass("/admin/blog")}>
           Blog Posts
         </Link>
+        <Link href="/admin/fashion-news" className={linkClass("/admin/fashion-news")}>
+          Fashion News
+        </Link>
         <Link href="/admin/posts" className={linkClass("/admin/posts")}>
           Case Studies
         </Link>
