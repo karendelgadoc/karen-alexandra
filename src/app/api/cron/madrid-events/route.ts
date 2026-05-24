@@ -47,7 +47,7 @@ async function isUrlReachable(url: string): Promise<boolean> {
       const res = await fetch(url, {
         method,
         signal: ctrl.signal,
-        headers: { "User-Agent": "Mozilla/5.0 (compatible; KarenAlexandra/1.0)" },
+        headers: { "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" },
         redirect: "follow",
       });
       clearTimeout(t);
@@ -57,11 +57,13 @@ async function isUrlReachable(url: string): Promise<boolean> {
   return false;
 }
 
-async function pickReachableUrl(candidates: string[]): Promise<string> {
-  for (const url of candidates) {
-    if (await isUrlReachable(url)) return url;
-  }
-  return candidates[0];
+// Drops any event whose link is broken/unreachable so the calendar never
+// publishes a dead URL. Runs all checks in parallel.
+async function validateEventUrls(events: MadridEvent[]): Promise<MadridEvent[]> {
+  const checks = await Promise.all(
+    events.map(async (e) => ({ e, ok: await isUrlReachable(e.url) })),
+  );
+  return checks.filter((c) => c.ok).map((c) => c.e);
 }
 
 // ── Site scraper: JSON-LD first, then LLM fallback ────────────────────────────
@@ -106,7 +108,10 @@ function parseJsonLd(
         const startDate = String(item.startDate ?? "").slice(0, 10);
         if (!startDate || startDate < today) continue;
         const loc = item.location as Record<string, unknown> | undefined;
-        const venue = loc?.name ? String(loc.name) : defaultVenue;
+        let venue = loc?.name ? String(loc.name) : defaultVenue;
+        // Some sources (IFEMA) repeat the event name in location.name — that's
+        // not a real venue, so fall back to the source's default venue.
+        if (venue.toLowerCase() === name.toLowerCase()) venue = defaultVenue;
         const url = String(item.url ?? item["@id"] ?? sourceUrl);
         events.push({
           id: `${hostname}-${startDate}-${name.slice(0, 20).replace(/\s+/g, "-").toLowerCase()}`,
@@ -167,6 +172,19 @@ async function scrapeSiteEvents(
 // ── Source scrapers ────────────────────────────────────────────────────────────
 
 const fetchIFEMAEvents        = () => scrapeSiteEvents("https://www.ifema.es/en/calendar",              "IFEMA Madrid",                         isFashionRelated);
+
+// IFEMA's dedicated fashion fairs each have their own page with accurate
+// Event JSON-LD (real dates + working URLs). MBFW Madrid in particular is
+// NOT in the main calendar feed — it only lives on its own page.
+const IFEMA_FASHION_SLUGS = ["momad", "mbfw-madrid", "bisutex", "intergift"];
+const fetchIFEMAFashionPages = async (): Promise<MadridEvent[]> => {
+  const results = await Promise.all(
+    IFEMA_FASHION_SLUGS.map((slug) =>
+      scrapeSiteEvents(`https://www.ifema.es/en/${slug}`, "IFEMA Madrid", () => true),
+    ),
+  );
+  return results.flat();
+};
 const fetchMuseoDelTrajeEvents= () => scrapeSiteEvents("https://www.cultura.gob.es/museodeltaje/actividades/actividades-culturales.html", "Museo del Traje, Madrid", () => true);
 const fetchRomanticismoEvents = () => scrapeSiteEvents("https://museoromanticismo.mcu.es/actividades-y-didactica/actividades.html",       "Museo del Romanticismo, Madrid",       (n, d) => !((n + d).toLowerCase().includes("concierto")));
 const fetchCasaEncendidaEvents= () => scrapeSiteEvents("https://www.lacasaencendida.es/programacion",   "La Casa Encendida, Madrid",            (n, d) => ["moda","fashion","diseño","design","exposición","exhibition","colección","textil"].some((kw) => (n+d).toLowerCase().includes(kw)));
@@ -175,29 +193,6 @@ const fetchLoeweProgramme     = () => scrapeSiteEvents("https://craftprize.loewe
 const fetchWOWEvents          = () => scrapeSiteEvents("https://wowconcept.com/blogs/news",             "WOW Concept, Gran Vía 32, Madrid",     () => true);
 const fetchPedroDelHierroEvents = () => scrapeSiteEvents("https://www.pedrodelhierro.com/es/events",   "Pedro del Hierro, Madrid",             () => true);
 const fetchESDENEvents        = () => scrapeSiteEvents("https://www.esden.es/blog/",                    "ESDEN Business School, Madrid",        isFashionRelated);
-
-// ── Known annual events with live URL validation ───────────────────────────────
-
-async function getKnownAnnualEvents(): Promise<MadridEvent[]> {
-  const now = new Date();
-  const year = now.getFullYear();
-  const today = now.toISOString().slice(0, 10);
-
-  const mbfwUrl = await pickReachableUrl([
-    "https://mbfwmadrid.com",
-    "https://www.ifema.es/en/mbfw-madrid",
-    "https://www.ifema.es/mbfw-madrid",
-  ]);
-
-  const candidates: MadridEvent[] = [
-    { id: `mbfw-${year}-feb`, date: "FEB 01", rawDate: `${year}-02-01`, name: "MBFWMadrid — Otoño/Invierno",     venue: "IFEMA Madrid",                         type: "Show", url: mbfwUrl,                                   isNext: false },
-    { id: `mbfw-${year}-sep`, date: "SEP 09", rawDate: `${year}-09-09`, name: "MBFWMadrid — Primavera/Verano",  venue: "IFEMA Madrid",                         type: "Show", url: mbfwUrl,                                   isNext: false },
-    { id: `loewe-${year}`,    date: "JUL 01", rawDate: `${year}-07-01`, name: "Loewe Foundation Craft Prize", venue: "Loewe Foundation, Calle Goya 35, Madrid", type: "Expo", url: "https://craftprize.loewe.com/", isNext: false },
-    { id: `museodeltaje-${year}`, date: "JUN 01", rawDate: `${year}-06-01`, name: "Museo del Traje — Permanent Collection", venue: "Museo del Traje, Madrid", type: "Expo", url: "https://www.cultura.gob.es/museodeltaje",  isNext: false },
-  ];
-
-  return candidates.filter((e) => e.rawDate >= today);
-}
 
 // ── Deduplication ──────────────────────────────────────────────────────────────
 
@@ -239,10 +234,11 @@ export async function GET(req: NextRequest) {
 
   try {
     const [
-      ifema, museoTraje, romanticismo, casaEncendida,
-      isem, loewe, wow, pedroHierro, esden, annual,
+      ifema, ifemaFashion, museoTraje, romanticismo, casaEncendida,
+      isem, loewe, wow, pedroHierro, esden,
     ] = await Promise.all([
       fetchIFEMAEvents(),
+      fetchIFEMAFashionPages(),
       fetchMuseoDelTrajeEvents(),
       fetchRomanticismoEvents(),
       fetchCasaEncendidaEvents(),
@@ -251,25 +247,29 @@ export async function GET(req: NextRequest) {
       fetchWOWEvents(),
       fetchPedroDelHierroEvents(),
       fetchESDENEvents(),
-      getKnownAnnualEvents(),
     ]);
 
+    // Every event here comes from a real source with a real date — no fabrication.
     const merged = deduplicateEvents([
-      ...ifema, ...museoTraje, ...romanticismo, ...casaEncendida,
-      ...isem, ...loewe, ...wow, ...pedroHierro, ...esden, ...annual,
+      ...ifema, ...ifemaFashion, ...museoTraje, ...romanticismo, ...casaEncendida,
+      ...isem, ...loewe, ...wow, ...pedroHierro, ...esden,
     ]);
 
-    const all = merged
+    // Drop any event whose link is broken so we never publish a dead URL.
+    const valid = await validateEventUrls(merged);
+
+    const all = valid
       .sort((a, b) => a.rawDate.localeCompare(b.rawDate))
       .slice(0, 6)
       .map((e, i) => ({ ...e, isNext: i === 0 }));
 
     const sources = {
-      ifema: ifema.length, museoTraje: museoTraje.length,
-      romanticismo: romanticismo.length, casaEncendida: casaEncendida.length,
-      isem: isem.length, loewe: loewe.length,
-      wow: wow.length, pedroHierro: pedroHierro.length,
-      esden: esden.length, annual: annual.length,
+      ifema: ifema.length, ifemaFashion: ifemaFashion.length,
+      museoTraje: museoTraje.length, romanticismo: romanticismo.length,
+      casaEncendida: casaEncendida.length, isem: isem.length,
+      loewe: loewe.length, wow: wow.length,
+      pedroHierro: pedroHierro.length, esden: esden.length,
+      droppedBrokenLinks: merged.length - valid.length,
     };
 
     if (all.length > 0) {

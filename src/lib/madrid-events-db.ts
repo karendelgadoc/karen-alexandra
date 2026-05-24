@@ -12,13 +12,13 @@ export interface MadridEvent {
   isNext: boolean;
 }
 
+// Verified real IFEMA fashion events (accurate dates + working URLs as of
+// 2026-05-24). Only shown if the DB has no cron-populated events.
 const STATIC_FALLBACK: MadridEvent[] = [
-  { id: "s1", date: "JUN 10", rawDate: "2026-06-10", name: "MBFWMadrid — Season Preview",    venue: "IFEMA Madrid",        type: "Show", url: "https://www.ifema.es/en/mbfw-madrid",       isNext: true  },
-  { id: "s2", date: "JUN 12", rawDate: "2026-06-12", name: "Loewe Foundation Craft Prize",   venue: "Calle Goya 35",       type: "Expo", url: "https://craftprize.loewe.com/",            isNext: false },
-  { id: "s3", date: "JUL 23", rawDate: "2026-07-23", name: "MOMAD — Intl. Fashion Fair",     venue: "IFEMA Madrid",        type: "Fair", url: "https://www.ifema.es/en/momad",            isNext: false },
-  { id: "s4", date: "JUN 19", rawDate: "2026-06-19", name: "Museo del Traje: Textiles",      venue: "Av. Juan de Herrera", type: "Expo", url: "https://www.cultura.gob.es/museodeltaje", isNext: false },
-  { id: "s5", date: "SEP 09", rawDate: "2026-09-09", name: "MBFWMadrid — Primavera/Verano", venue: "IFEMA Madrid",        type: "Show", url: "https://www.ifema.es/en/mbfw-madrid",       isNext: false },
-  { id: "s6", date: "JUN 28", rawDate: "2026-06-28", name: "Design Festival — Fashion Stage",venue: "Matadero Madrid",     type: "Event",url: "https://www.mataderomadrid.org",           isNext: false },
+  { id: "s1", date: "JUL 23", rawDate: "2026-07-23", name: "Momad",                              venue: "IFEMA Madrid", type: "Fair", url: "https://www.ifema.es/en/momad",       isNext: true  },
+  { id: "s2", date: "SEP 14", rawDate: "2026-09-14", name: "Mercedes-Benz Fashion Week Madrid",  venue: "IFEMA Madrid", type: "Show", url: "https://www.ifema.es/en/mbfw-madrid", isNext: false },
+  { id: "s3", date: "SEP 24", rawDate: "2026-09-24", name: "Bisutex",                            venue: "IFEMA Madrid", type: "Fair", url: "https://www.ifema.es/en/bisutex",     isNext: false },
+  { id: "s4", date: "FEB 03", rawDate: "2027-02-03", name: "Intergift",                          venue: "IFEMA Madrid", type: "Fair", url: "https://www.ifema.es/en/intergift",   isNext: false },
 ];
 
 function normalizeKey(name: string): string {
