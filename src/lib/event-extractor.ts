@@ -22,6 +22,27 @@ export function htmlToText(html: string): string {
     .trim();
 }
 
+// Pulls server-rendered meta tags (title, og:title, og:description, description).
+// Critical for JS-rendered sites like Instagram where the post caption lives in
+// og:description even though the page body is empty to a server-side fetch.
+export function extractMetaContext(html: string): string {
+  const grab = (re: RegExp): string => {
+    const m = html.match(re);
+    return m ? m[1].replace(/&amp;/g, "&").replace(/&#0?39;/g, "'").replace(/&quot;/g, '"').trim() : "";
+  };
+  const title = grab(/<title[^>]*>([^<]+)<\/title>/i);
+  const ogTitle =
+    grab(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i) ||
+    grab(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:title["']/i);
+  const ogDesc =
+    grab(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)["']/i) ||
+    grab(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:description["']/i);
+  const metaDesc = grab(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i);
+
+  const parts = [...new Set([title, ogTitle, ogDesc, metaDesc].filter(Boolean))];
+  return parts.length ? `Page metadata: ${parts.join(" | ")}\n\n` : "";
+}
+
 export interface ExtractedEvent {
   name: string;
   startDate: string; // YYYY-MM-DD
@@ -97,7 +118,7 @@ export async function extractEventsFromUrl(sourceUrl: string): Promise<MadridEve
       cache: "no-store",
       signal: ctrl.signal,
       headers: {
-        "User-Agent": "Mozilla/5.0 (compatible; KarenAlexandra/1.0)",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
         "Accept": "text/html,application/xhtml+xml",
       },
     });
@@ -109,7 +130,8 @@ export async function extractEventsFromUrl(sourceUrl: string): Promise<MadridEve
     return [];
   }
 
-  const text = htmlToText(html);
+  // Meta tags first (server-rendered, holds the Instagram caption), then body
+  const text = extractMetaContext(html) + htmlToText(html);
   const extracted = await extractEventsWithLLM(text, sourceUrl);
   const hostname = (() => { try { return new URL(sourceUrl).hostname.replace(/\W+/g, "-"); } catch { return "manual"; } })();
 

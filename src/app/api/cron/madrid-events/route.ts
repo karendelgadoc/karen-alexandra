@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { saveMadridCalendarEvents, type MadridEvent } from "@/lib/madrid-events-db";
-import { htmlToText, extractEventsWithLLM } from "@/lib/event-extractor";
+import { htmlToText, extractMetaContext, extractEventsWithLLM } from "@/lib/event-extractor";
 
 const MONTH_ABBR = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
 
@@ -139,7 +139,7 @@ async function scrapeSiteEvents(
     const res = await fetch(sourceUrl, {
       cache: "no-store",
       signal: ctrl.signal,
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; KarenAlexandra/1.0)" },
+      headers: { "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" },
     });
     clearTimeout(t);
     if (!res.ok) return [];
@@ -153,8 +153,8 @@ async function scrapeSiteEvents(
   const structured = parseJsonLd(html, sourceUrl, defaultVenue, filterFn, today);
   if (structured.length > 0) return structured;
 
-  // 2. LLM fallback: let Claude read the page text
-  const text = htmlToText(html);
+  // 2. LLM fallback: let Claude read the page meta tags + text
+  const text = extractMetaContext(html) + htmlToText(html);
   const llmEvents = await extractEventsWithLLM(text, sourceUrl);
 
   return llmEvents.map((e) => ({
