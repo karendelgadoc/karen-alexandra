@@ -187,9 +187,6 @@ export default async function FashionNewsPage() {
               Upcoming events in the city.
             </h2>
           </div>
-          <a href="https://www.ifema.es" target="_blank" rel="noopener noreferrer" className="ka-arrow-link">
-            All events <span className="ka-arrow">→</span>
-          </a>
         </div>
         <div className="ka-fn-calendar-wrap">
           <div className="ka-fn-calendar-grid">
