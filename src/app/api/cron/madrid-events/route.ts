@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { saveMadridCalendarEvents, type MadridEvent } from "@/lib/madrid-events-db";
+import { htmlToText, extractEventsWithLLM } from "@/lib/event-extractor";
 
 const MONTH_ABBR = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
 
@@ -14,7 +15,7 @@ function guessType(name: string, desc: string): string {
   if (n.includes("footwear") || n.includes("accessories") || n.includes("momad") || n.includes("trade show") || n.includes("feria")) return "Fair";
   if (n.includes("exhib") || n.includes("expo") || n.includes("museo") || n.includes("museum") || n.includes("gallery") || n.includes("exposición")) return "Expo";
   if (n.includes("bridal") || n.includes("boda") || n.includes("novia")) return "Bridal";
-  if (n.includes("masterclass") || n.includes("taller") || n.includes("workshop") || n.includes("conferencia") || n.includes("lecture") || n.includes("talk")) return "Talk";
+  if (n.includes("masterclass") || n.includes("taller") || n.includes("workshop") || n.includes("conferencia") || n.includes("lecture")) return "Talk";
   if (n.includes("pop up") || n.includes("pop-up") || n.includes("popup") || n.includes("inauguración") || n.includes("opening")) return "Pop-up";
   if (n.includes("festival") || n.includes("design") || n.includes("diseño")) return "Festival";
   return "Event";
@@ -51,14 +52,11 @@ async function isUrlReachable(url: string): Promise<boolean> {
       });
       clearTimeout(t);
       if (res.ok) return true;
-    } catch {
-      clearTimeout(t);
-    }
+    } catch { clearTimeout(t); }
   }
   return false;
 }
 
-// Returns first reachable URL from candidates; falls back to first if none respond
 async function pickReachableUrl(candidates: string[]): Promise<string> {
   for (const url of candidates) {
     if (await isUrlReachable(url)) return url;
@@ -66,33 +64,17 @@ async function pickReachableUrl(candidates: string[]): Promise<string> {
   return candidates[0];
 }
 
-// ── Generic JSON-LD Event scraper ──────────────────────────────────────────────
+// ── Site scraper: JSON-LD first, then LLM fallback ────────────────────────────
 
-async function scrapeJsonLdEvents(
+function parseJsonLd(
+  html: string,
   sourceUrl: string,
   defaultVenue: string,
-  filterFn: (name: string, desc: string) => boolean = isFashionRelated,
-): Promise<MadridEvent[]> {
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), 8000);
-  let html = "";
-  try {
-    const res = await fetch(sourceUrl, {
-      cache: "no-store",
-      signal: ctrl.signal,
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; KarenAlexandra/1.0)" },
-    });
-    clearTimeout(t);
-    if (!res.ok) return [];
-    html = await res.text();
-  } catch {
-    clearTimeout(t);
-    return [];
-  }
-
+  filterFn: (name: string, desc: string) => boolean,
+  today: string,
+): MadridEvent[] {
   const events: MadridEvent[] = [];
-  const today = new Date().toISOString().slice(0, 10);
-  const hostname = new URL(sourceUrl).hostname.replace(/\W+/g, "-");
+  const hostname = (() => { try { return new URL(sourceUrl).hostname.replace(/\W+/g, "-"); } catch { return "src"; } })();
   const blocks = html.match(/application\/ld\+json[^>]*>([\s\S]*?)<\/script>/g) ?? [];
 
   for (const block of blocks) {
@@ -110,10 +92,8 @@ async function scrapeJsonLdEvents(
           items.push(r);
         }
       };
-
-      if (Array.isArray(parsed)) {
-        (parsed as unknown[]).forEach(collect);
-      } else if (parsed && typeof parsed === "object") {
+      if (Array.isArray(parsed)) (parsed as unknown[]).forEach(collect);
+      else if (parsed && typeof parsed === "object") {
         const p = parsed as Record<string, unknown>;
         collect(p);
         if (Array.isArray(p["@graph"])) (p["@graph"] as unknown[]).forEach(collect);
@@ -123,121 +103,86 @@ async function scrapeJsonLdEvents(
         const name = String(item.name ?? "").trim();
         const desc = String(item.description ?? "").trim();
         if (!name || !filterFn(name, desc)) continue;
-
         const startDate = String(item.startDate ?? "").slice(0, 10);
         if (!startDate || startDate < today) continue;
-
         const loc = item.location as Record<string, unknown> | undefined;
         const venue = loc?.name ? String(loc.name) : defaultVenue;
         const url = String(item.url ?? item["@id"] ?? sourceUrl);
-
         events.push({
           id: `${hostname}-${startDate}-${name.slice(0, 20).replace(/\s+/g, "-").toLowerCase()}`,
           date: toDisplayDate(startDate),
           rawDate: startDate,
-          name,
-          venue,
+          name, venue, url,
           type: guessType(name, desc),
-          url,
           isNext: false,
         });
       }
     } catch { /* skip malformed block */ }
   }
-
   return events;
+}
+
+async function scrapeSiteEvents(
+  sourceUrl: string,
+  defaultVenue: string,
+  filterFn: (name: string, desc: string) => boolean = isFashionRelated,
+): Promise<MadridEvent[]> {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 8000);
+  let html = "";
+  try {
+    const res = await fetch(sourceUrl, {
+      cache: "no-store",
+      signal: ctrl.signal,
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; KarenAlexandra/1.0)" },
+    });
+    clearTimeout(t);
+    if (!res.ok) return [];
+    html = await res.text();
+  } catch { clearTimeout(t); return []; }
+
+  const today = new Date().toISOString().slice(0, 10);
+  const hostname = (() => { try { return new URL(sourceUrl).hostname.replace(/\W+/g, "-"); } catch { return "src"; } })();
+
+  // 1. Try JSON-LD (structured, reliable)
+  const structured = parseJsonLd(html, sourceUrl, defaultVenue, filterFn, today);
+  if (structured.length > 0) return structured;
+
+  // 2. LLM fallback: let Claude read the page text
+  const text = htmlToText(html);
+  const llmEvents = await extractEventsWithLLM(text, sourceUrl);
+
+  return llmEvents.map((e) => ({
+    id: `llm-${hostname}-${e.startDate}-${e.name.slice(0, 20).replace(/\s+/g, "-").toLowerCase()}`,
+    date: toDisplayDate(e.startDate),
+    rawDate: e.startDate,
+    name: e.name,
+    venue: e.venue || defaultVenue,
+    type: e.type || guessType(e.name, ""),
+    url: e.url,
+    isNext: false,
+  }));
 }
 
 // ── Source scrapers ────────────────────────────────────────────────────────────
 
-async function fetchIFEMAEvents(): Promise<MadridEvent[]> {
-  return scrapeJsonLdEvents("https://www.ifema.es/en/calendar", "IFEMA Madrid", isFashionRelated);
-}
+const fetchIFEMAEvents        = () => scrapeSiteEvents("https://www.ifema.es/en/calendar",              "IFEMA Madrid",                         isFashionRelated);
+const fetchMuseoDelTrajeEvents= () => scrapeSiteEvents("https://www.cultura.gob.es/museodeltaje/actividades/actividades-culturales.html", "Museo del Traje, Madrid", () => true);
+const fetchRomanticismoEvents = () => scrapeSiteEvents("https://museoromanticismo.mcu.es/actividades-y-didactica/actividades.html",       "Museo del Romanticismo, Madrid",       (n, d) => !((n + d).toLowerCase().includes("concierto")));
+const fetchCasaEncendidaEvents= () => scrapeSiteEvents("https://www.lacasaencendida.es/programacion",   "La Casa Encendida, Madrid",            (n, d) => ["moda","fashion","diseño","design","exposición","exhibition","colección","textil"].some((kw) => (n+d).toLowerCase().includes(kw)));
+const fetchISEMEvents         = () => scrapeSiteEvents("https://www.isem.es/agenda/",                   "ISEM Fashion Business School, Madrid", isFashionRelated);
+const fetchLoeweProgramme     = () => scrapeSiteEvents("https://craftprize.loewe.com/",                 "Loewe Foundation, Calle Goya 35, Madrid", () => true);
+const fetchWOWEvents          = () => scrapeSiteEvents("https://wowconcept.com/blogs/news",             "WOW Concept, Gran Vía 32, Madrid",     () => true);
+const fetchPedroDelHierroEvents = () => scrapeSiteEvents("https://www.pedrodelhierro.com/es/events",   "Pedro del Hierro, Madrid",             () => true);
+const fetchESDENEvents        = () => scrapeSiteEvents("https://www.esden.es/blog/",                    "ESDEN Business School, Madrid",        isFashionRelated);
 
-async function fetchMuseoDelTrajeEvents(): Promise<MadridEvent[]> {
-  // Spain's national fashion museum — all events are relevant
-  return scrapeJsonLdEvents(
-    "https://www.cultura.gob.es/museodeltaje/actividades/actividades-culturales.html",
-    "Museo del Traje, Madrid",
-    () => true,
-  );
-}
-
-async function fetchMuseoRomanticismoEvents(): Promise<MadridEvent[]> {
-  // 19th-century dress and decorative arts museum — filter out pure music/concert events
-  return scrapeJsonLdEvents(
-    "https://museoromanticismo.mcu.es/actividades-y-didactica/actividades.html",
-    "Museo del Romanticismo, Madrid",
-    (name, desc) => {
-      const text = (name + " " + desc).toLowerCase();
-      const isMusic = text.includes("concierto") || text.includes("música") || text.includes("concert");
-      return !isMusic;
-    },
-  );
-}
-
-async function fetchLaCasaEncendidaEvents(): Promise<MadridEvent[]> {
-  const KW = [
-    "moda", "fashion", "diseño", "design", "arte", "art",
-    "exposición", "exhibition", "colección", "collection",
-    "textil", "indumentaria", "taller", "workshop",
-  ];
-  return scrapeJsonLdEvents(
-    "https://www.lacasaencendida.es/programacion",
-    "La Casa Encendida, Madrid",
-    (name, desc) => KW.some((kw) => (name + " " + desc).toLowerCase().includes(kw)),
-  );
-}
-
-async function fetchISEMEvents(): Promise<MadridEvent[]> {
-  // ISEM Fashion Business School (University of Navarra Madrid campus)
-  return scrapeJsonLdEvents(
-    "https://www.isem.edu/eventos",
-    "ISEM Fashion Business School, Madrid",
-    isFashionRelated,
-  );
-}
-
-async function fetchLoeweProgramme(): Promise<MadridEvent[]> {
-  return scrapeJsonLdEvents(
-    "https://loewefoundation.com/en/programme",
-    "Loewe Foundation, Calle Goya 35, Madrid",
-    () => true,
-  );
-}
-
-async function fetchWOWEvents(): Promise<MadridEvent[]> {
-  return scrapeJsonLdEvents(
-    "https://wowconcept.com/pages/events",
-    "WOW Concept, Gran Vía 32, Madrid",
-    () => true,
-  );
-}
-
-async function fetchPedroDelHierroEvents(): Promise<MadridEvent[]> {
-  return scrapeJsonLdEvents(
-    "https://www.pedrodelhierro.com/es/events",
-    "Pedro del Hierro, Madrid",
-    () => true,
-  );
-}
-
-async function fetchESDENEvents(): Promise<MadridEvent[]> {
-  return scrapeJsonLdEvents(
-    "https://www.esden.net/noticias-eventos/",
-    "ESDEN Business School, Madrid",
-    isFashionRelated,
-  );
-}
-
-// ── Known annual events with URL validation ────────────────────────────────────
+// ── Known annual events with live URL validation ───────────────────────────────
 
 async function getKnownAnnualEvents(): Promise<MadridEvent[]> {
   const now = new Date();
   const year = now.getFullYear();
   const today = now.toISOString().slice(0, 10);
 
-  // Verify MBFWMadrid URL — official site sometimes goes dark between editions
   const mbfwUrl = await pickReachableUrl([
     "https://mbfwmadrid.com",
     "https://www.ifema.es/en/mbfw-madrid",
@@ -245,46 +190,10 @@ async function getKnownAnnualEvents(): Promise<MadridEvent[]> {
   ]);
 
   const candidates: MadridEvent[] = [
-    {
-      id: `mbfw-${year}-feb`,
-      date: "FEB 01",
-      rawDate: `${year}-02-01`,
-      name: "MBFWMadrid — Otoño/Invierno",
-      venue: "IFEMA Madrid",
-      type: "Show",
-      url: mbfwUrl,
-      isNext: false,
-    },
-    {
-      id: `mbfw-${year}-sep`,
-      date: "SEP 09",
-      rawDate: `${year}-09-09`,
-      name: "MBFWMadrid — Primavera/Verano",
-      venue: "IFEMA Madrid",
-      type: "Show",
-      url: mbfwUrl,
-      isNext: false,
-    },
-    {
-      id: `loewe-${year}`,
-      date: "JUL 01",
-      rawDate: `${year}-07-01`,
-      name: "Loewe Foundation — Summer Programme",
-      venue: "Loewe Foundation, Calle Goya 35, Madrid",
-      type: "Expo",
-      url: "https://loewefoundation.com/en/programme",
-      isNext: false,
-    },
-    {
-      id: `museodeltaje-${year}`,
-      date: "JUN 01",
-      rawDate: `${year}-06-01`,
-      name: "Museo del Traje — Permanent Collection",
-      venue: "Museo del Traje, Madrid",
-      type: "Expo",
-      url: "https://www.cultura.gob.es/museodeltaje",
-      isNext: false,
-    },
+    { id: `mbfw-${year}-feb`, date: "FEB 01", rawDate: `${year}-02-01`, name: "MBFWMadrid — Otoño/Invierno",     venue: "IFEMA Madrid",                         type: "Show", url: mbfwUrl,                                   isNext: false },
+    { id: `mbfw-${year}-sep`, date: "SEP 09", rawDate: `${year}-09-09`, name: "MBFWMadrid — Primavera/Verano",  venue: "IFEMA Madrid",                         type: "Show", url: mbfwUrl,                                   isNext: false },
+    { id: `loewe-${year}`,    date: "JUL 01", rawDate: `${year}-07-01`, name: "Loewe Foundation Craft Prize", venue: "Loewe Foundation, Calle Goya 35, Madrid", type: "Expo", url: "https://craftprize.loewe.com/", isNext: false },
+    { id: `museodeltaje-${year}`, date: "JUN 01", rawDate: `${year}-06-01`, name: "Museo del Traje — Permanent Collection", venue: "Museo del Traje, Madrid", type: "Expo", url: "https://www.cultura.gob.es/museodeltaje",  isNext: false },
   ];
 
   return candidates.filter((e) => e.rawDate >= today);
@@ -306,17 +215,14 @@ function deduplicateEvents(events: MadridEvent[]): MadridEvent[] {
   const seenNames = new Set<string>();
   const seenDateVenue = new Set<string>();
   const result: MadridEvent[] = [];
-
   for (const ev of events) {
     const nameKey = normalizeKey(ev.name);
-    // Same event = same date at same venue (first 30 chars of venue to catch minor wording diffs)
-    const dateVenueKey = `${ev.rawDate}|${ev.venue.toLowerCase().slice(0, 30)}`;
-    if (seenNames.has(nameKey) || seenDateVenue.has(dateVenueKey)) continue;
+    const dvKey = `${ev.rawDate}|${ev.venue.toLowerCase().slice(0, 30)}`;
+    if (seenNames.has(nameKey) || seenDateVenue.has(dvKey)) continue;
     seenNames.add(nameKey);
-    seenDateVenue.add(dateVenueKey);
+    seenDateVenue.add(dvKey);
     result.push(ev);
   }
-
   return result;
 }
 
@@ -332,15 +238,14 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // All scrapers + URL validation run in parallel
     const [
       ifema, museoTraje, romanticismo, casaEncendida,
       isem, loewe, wow, pedroHierro, esden, annual,
     ] = await Promise.all([
       fetchIFEMAEvents(),
       fetchMuseoDelTrajeEvents(),
-      fetchMuseoRomanticismoEvents(),
-      fetchLaCasaEncendidaEvents(),
+      fetchRomanticismoEvents(),
+      fetchCasaEncendidaEvents(),
       fetchISEMEvents(),
       fetchLoeweProgramme(),
       fetchWOWEvents(),
@@ -349,18 +254,9 @@ export async function GET(req: NextRequest) {
       getKnownAnnualEvents(),
     ]);
 
-    // Merge in priority order: IFEMA first (authoritative), then niche sources, then annual fallbacks
     const merged = deduplicateEvents([
-      ...ifema,
-      ...museoTraje,
-      ...romanticismo,
-      ...casaEncendida,
-      ...isem,
-      ...loewe,
-      ...wow,
-      ...pedroHierro,
-      ...esden,
-      ...annual,
+      ...ifema, ...museoTraje, ...romanticismo, ...casaEncendida,
+      ...isem, ...loewe, ...wow, ...pedroHierro, ...esden, ...annual,
     ]);
 
     const all = merged
@@ -369,16 +265,11 @@ export async function GET(req: NextRequest) {
       .map((e, i) => ({ ...e, isNext: i === 0 }));
 
     const sources = {
-      ifema: ifema.length,
-      museoTraje: museoTraje.length,
-      romanticismo: romanticismo.length,
-      casaEncendida: casaEncendida.length,
-      isem: isem.length,
-      loewe: loewe.length,
-      wow: wow.length,
-      pedroHierro: pedroHierro.length,
-      esden: esden.length,
-      annual: annual.length,
+      ifema: ifema.length, museoTraje: museoTraje.length,
+      romanticismo: romanticismo.length, casaEncendida: casaEncendida.length,
+      isem: isem.length, loewe: loewe.length,
+      wow: wow.length, pedroHierro: pedroHierro.length,
+      esden: esden.length, annual: annual.length,
     };
 
     if (all.length > 0) {

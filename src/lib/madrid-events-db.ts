@@ -13,41 +13,92 @@ export interface MadridEvent {
 }
 
 const STATIC_FALLBACK: MadridEvent[] = [
-  { id: "s1", date: "JUN 10", rawDate: "2026-06-10", name: "MBFWMadrid — Season Preview",      venue: "IFEMA Madrid",        type: "Show",  url: "https://www.mbfwmadrid.com",                  isNext: true  },
-  { id: "s2", date: "JUN 12", rawDate: "2026-06-12", name: "Loewe Foundation Craft Prize",      venue: "Calle Goya 35",       type: "Expo",  url: "https://loewefoundation.com/craft-prize",     isNext: false },
-  { id: "s3", date: "JUN 14", rawDate: "2026-06-14", name: "MOMAD — Intl. Fashion Fair",        venue: "IFEMA Madrid",        type: "Fair",  url: "https://www.ifema.es/momad",                  isNext: false },
-  { id: "s4", date: "JUN 19", rawDate: "2026-06-19", name: "Museo del Traje: Textiles",         venue: "Av. Juan de Herrera", type: "Expo",  url: "https://www.cultura.gob.es/museodeltaje",     isNext: false },
-  { id: "s5", date: "JUN 24", rawDate: "2026-06-24", name: "Pedro del Hierro AW26 Preview",     venue: "Serrano Showroom",    type: "Press", url: "https://www.pedrodelhierro.com",              isNext: false },
-  { id: "s6", date: "JUN 28", rawDate: "2026-06-28", name: "Design Festival — Fashion Stage",   venue: "Matadero Madrid",     type: "Event", url: "https://www.mataderomadrid.org",              isNext: false },
+  { id: "s1", date: "JUN 10", rawDate: "2026-06-10", name: "MBFWMadrid — Season Preview",    venue: "IFEMA Madrid",        type: "Show", url: "https://www.ifema.es/en/mbfw-madrid",       isNext: true  },
+  { id: "s2", date: "JUN 12", rawDate: "2026-06-12", name: "Loewe Foundation Craft Prize",   venue: "Calle Goya 35",       type: "Expo", url: "https://craftprize.loewe.com/",            isNext: false },
+  { id: "s3", date: "JUL 23", rawDate: "2026-07-23", name: "MOMAD — Intl. Fashion Fair",     venue: "IFEMA Madrid",        type: "Fair", url: "https://www.ifema.es/en/momad",            isNext: false },
+  { id: "s4", date: "JUN 19", rawDate: "2026-06-19", name: "Museo del Traje: Textiles",      venue: "Av. Juan de Herrera", type: "Expo", url: "https://www.cultura.gob.es/museodeltaje", isNext: false },
+  { id: "s5", date: "SEP 09", rawDate: "2026-09-09", name: "MBFWMadrid — Primavera/Verano", venue: "IFEMA Madrid",        type: "Show", url: "https://www.ifema.es/en/mbfw-madrid",       isNext: false },
+  { id: "s6", date: "JUN 28", rawDate: "2026-06-28", name: "Design Festival — Fashion Stage",venue: "Matadero Madrid",     type: "Event",url: "https://www.mataderomadrid.org",           isNext: false },
 ];
 
+function normalizeKey(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[áàäâ]/g, "a").replace(/[éèëê]/g, "e")
+    .replace(/[íìïî]/g, "i").replace(/[óòöô]/g, "o")
+    .replace(/[úùüû]/g, "u").replace(/ñ/g, "n")
+    .replace(/[^a-z0-9]/g, " ").replace(/\s+/g, " ").trim()
+    .split(" ").slice(0, 4).join(" ");
+}
+
+async function fetchStoredEvents(key: string): Promise<MadridEvent[]> {
+  const db = getServerClient();
+  const result = await db.database
+    .from("page_content")
+    .select("content")
+    .eq("page", key);
+  const rows = (result as { data?: Array<{ content: unknown }> }).data;
+  if (!rows || rows.length === 0) return [];
+  const cache = rows[0].content as { events?: MadridEvent[] };
+  return Array.isArray(cache.events) ? cache.events : [];
+}
+
+// Auto-scraped events saved by the daily cron
+export async function getMadridAutoEvents(): Promise<MadridEvent[]> {
+  return fetchStoredEvents("madrid_calendar");
+}
+
+// Manually curated events added via the admin import tool
+export async function getMadridManualEvents(): Promise<MadridEvent[]> {
+  return fetchStoredEvents("madrid_calendar_manual");
+}
+
+export async function saveMadridManualEvents(events: MadridEvent[]): Promise<void> {
+  await upsertPageContent("madrid_calendar_manual", {
+    events,
+    lastUpdated: new Date().toISOString(),
+  });
+}
+
+// Merged view: manual events take priority, auto-scraped fill remaining slots.
+// Deduplicates by normalized event name. Always sorted soonest first.
 export async function getMadridCalendarEvents(): Promise<MadridEvent[]> {
+  const today = new Date().toISOString().slice(0, 10);
+
   try {
-    const db = getServerClient();
-    const result = await db.database
-      .from("page_content")
-      .select("content")
-      .eq("page", "madrid_calendar");
-    const rows = (result as { data?: Array<{ content: unknown }> }).data;
-    if (!rows || rows.length === 0) return STATIC_FALLBACK;
+    const [auto, manual] = await Promise.all([
+      getMadridAutoEvents().catch(() => []),
+      getMadridManualEvents().catch(() => []),
+    ]);
 
-    const cache = rows[0].content as { events?: MadridEvent[]; lastUpdated?: string };
-    if (!Array.isArray(cache.events) || cache.events.length === 0) return STATIC_FALLBACK;
+    const seen = new Set<string>();
+    const result: MadridEvent[] = [];
 
-    // Keep only future events, mark the soonest as isNext
-    const today = new Date().toISOString().slice(0, 10);
-    const upcoming = cache.events
-      .filter((e) => e.rawDate >= today)
+    const add = (ev: MadridEvent) => {
+      if (ev.rawDate < today) return;
+      const key = normalizeKey(ev.name);
+      if (seen.has(key)) return;
+      seen.add(key);
+      result.push(ev);
+    };
+
+    // Manual events first (user-curated, always surface)
+    manual.forEach(add);
+    // Auto-scraped fill remaining slots
+    auto.forEach(add);
+
+    const sorted = result
       .sort((a, b) => a.rawDate.localeCompare(b.rawDate))
       .slice(0, 6)
       .map((e, i) => ({ ...e, isNext: i === 0 }));
 
-    return upcoming.length > 0 ? upcoming : STATIC_FALLBACK;
+    return sorted.length > 0 ? sorted : STATIC_FALLBACK;
   } catch {
     return STATIC_FALLBACK;
   }
 }
 
+// Used by the cron to save auto-scraped events
 export async function saveMadridCalendarEvents(events: MadridEvent[]): Promise<void> {
   await upsertPageContent("madrid_calendar", {
     events,
