@@ -67,17 +67,33 @@ function toRoman(n: number): string {
   return r;
 }
 
-// Current date in Madrid, formatted like "Saturday 23 May MMXXVI"
-function madridDateLine(): string {
+function isoWeek(y: number, m: number, d: number): number {
+  const date = new Date(Date.UTC(y, m - 1, d));
+  const dayNum = (date.getUTCDay() + 6) % 7; // Mon=0 … Sun=6
+  date.setUTCDate(date.getUTCDate() - dayNum + 3); // nearest Thursday
+  const firstThursday = new Date(Date.UTC(date.getUTCFullYear(), 0, 4));
+  const fDayNum = (firstThursday.getUTCDay() + 6) % 7;
+  firstThursday.setUTCDate(firstThursday.getUTCDate() - fDayNum + 3);
+  return 1 + Math.round((date.getTime() - firstThursday.getTime()) / 604800000);
+}
+
+// Current Madrid date: masthead line, ISO week (issue no.), volume, and YYYY-MM-DD
+function madridNow() {
+  const now = new Date();
   const parts = new Intl.DateTimeFormat("en-GB", {
-    timeZone: "Europe/Madrid",
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).formatToParts(new Date());
+    timeZone: "Europe/Madrid", weekday: "long", day: "numeric", month: "long", year: "numeric",
+  }).formatToParts(now);
   const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
-  return `${get("weekday")} ${get("day")} ${get("month")} ${toRoman(Number(get("year")))}`;
+  const ymd = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Madrid", year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(now); // e.g. "2026-05-24"
+  const [y, mo, da] = ymd.split("-").map(Number);
+  return {
+    line: `${get("weekday")} ${get("day")} ${get("month")} ${toRoman(y)}`,
+    ymd,
+    volume: toRoman(Math.max(1, y - 2025)), // Vol. I in 2026, II in 2027…
+    issue: isoWeek(y, mo, da),
+  };
 }
 
 export default async function FashionNewsPage() {
@@ -86,15 +102,23 @@ export default async function FashionNewsPage() {
     getMadridCalendarEvents(),
   ]);
   const featuredPost = dbPosts[0] ?? null;
-  const dateLine = madridDateLine();
+
+  const md = madridNow();
+  const nextEvent = calendarEvents[0] ?? null;
+  // Drop any subtitle after a dash/pipe separator, then cap on a word boundary
+  const baseName = nextEvent ? nextEvent.name.split(/\s+[-–—|·]\s+/)[0].trim() : "";
+  const tickerName = baseName.length > 38 ? `${baseName.slice(0, 37).replace(/\s+\S*$/, "")}…` : baseName;
+  const ticker = nextEvent
+    ? (nextEvent.rawDate === md.ymd ? `Live — ${tickerName}` : `Next — ${tickerName}, ${nextEvent.date}`)
+    : "";
 
   return (
     <>
       {/* Date bar */}
       <div className="ka-fn-date-bar" style={{ padding: "10px clamp(20px,5vw,64px)" }}>
-        <span>Vol. I — Issue N° 22</span>
-        <span>Updated daily · {dateLine}</span>
-        <span style={{ color: "var(--ka-accent-deep)" }}>● Live — Couture Week, Paris</span>
+        <span>Vol. {md.volume} — Issue N° {md.issue}</span>
+        <span>Updated daily · {md.line}</span>
+        {ticker && <span style={{ color: "var(--ka-accent-deep)" }}>● {ticker}</span>}
       </div>
 
       {/* Hero */}
