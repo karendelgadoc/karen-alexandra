@@ -194,11 +194,63 @@ const fetchWOWEvents          = () => scrapeSiteEvents("https://wowconcept.com/b
 const fetchPedroDelHierroEvents = () => scrapeSiteEvents("https://www.pedrodelhierro.com/es/events",   "Pedro del Hierro, Madrid",             () => true);
 const fetchESDENEvents        = () => scrapeSiteEvents("https://www.esden.es/blog/",                    "ESDEN Business School, Madrid",        isFashionRelated);
 
-// MODAES agenda lists fashion events across all of Spain; keep Madrid only.
-const fetchMODAESEvents = async (): Promise<MadridEvent[]> => {
-  const events = await scrapeSiteEvents("https://www.modaes.com/agenda", "Madrid", isFashionRelated);
-  return events.filter((e) => /madrid/i.test(`${e.venue} ${e.name}`));
-};
+// MODAES publishes a structured agenda. We parse it directly (rather than via
+// the LLM) so each event links to its OWN page — the official "Web" link when
+// present, otherwise the MODAES detail page — never the generic agenda. Kept to
+// Madrid events only.
+async function fetchMODAESEvents(): Promise<MadridEvent[]> {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 8000);
+  let html = "";
+  try {
+    const res = await fetch("https://www.modaes.com/agenda", {
+      cache: "no-store",
+      signal: ctrl.signal,
+      headers: { "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" },
+    });
+    clearTimeout(t);
+    if (!res.ok) return [];
+    html = await res.text();
+  } catch { clearTimeout(t); return []; }
+
+  const decode = (s: string) => s.replace(/&amp;/g, "&").replace(/&#0?39;/g, "'").replace(/&quot;/g, '"').trim();
+  const today = new Date().toISOString().slice(0, 10);
+  const events: MadridEvent[] = [];
+  const blocks = html.match(/<article class="agenda_list_item[^"]*"[^>]*id="[0-9_]+"[\s\S]*?<\/article>/g) ?? [];
+
+  for (const b of blocks) {
+    const id = b.match(/id="([0-9_]+)"/)?.[1] ?? "";
+    const name = decode(b.match(/class="name">([^<]+)</)?.[1] ?? "");
+    const modalidad = decode(b.match(/class="modalidad">([^<]+)</)?.[1] ?? "");
+    if (!name) continue;
+
+    // Exact start date from the add-to-calendar links (st=YYYYMMDD or startdt=YYYY-MM-DD)
+    const st = b.match(/[?&]st=(\d{4})(\d{2})(\d{2})/);
+    const startdt = b.match(/startdt=(\d{4}-\d{2}-\d{2})/);
+    const startDate = st ? `${st[1]}-${st[2]}-${st[3]}` : startdt ? startdt[1] : "";
+    if (!startDate || startDate < today) continue;
+
+    // Madrid only: explicit location, or Modaes's own (Madrid-held) event series
+    const isMadrid = /madrid/i.test(modalidad) || /modaes/i.test(name);
+    if (!isMadrid) continue;
+
+    // Specific event page: prefer the official "Web" link, else the MODAES detail page
+    const webUrl = b.match(/<a href="(https?:\/\/[^"]+)"[^>]*>\s*Web\s*<\/a>/i)?.[1] ?? "";
+    const url = webUrl || `https://www.modaes.com/agenda?id=${id}`;
+
+    events.push({
+      id: `modaes-${id}`,
+      date: toDisplayDate(startDate),
+      rawDate: startDate,
+      name,
+      venue: /madrid/i.test(modalidad) ? modalidad : "Madrid",
+      type: guessType(name, modalidad),
+      url,
+      isNext: false,
+    });
+  }
+  return events;
+}
 
 // ── Deduplication ──────────────────────────────────────────────────────────────
 
