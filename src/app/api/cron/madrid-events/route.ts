@@ -230,9 +230,9 @@ async function fetchMODAESEvents(): Promise<MadridEvent[]> {
     const startDate = st ? `${st[1]}-${st[2]}-${st[3]}` : startdt ? startdt[1] : "";
     if (!startDate || startDate < today) continue;
 
-    // Madrid only: explicit location, or Modaes's own (Madrid-held) event series
-    const isMadrid = /madrid/i.test(modalidad) || /modaes/i.test(name);
-    if (!isMadrid) continue;
+    // Madrid only: require an explicit Madrid location in the event's own data.
+    // (Don't assume Modaes-organized events are in Madrid — many are in Barcelona.)
+    if (!/madrid/i.test(modalidad)) continue;
 
     // Specific event page: prefer the official "Web" link, else the MODAES detail page
     const webUrl = b.match(/<a href="(https?:\/\/[^"]+)"[^>]*>\s*Web\s*<\/a>/i)?.[1] ?? "";
@@ -243,7 +243,7 @@ async function fetchMODAESEvents(): Promise<MadridEvent[]> {
       date: toDisplayDate(startDate),
       rawDate: startDate,
       name,
-      venue: /madrid/i.test(modalidad) ? modalidad : "Madrid",
+      venue: modalidad,
       type: guessType(name, modalidad),
       url,
       isNext: false,
