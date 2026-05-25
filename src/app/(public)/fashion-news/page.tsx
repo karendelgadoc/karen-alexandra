@@ -118,7 +118,7 @@ export default async function FashionNewsPage() {
       <div className="ka-fn-date-bar" style={{ padding: "10px clamp(20px,5vw,64px)" }}>
         <span>Vol. {md.volume} — Issue N° {md.issue}</span>
         <span>Updated daily · {md.line}</span>
-        {ticker && <span style={{ color: "var(--ka-accent-deep)" }}>● {ticker}</span>}
+        <span style={{ color: "var(--ka-accent-deep)" }}>{ticker ? `● ${ticker}` : ""}</span>
       </div>
 
       {/* Hero */}

@@ -674,6 +674,13 @@ img {
     min-width: unset !important;
   }
   .ka-fn-hero-headline { font-size: clamp(56px, 18vw, 96px) !important; }
+  .ka-fn-date-bar {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+  .ka-fn-date-bar > :last-child { display: none !important; }
 
   /* About */
   .ka-about-map-wrap { height: 220px !important; }
@@ -688,8 +695,8 @@ img {
   border-top: 1px solid var(--ka-line);
   border-bottom: 1px solid var(--ka-line);
   padding: 8px 0;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   font-family: var(--ka-mono);
   font-size: 10px;
@@ -697,6 +704,11 @@ img {
   text-transform: uppercase;
   color: var(--ka-muted);
 }
+/* Equal-width side tracks keep the middle (date) perfectly centered regardless
+   of how long the side labels are; sides ellipsize instead of shifting it. */
+.ka-fn-date-bar > :first-child { justify-self: start; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ka-fn-date-bar > :nth-child(2) { justify-self: center; text-align: center; white-space: nowrap; }
+.ka-fn-date-bar > :last-child { justify-self: end; text-align: right; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ka-fn-hero-headline {
   font-family: var(--ka-display);
   font-size: clamp(80px, 12vw, 132px);
