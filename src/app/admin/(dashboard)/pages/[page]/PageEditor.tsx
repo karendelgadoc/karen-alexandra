@@ -352,37 +352,68 @@ function WatchEditor({ initial, focusSectionId }: { initial: WatchContent; focus
 function AboutEditor({ initial, focusSectionId }: { initial: AboutContent; focusSectionId?: string }) {
   const { statuses, save } = useSection("about");
   const [hero, setHero] = useState(initial.hero);
-  const [portraitUrl, setPortraitUrl] = useState(initial.portraitUrl);
-  const [galleryImages, setGalleryImages] = useState(initial.galleryImages);
+  const [manifesto, setManifesto] = useState(initial.manifesto);
+  const [bio, setBio] = useState(initial.bio);
+  const [joys, setJoys] = useState(initial.joys);
+  const [cta, setCta] = useState(initial.cta);
 
   const show = (id: string) => !focusSectionId || focusSectionId === id;
-  const editable = ["hero", "gallery"];
+  const editable = ["hero", "manifesto", "bio", "joys", "cta"];
 
   return (
     <>
       {show("hero") && (
         <SectionCard title="Hero" onSave={() => save("hero", hero)} status={statuses.hero ?? "idle"}>
           <Field label="Eyebrow" value={hero.eyebrow} onChange={(v) => setHero({ ...hero, eyebrow: v })} />
-          <Field label="Headline" value={hero.headline} onChange={(v) => setHero({ ...hero, headline: v })} area rows={2} />
+          <Field label="Subhead" value={hero.subhead} onChange={(v) => setHero({ ...hero, subhead: v })} area rows={3} />
         </SectionCard>
       )}
 
-      {show("hero") && (
-        <SectionCard title="Portrait" onSave={() => save("portraitUrl", portraitUrl)} status={statuses.portraitUrl ?? "idle"}>
-          <ImageUploader label="Portrait image" value={portraitUrl} onChange={setPortraitUrl} />
+      {show("manifesto") && (
+        <SectionCard title="On This Place" onSave={() => save("manifesto", manifesto)} status={statuses.manifesto ?? "idle"}>
+          <Field label="Eyebrow" value={manifesto.eyebrow} onChange={(v) => setManifesto({ ...manifesto, eyebrow: v })} />
+          <Field label="Pull quote" value={manifesto.quote} onChange={(v) => setManifesto({ ...manifesto, quote: v })} area rows={3} />
+          <Field label="Paragraph 1" value={manifesto.para1} onChange={(v) => setManifesto({ ...manifesto, para1: v })} area rows={4} />
+          <Field label="Paragraph 2" value={manifesto.para2} onChange={(v) => setManifesto({ ...manifesto, para2: v })} area rows={4} />
         </SectionCard>
       )}
 
-      {show("gallery") && (
-        <SectionCard title="Gallery images" onSave={() => save("galleryImages", galleryImages)} status={statuses.galleryImages ?? "idle"}>
-          {galleryImages.map((url, i) => (
-            <ImageUploader
-              key={i}
-              label={`Image ${i + 1}`}
-              value={url}
-              onChange={(v) => { const n = [...galleryImages]; n[i] = v; setGalleryImages(n); }}
-            />
+      {show("bio") && (
+        <SectionCard title="Bio & Portrait" onSave={() => save("bio", bio)} status={statuses.bio ?? "idle"}>
+          <ImageUploader label="Portrait image" value={bio.portraitUrl} onChange={(v) => setBio({ ...bio, portraitUrl: v })} />
+          <Field label="Tagline (short version)" value={bio.tagline} onChange={(v) => setBio({ ...bio, tagline: v })} area rows={2} />
+          <Field label="Paragraph 1" value={bio.para1} onChange={(v) => setBio({ ...bio, para1: v })} area rows={4} />
+          <Field label="Paragraph 2" value={bio.para2} onChange={(v) => setBio({ ...bio, para2: v })} area rows={4} />
+          <Field label="Paragraph 3" value={bio.para3} onChange={(v) => setBio({ ...bio, para3: v })} area rows={4} />
+          <Field label="Paragraph 4" value={bio.para4} onChange={(v) => setBio({ ...bio, para4: v })} area rows={3} />
+          <div style={{ marginTop: 16 }}>
+            <div style={{ fontFamily: "var(--ka-mono)", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 12, color: "var(--ka-muted)" }}>Quick facts</div>
+            {bio.facts.map((f, i) => (
+              <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 8, marginBottom: 8 }}>
+                <Field label={`Label ${i + 1}`} value={f.label} onChange={(v) => { const n = [...bio.facts]; n[i] = { ...f, label: v }; setBio({ ...bio, facts: n }); }} />
+                <Field label={`Value ${i + 1}`} value={f.value} onChange={(v) => { const n = [...bio.facts]; n[i] = { ...f, value: v }; setBio({ ...bio, facts: n }); }} />
+              </div>
+            ))}
+          </div>
+        </SectionCard>
+      )}
+
+      {show("joys") && (
+        <SectionCard title="Joys" onSave={() => save("joys", joys)} status={statuses.joys ?? "idle"}>
+          {joys.map((j, i) => (
+            <div key={i} style={{ paddingBottom: 16, marginBottom: 16, borderBottom: "1px solid var(--ka-line)" }}>
+              <div style={{ fontFamily: "var(--ka-mono)", fontSize: 10, letterSpacing: "0.12em", color: "var(--ka-muted)", marginBottom: 8 }}>N° {j.n}</div>
+              <Field label="Title" value={j.title} onChange={(v) => { const n = [...joys]; n[i] = { ...j, title: v }; setJoys(n); }} />
+              <Field label="Description" value={j.desc} onChange={(v) => { const n = [...joys]; n[i] = { ...j, desc: v }; setJoys(n); }} />
+            </div>
           ))}
+        </SectionCard>
+      )}
+
+      {show("cta") && (
+        <SectionCard title="CTA" onSave={() => save("cta", cta)} status={statuses.cta ?? "idle"}>
+          <Field label="Headline" value={cta.headline} onChange={(v) => setCta({ ...cta, headline: v })} area rows={2} />
+          <Field label="Subhead" value={cta.subhead} onChange={(v) => setCta({ ...cta, subhead: v })} area rows={2} />
         </SectionCard>
       )}
 

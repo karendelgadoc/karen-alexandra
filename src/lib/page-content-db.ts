@@ -34,11 +34,12 @@ export const PAGE_SECTIONS = {
     { id: "meta",       label: "Footer Note" },
   ],
   about: [
-    { id: "hero",             label: "Hero" },
-    { id: "bio",              label: "Bio" },
-    { id: "credentials",      label: "By the Numbers" },
-    { id: "case-studies-preview", label: "Case Studies Preview" },
-    { id: "gallery",          label: "Gallery" },
+    { id: "hero",      label: "Hero" },
+    { id: "manifesto", label: "On This Place" },
+    { id: "bio",       label: "Bio & Portrait" },
+    { id: "map",       label: "World Map" },
+    { id: "joys",      label: "Joys" },
+    { id: "cta",       label: "CTA" },
   ],
   services: [
     { id: "hero",         label: "Hero" },
@@ -110,9 +111,16 @@ export interface WatchContent extends SectionLayout {
 }
 
 export interface AboutContent extends SectionLayout {
-  hero: { eyebrow: string; headline: string };
-  portraitUrl: string;
-  galleryImages: string[];
+  hero: { eyebrow: string; headline: string; subhead: string };
+  manifesto: { eyebrow: string; quote: string; para1: string; para2: string };
+  bio: {
+    portraitUrl: string;
+    tagline: string;
+    para1: string; para2: string; para3: string; para4: string;
+    facts: Array<{ label: string; value: string }>;
+  };
+  joys: Array<{ n: string; title: string; desc: string }>;
+  cta: { headline: string; subhead: string };
 }
 
 export interface ServicesContent extends SectionLayout {
@@ -254,16 +262,45 @@ export const ABOUT_DEFAULTS: AboutContent = {
   sectionOrder: PAGE_SECTIONS.about.map((s) => s.id),
   hiddenSections: [],
   hero: {
-    eyebrow: "Our Story",
-    headline: "Brand strategy rooted in lived experience.",
+    eyebrow: "About · The author & the project",
+    headline: "Hello, I'm Karen.",
+    subhead: "Peruvian by birth, Spanish by choice, Californian in summer. A correspondent on a long, looping life — and the editor of the letters you find on this site.",
   },
-  portraitUrl:
-    "https://5xkq5mmr.us-east.insforge.app/api/storage/buckets/blog-images/objects/site%2FIMG_4534.jpg",
-  galleryImages: [
-    "https://5xkq5mmr.us-east.insforge.app/api/storage/buckets/blog-images/objects/site%2FIMG_4585-edited.jpg",
-    "https://5xkq5mmr.us-east.insforge.app/api/storage/buckets/blog-images/objects/site%2FIMG_4593.jpg",
-    "https://5xkq5mmr.us-east.insforge.app/api/storage/buckets/blog-images/objects/site%2FIMG_6819.jpg",
+  manifesto: {
+    eyebrow: "N° 01 — On this place",
+    quote: "This site is a slow correspondence — a Saturday letter on luxury fashion, considered travel, and the rituals that hold a beautiful life together.",
+    para1: "I started writing here in 2019, the year I returned to Barcelona for the second time. The premise has not changed since: fewer letters, written more carefully, in a register the trade press tends to skip.",
+    para2: "What you'll find: a journal of long-form essays, a weekly briefing on fashion news, a film reel of dispatches, and the occasional reader letter I've answered in public. What you won't find: a tour of my routines, an affiliate-bait roundup, a content calendar.",
+  },
+  bio: {
+    portraitUrl: "https://5xkq5mmr.us-east.insforge.app/api/storage/buckets/blog-images/objects/site%2FIMG_4534.jpg",
+    tagline: "Karen Alexandra — writer, e-commerce lead, and the long Sunday lunch most of my friends are waiting for.",
+    para1: "I have a job and I have a journal, and most weeks I think the two have begun to write each other. The day job is in luxury fashion e-commerce — strategy, merchandising, the unsexy work of compounding return rates. I lead direct-to-consumer for an independent shoe house, and I consult for a handful of fashion and hospitality brands whose work I'd recommend without the brief.",
+    para2: "The other half is this site. I write a Saturday letter for an audience of readers I quietly know by first name; I make small films on YouTube about the rooms, wardrobes, and rituals I want to write about; I post quietly on Instagram about whatever happens to be on the table. The phrase \"influencer\" gives me a small allergic reaction — though I'll cop to being one, because the alternative is pretending the work is something it isn't.",
+    para3: "Off the page, I am a dog mom to a maltipom named Mia, who has views about most things. I'm a triple citizen — Peru, the United States, Spain — which is mostly relevant at customs and very occasionally in conversation. I love coffee, yoga before the day starts, fashion that survives a second look, a long hike, dinners with family and friends that turn into breakfast, and a glass of wine well-poured on a Spanish terraza or chiringuito.",
+    para4: "I write from Madrid, for the moment. By the time you read this I may have moved again — but the letters are sent from somewhere with a balcony, and that is the rule.",
+    facts: [
+      { label: "Reads as",  value: "Karen Alexandra" },
+      { label: "Speaks",    value: "EN · ES · IT" },
+      { label: "Currently", value: "Madrid, Spain" },
+      { label: "Born",      value: "Lima, Peru — 2 April 1992" },
+      { label: "With",      value: "Mia, a maltipom" },
+      { label: "Cites",     value: "Joan Didion, Vivian Gornick, Lucia Berlin" },
+    ],
+  },
+  joys: [
+    { n: "I",    title: "Coffee",                   desc: "Cortado, double, never to go." },
+    { n: "II",   title: "Yoga",                     desc: "Most mornings. Mat by the window." },
+    { n: "III",  title: "Travel",                   desc: "Slowly. With a small bag and a real plan." },
+    { n: "IV",   title: "Fashion",                  desc: "What I'd wear again next year." },
+    { n: "V",    title: "Hiking",                   desc: "Sierra de Madrid. Most weekends." },
+    { n: "VI",   title: "Family & friends",          desc: "The longest lunches you've ever sat through." },
+    { n: "VII",  title: "A good wine, well-poured", desc: "Spanish terraza or chiringuito, ideally both." },
   ],
+  cta: {
+    headline: "Read along, write back, or simply lurk — all three are welcome.",
+    subhead: "The Saturday letter arrives once a week. The journal updates most Wednesdays. The rest of the time I'm probably writing it or living it.",
+  },
 };
 
 export const SERVICES_DEFAULTS: ServicesContent = {

@@ -1,120 +1,79 @@
-import Image from "next/image";
-import Link from "next/link";
 import type { ReactNode } from "react";
 import type { AboutContent } from "@/lib/page-content-db";
-import type { Post } from "@/lib/posts";
-
-const credentialItems = [
-  { label: "Instagram Growth", value: "30K", note: "Fashion & travel audience built organically" },
-  { label: "Pinterest Reach", value: "3M", note: "Monthly viewers at peak" },
-  { label: "Brand Partners", value: "20+", note: "Shopbop, Four Seasons, IHG, Citizens of Humanity and more" },
-  { label: "Industries", value: "3", note: "Fashion, Travel, Tech" },
-];
 
 export function HeroSection({ c }: { c: AboutContent }) {
   return (
-    <>
-      <section className="max-w-6xl mx-auto px-6 py-20 text-center">
-        <p className="text-xs tracking-[0.3em] uppercase text-[var(--taupe)] mb-4">{c.hero.eyebrow}</p>
-        <h1 className="text-5xl md:text-6xl font-light leading-tight max-w-2xl mx-auto">{c.hero.headline}</h1>
-      </section>
-      <div className="max-w-6xl mx-auto px-6"><hr className="border-[var(--beige)]" /></div>
-    </>
+    <section style={{ padding: "80px 64px 48px", borderBottom: "1px solid var(--ka-line)" }}>
+      <div className="ka-eyebrow" style={{ marginBottom: 40 }}>{c.hero.eyebrow}</div>
+      <h1 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(64px,10vw,120px)", fontWeight: 300, lineHeight: 0.93, marginBottom: 32 }}>
+        Hello,<br />I&apos;m <span style={{ fontStyle: "italic" }}>Karen<span style={{ color: "var(--ka-accent-deep)" }}>.</span></span>
+      </h1>
+      <p style={{ fontSize: 17, lineHeight: 1.7, color: "var(--ka-muted)", maxWidth: 520 }}>{c.hero.subhead}</p>
+    </section>
+  );
+}
+
+export function ManifestoSection({ c }: { c: AboutContent }) {
+  return (
+    <section style={{ padding: "80px 64px", background: "var(--ka-bg-soft)" }}>
+      <div className="ka-eyebrow" style={{ marginBottom: 32 }}>{c.manifesto.eyebrow}</div>
+      <p style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(22px,2.5vw,34px)", fontStyle: "italic", lineHeight: 1.3, marginBottom: 32 }}>{c.manifesto.quote}</p>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, paddingTop: 32, borderTop: "1px solid var(--ka-ink)" }}>
+        <p style={{ fontSize: 16, lineHeight: 1.75, color: "var(--ka-ink)" }}>{c.manifesto.para1}</p>
+        <p style={{ fontSize: 16, lineHeight: 1.75, color: "var(--ka-ink)" }}>{c.manifesto.para2}</p>
+      </div>
+    </section>
   );
 }
 
 export function BioSection({ c }: { c: AboutContent }) {
   return (
-    <>
-      <section className="max-w-6xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-16 items-start">
-        <div className="aspect-[3/4] overflow-hidden bg-[var(--beige)] sticky top-28">
-          <Image src={c.portraitUrl} alt="Karen Alexandra" width={600} height={800} className="w-full h-full object-cover" />
+    <section style={{ padding: "80px 64px", borderTop: "1px solid var(--ka-line)" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1.4fr", gap: 80, alignItems: "start" }}>
+        <div>
+          <img src={c.bio.portraitUrl} alt="Karen Alexandra" style={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", display: "block" }} />
+          <p style={{ fontFamily: "var(--ka-display)", fontStyle: "italic", fontSize: 20, lineHeight: 1.35, marginTop: 24 }}>{c.bio.tagline}</p>
         </div>
-        <div className="space-y-6 text-[var(--muted)] leading-relaxed">
-          <p className="text-2xl font-light text-[var(--charcoal)] leading-snug">
-            I&apos;m Karen Alexandra — Brand Marketing Director with roots in fashion merchandising and a passion for digital storytelling.
-          </p>
-          <p>
-            My career began at Nordstrom, where I studied fashion merchandising and built{" "}
-            <span className="text-[var(--charcoal)] font-medium">Little Black Shell</span>, a luxury fashion blog that grew to 30,000 Instagram followers. The blog became a strategic portfolio that landed me brand partnerships with Shopbop, Citizens of Humanity, Agolde, Sisley Paris, Makeup Forever, ASOS, and River Island.
-          </p>
-          <p>
-            I later pivoted to luxury travel, rebranding as{" "}
-            <span className="text-[var(--charcoal)] font-medium">Lifestyle Traveler</span>{" "}and growing my Pinterest presence to 3 million monthly viewers. Through partnerships with Four Seasons Hotels & Resorts, IHG, and international tourism boards, I refined the art of curating aspirational experiences digitally.
-          </p>
-          <p>
-            Most recently, I co-founded{" "}
-            <span className="text-[var(--charcoal)] font-medium">Mia The New Yorker</span>, a Peruvian-inspired fashion e-commerce brand launched October 2024. I led buying, digital merchandising, and Shopify store management — translating traditional merchandising principles into a data-driven digital environment.
-          </p>
-          <p>Today I bring this cross-industry expertise to luxury and premium fashion brands, helping them build authentic digital presences that convert — from e-commerce strategy to brand partnerships that resonate.</p>
-          <div className="pt-4">
-            <Link href="/contact" className="text-xs tracking-[0.2em] uppercase border border-[var(--charcoal)] px-8 py-3 hover:bg-[var(--charcoal)] hover:text-[var(--cream)] transition-colors inline-block">
-              Work with Me
-            </Link>
-          </div>
-        </div>
-      </section>
-      <div className="max-w-6xl mx-auto px-6"><hr className="border-[var(--beige)]" /></div>
-    </>
-  );
-}
-
-export function CredentialsSection() {
-  return (
-    <>
-      <section className="max-w-6xl mx-auto px-6 py-20">
-        <p className="text-xs tracking-[0.3em] uppercase text-[var(--taupe)] mb-12 text-center">By the Numbers</p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {credentialItems.map(({ label, value, note }) => (
-            <div key={label} className="text-center">
-              <p className="text-4xl md:text-5xl font-light text-[var(--charcoal)] mb-2">{value}</p>
-              <p className="text-xs tracking-[0.15em] uppercase text-[var(--taupe)] mb-2">{label}</p>
-              <p className="text-xs text-[var(--muted)] leading-relaxed">{note}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-      <div className="max-w-6xl mx-auto px-6"><hr className="border-[var(--beige)]" /></div>
-    </>
-  );
-}
-
-export function CaseStudiesPreviewSection({ posts }: { posts: Post[] }) {
-  return (
-    <>
-      <section className="max-w-6xl mx-auto px-6 py-16 md:py-24">
-        <div className="flex items-end justify-between mb-10 md:mb-12">
-          <div>
-            <p className="text-xs tracking-[0.3em] uppercase text-[var(--taupe)] mb-2">Selected Work</p>
-            <h2 className="text-2xl md:text-3xl font-light">Case Studies</h2>
-          </div>
-          <Link href="/case-studies" className="text-xs tracking-[0.15em] uppercase text-[var(--muted)] hover:text-[var(--taupe)] transition-colors hidden md:block">View All →</Link>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-          {posts.map((post) => (
-            <Link key={post.slug} href={`/case-studies/${post.slug}`} className="group block">
-              <div className="aspect-[4/3] overflow-hidden bg-[var(--beige)] mb-4 md:mb-5">
-                <Image src={post.heroImage} alt={post.heroAlt} width={800} height={600} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          <p style={{ fontSize: 18, lineHeight: 1.75 }}>{c.bio.para1}</p>
+          <p style={{ fontSize: 16, lineHeight: 1.8, color: "var(--ka-muted)" }}>{c.bio.para2}</p>
+          <p style={{ fontSize: 16, lineHeight: 1.8, color: "var(--ka-muted)" }}>{c.bio.para3}</p>
+          <p style={{ fontSize: 16, lineHeight: 1.8, color: "var(--ka-muted)" }}>{c.bio.para4}</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24, marginTop: 16, paddingTop: 32, borderTop: "1px solid var(--ka-ink)" }}>
+            {c.bio.facts.map((f, i) => (
+              <div key={i}>
+                <div className="ka-eyebrow" style={{ marginBottom: 4, fontSize: 10 }}>{f.label}</div>
+                <div style={{ fontFamily: "var(--ka-display)", fontSize: 15 }}>{f.value}</div>
               </div>
-              <p className="text-xs tracking-[0.2em] uppercase text-[var(--taupe)] mb-2">{post.category}</p>
-              <h3 className="text-lg md:text-xl font-light mb-2 group-hover:text-[var(--taupe)] transition-colors">{post.title}</h3>
-              <p className="text-sm text-[var(--muted)] leading-relaxed">{post.excerpt}</p>
-            </Link>
-          ))}
+            ))}
+          </div>
         </div>
-      </section>
-      <div className="max-w-6xl mx-auto px-6"><hr className="border-[var(--beige)]" /></div>
-    </>
+      </div>
+    </section>
   );
 }
 
-export function GallerySection({ c }: { c: AboutContent }) {
+export function MapSection() {
   return (
-    <section className="max-w-6xl mx-auto px-6 pb-24">
-      <div className="grid grid-cols-3 gap-3">
-        {c.galleryImages.map((src, i) => (
-          <div key={i} className="aspect-square overflow-hidden bg-[var(--beige)]">
-            <Image src={src} alt="Karen Alexandra" width={400} height={400} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+    <section style={{ padding: "80px 64px", background: "var(--ka-bg-soft)", borderTop: "1px solid var(--ka-line)" }}>
+      <div className="ka-eyebrow" style={{ marginBottom: 24 }}>N° 03 — A world-citizen, in order</div>
+      <div style={{ padding: "48px 32px", border: "1px solid var(--ka-line)", textAlign: "center", color: "var(--ka-muted)", fontFamily: "var(--ka-display)", fontStyle: "italic", fontSize: 18 }}>
+        Interactive world map — rendered live on the page
+      </div>
+    </section>
+  );
+}
+
+export function JoysSection({ c }: { c: AboutContent }) {
+  return (
+    <section style={{ padding: "80px 64px", borderTop: "1px solid var(--ka-line)" }}>
+      <div className="ka-eyebrow" style={{ marginBottom: 48 }}>N° 04 — A short list of joys</div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)" }}>
+        {c.joys.map((j, i) => (
+          <div key={i} style={{ padding: "32px 20px 40px", borderRight: "1px solid var(--ka-line)", borderBottom: "1px solid var(--ka-line)" }}>
+            <div className="ka-eyebrow" style={{ color: "var(--ka-accent-deep)", marginBottom: 12 }}>N° {j.n}</div>
+            <div style={{ fontFamily: "var(--ka-display)", fontSize: 22, fontStyle: i % 2 ? "italic" : "normal", marginBottom: 12 }}>{j.title}</div>
+            <div style={{ fontFamily: "var(--ka-display)", fontStyle: "italic", fontSize: 14, color: "var(--ka-muted)" }}>{j.desc}</div>
           </div>
         ))}
       </div>
@@ -122,14 +81,24 @@ export function GallerySection({ c }: { c: AboutContent }) {
   );
 }
 
-export interface AboutExtraProps { posts: Post[]; }
+export function CtaSection({ c }: { c: AboutContent }) {
+  return (
+    <section style={{ padding: "80px 64px", background: "var(--ka-ink)", color: "var(--ka-bg)", textAlign: "center" }}>
+      <h2 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(32px,5vw,72px)", fontStyle: "italic", lineHeight: 1, maxWidth: 1000, margin: "0 auto 32px" }}>
+        {c.cta.headline}
+      </h2>
+      <p style={{ color: "rgba(250,247,242,0.7)", maxWidth: 520, margin: "0 auto", fontSize: 16, lineHeight: 1.7 }}>{c.cta.subhead}</p>
+    </section>
+  );
+}
 
-export function buildAboutSectionMap(c: AboutContent, extra: AboutExtraProps): Record<string, ReactNode> {
+export function buildAboutSectionMap(c: AboutContent): Record<string, ReactNode> {
   return {
-    "hero":                  <HeroSection c={c} />,
-    "bio":                   <BioSection c={c} />,
-    "credentials":           <CredentialsSection />,
-    "case-studies-preview":  <CaseStudiesPreviewSection posts={extra.posts} />,
-    "gallery":               <GallerySection c={c} />,
+    "hero":      <HeroSection c={c} />,
+    "manifesto": <ManifestoSection c={c} />,
+    "bio":       <BioSection c={c} />,
+    "map":       <MapSection />,
+    "joys":      <JoysSection c={c} />,
+    "cta":       <CtaSection c={c} />,
   };
 }

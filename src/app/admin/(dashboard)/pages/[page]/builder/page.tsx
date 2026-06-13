@@ -51,9 +51,9 @@ async function buildSections(page: PageKey) {
       return { c, sectionMap: buildPortfolioSectionMap(c, { posts }), defaults: PORTFOLIO_DEFAULTS };
     }
     case "about": {
-      const [posts, content] = await Promise.all([getAllPosts(), getAboutContent().catch(() => null)]);
+      const content = await getAboutContent().catch(() => null);
       const c = content ?? ABOUT_DEFAULTS;
-      return { c, sectionMap: buildAboutSectionMap(c, { posts }), defaults: ABOUT_DEFAULTS };
+      return { c, sectionMap: buildAboutSectionMap(c), defaults: ABOUT_DEFAULTS };
     }
     case "contact": {
       const content = await getContactContent().catch(() => null);
