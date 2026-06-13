@@ -9,11 +9,15 @@ import {
   getContactContent,
   getWatchContent,
   getAboutContent,
+  getServicesContent,
+  getMediaKitContent,
   HOME_DEFAULTS,
   PORTFOLIO_DEFAULTS,
   CONTACT_DEFAULTS,
   WATCH_DEFAULTS,
   ABOUT_DEFAULTS,
+  SERVICES_DEFAULTS,
+  MEDIA_KIT_DEFAULTS,
   type PageKey,
 } from "@/lib/page-content-db";
 import { buildHomeSectionMap }      from "@/components/sections/home";
@@ -21,7 +25,9 @@ import { buildPortfolioSectionMap } from "@/components/sections/portfolio";
 import { buildContactSectionMap }   from "@/components/sections/contact";
 import { buildWatchSectionMap }     from "@/components/sections/watch";
 import { buildAboutSectionMap }     from "@/components/sections/about";
-import { getFeaturedBlogPosts } from "@/lib/blog-db";
+import { buildServicesSectionMap }  from "@/components/sections/services";
+import { buildMediaKitSectionMap }  from "@/components/sections/media-kit";
+import { getFeaturedBlogPosts, getAllBlogPosts } from "@/lib/blog-db";
 import { getAllPosts } from "@/lib/posts-db";
 import { getLatestVideos } from "@/lib/youtube";
 import PageBuilder from "./PageBuilder";
@@ -62,6 +68,25 @@ async function buildSections(page: PageKey) {
       const c = content ?? WATCH_DEFAULTS;
       return { c, sectionMap: buildWatchSectionMap(c, { videos }), defaults: WATCH_DEFAULTS };
     }
+    case "services": {
+      const [content, allPosts] = await Promise.all([
+        getServicesContent().catch(() => null),
+        getAllPosts().catch(() => []),
+      ]);
+      const c = content ?? SERVICES_DEFAULTS;
+      return { c, sectionMap: buildServicesSectionMap(c, { posts: allPosts.slice(0, 3) }), defaults: SERVICES_DEFAULTS };
+    }
+    case "media-kit": {
+      const [content, blogPosts, videos] = await Promise.all([
+        getMediaKitContent().catch(() => null),
+        getAllBlogPosts().catch(() => []),
+        getLatestVideos(2).catch(() => []),
+      ]);
+      const c = content ?? MEDIA_KIT_DEFAULTS;
+      return { c, sectionMap: buildMediaKitSectionMap(c, { recentPosts: blogPosts.slice(0, 2), recentVideos: videos.slice(0, 2) }), defaults: MEDIA_KIT_DEFAULTS };
+    }
+    default:
+      throw new Error(`Unknown page: ${page}`);
   }
 }
 
@@ -106,7 +131,7 @@ export default async function BuilderPage({ params }: { params: Promise<{ page: 
 
       <div style={{ flex: 1, overflow: "hidden" }}>
         <PageBuilder
-          page={page}
+          page={pageKey}
           sectionItems={sectionItems}
           initialOrder={order}
           initialHidden={hidden}

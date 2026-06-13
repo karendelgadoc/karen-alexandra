@@ -4,11 +4,13 @@ import { PAGE_KEYS, PAGE_LABELS } from "@/lib/page-content-db";
 export const dynamic = "force-dynamic";
 
 const PAGE_DESCRIPTIONS: Record<string, string> = {
-  home:      "Hero headline, portrait, intro paragraphs, marquee, pull quote",
-  portfolio: "Stats, capabilities, press quotes, CTA copy",
-  contact:   "Hero headline, sidebar quote, studio info, closing quote",
-  watch:     "Hero headline and subhead",
-  about:     "Hero copy, portrait image, gallery images",
+  home:        "Hero headline, portrait, intro paragraphs, marquee, pull quote",
+  portfolio:   "Stats, capabilities, press quotes, CTA copy",
+  contact:     "Hero headline, sidebar quote, studio info, closing quote",
+  watch:       "Hero headline and subhead",
+  about:       "Hero copy, portrait image, gallery images",
+  services:    "Hero, principle strip, service cards (4), process steps, testimonials, FAQ, CTA",
+  "media-kit": "Hero, bio, reach stats, audience demographics, partners, press, testimonials, Instagram, CTA",
 };
 
 const EXTRA_PAGES = [
@@ -69,12 +71,18 @@ export default function PagesListPage() {
               <p className="text-sm text-stone-400 mt-0.5">{p.description}</p>
             </div>
             <div className="flex items-center gap-3 flex-shrink-0">
-              <Link
-                href={p.editHref}
-                className="text-sm px-4 py-2 bg-stone-900 text-white rounded hover:bg-stone-700 transition-colors font-medium"
-              >
-                {p.editLabel}
-              </Link>
+              {p.editHref ? (
+                <Link
+                  href={p.editHref}
+                  className="text-sm px-4 py-2 bg-stone-900 text-white rounded hover:bg-stone-700 transition-colors font-medium"
+                >
+                  {p.editLabel}
+                </Link>
+              ) : (
+                <span className="text-sm px-4 py-2 border border-stone-200 rounded text-stone-400 font-medium cursor-default">
+                  Hardcoded in source
+                </span>
+              )}
             </div>
           </div>
         ))}

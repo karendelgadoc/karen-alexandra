@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useMemo, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import PageEditor from "../PageEditor";
+import type { PageKey } from "@/lib/page-content-db";
 import {
   DndContext,
   closestCenter,
@@ -40,6 +43,14 @@ function IconDrag() {
     </svg>
   );
 }
+function IconPencil() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </svg>
+  );
+}
 function IconEye({ off }: { off?: boolean }) {
   return off ? (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -57,13 +68,14 @@ function IconEye({ off }: { off?: boolean }) {
 // ── A draggable wrapper for the rendered section ──────────────────────────────
 
 function DraggableSection({
-  id, label, isHidden, children, onToggleHidden,
+  id, label, isHidden, children, onToggleHidden, onEdit,
 }: {
   id: string;
   label: string;
   isHidden: boolean;
   children: ReactNode;
   onToggleHidden: (id: string) => void;
+  onEdit: (id: string) => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
 
@@ -134,8 +146,16 @@ function DraggableSection({
         <span style={{ fontSize: 10, color: "white", letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: "system-ui, sans-serif" }}>{label}</span>
       </div>
 
-      {/* Top-right: hide + edit */}
+      {/* Top-right: edit + hide */}
       <div className="ka-builder-controls">
+        <button
+          onClick={() => onEdit(id)}
+          title="Edit section content"
+          style={{ border: "none", background: "rgba(124,58,237,0.9)", color: "white", padding: 8, borderRadius: 3, cursor: "pointer", display: "flex", alignItems: "center", gap: 6, fontSize: 11, fontWeight: 600, paddingRight: 12 }}
+        >
+          <IconPencil />
+          <span>Edit</span>
+        </button>
         <button
           onClick={() => onToggleHidden(id)}
           title="Hide section"
@@ -156,12 +176,14 @@ function DraggableSection({
 export default function PageBuilder({
   page, sectionItems, initialOrder, initialHidden, currentContent,
 }: {
-  page: string;
+  page: PageKey;
   sectionItems: SectionItem[];
   initialOrder: string[];
   initialHidden: string[];
   currentContent: Record<string, unknown>;
 }) {
+  const router = useRouter();
+  const [editingSection, setEditingSection] = useState<string | null>(null);
   // Build a stable ordered list that includes every section (visible + hidden), respecting saved order
   const allIds = useMemo(() => sectionItems.map((s) => s.id), [sectionItems]);
   const initOrdered = useMemo(() => {
@@ -271,81 +293,115 @@ export default function PageBuilder({
         {/* ── Left sidebar ─────────────────────────────────────────────── */}
         <aside
           style={{
-            width: 240, flexShrink: 0, background: "white",
+            width: editingSection ? 380 : 240, flexShrink: 0, background: "white",
             borderRight: "1px solid #e7e5e4", display: "flex", flexDirection: "column",
+            transition: "width 0.2s ease",
           }}
         >
-          <div style={{ padding: "16px 16px 12px", borderBottom: "1px solid #f5f5f4" }}>
-            <p style={{ fontSize: 11, color: "#a8a29e", fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 6 }}>
-              Sections
-            </p>
-            <p style={{ fontSize: 11, color: "#a8a29e", lineHeight: 1.5 }}>
-              {visibleCount} visible · {hiddenCount} hidden
-            </p>
-          </div>
-
-          <div style={{ flex: 1, overflowY: "auto" }}>
-            {orderedItems.map((s, i) => (
-              <div
-                key={s.id}
-                onClick={(e) => {
-                  // Scroll the canvas to this section
-                  e.preventDefault();
-                  const target = document.querySelector(`[data-builder-section="${s.id}"]`);
-                  target?.scrollIntoView({ behavior: "smooth", block: "start" });
-                }}
-                style={{
-                  display: "flex", alignItems: "center", gap: 8,
-                  padding: "10px 14px", borderBottom: "1px solid #f5f5f4",
-                  cursor: "pointer", opacity: hidden.has(s.id) ? 0.45 : 1,
-                  background: "white", transition: "background 0.12s",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "#fafaf9")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "white")}
-              >
-                <span style={{ fontSize: 10, color: "#a8a29e", fontFamily: "monospace", width: 18 }}>{String(i + 1).padStart(2, "0")}</span>
-                <span style={{ flex: 1, fontSize: 13, color: hidden.has(s.id) ? "#a8a29e" : "#292524", textDecoration: hidden.has(s.id) ? "line-through" : "none" }}>
-                  {s.label}
-                </span>
+          {editingSection ? (
+            /* ── Edit panel ── */
+            <>
+              <div style={{ padding: "12px 16px", borderBottom: "1px solid #f5f5f4", display: "flex", alignItems: "center", gap: 10 }}>
                 <button
-                  onClick={(e) => { e.stopPropagation(); toggleHidden(s.id); }}
-                  style={{ border: "none", background: "none", color: hidden.has(s.id) ? "#a8a29e" : "#57534e", padding: 4, cursor: "pointer", display: "flex" }}
-                  title={hidden.has(s.id) ? "Show" : "Hide"}
+                  onClick={() => { setEditingSection(null); router.refresh(); }}
+                  style={{ border: "none", background: "none", padding: 4, cursor: "pointer", color: "#57534e", fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}
                 >
-                  <IconEye off={hidden.has(s.id)} />
+                  ← Back
                 </button>
+                <span style={{ fontSize: 11, color: "#a8a29e", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                  {orderedItems.find((s) => s.id === editingSection)?.label ?? "Edit"}
+                </span>
               </div>
-            ))}
-          </div>
+              <div style={{ flex: 1, overflowY: "auto" }}>
+                <PageEditor
+                  page={page}
+                  initialData={currentContent}
+                  focusSectionId={editingSection}
+                />
+              </div>
+            </>
+          ) : (
+            /* ── Section list ── */
+            <>
+              <div style={{ padding: "16px 16px 12px", borderBottom: "1px solid #f5f5f4" }}>
+                <p style={{ fontSize: 11, color: "#a8a29e", fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 6 }}>
+                  Sections
+                </p>
+                <p style={{ fontSize: 11, color: "#a8a29e", lineHeight: 1.5 }}>
+                  {visibleCount} visible · {hiddenCount} hidden
+                </p>
+              </div>
 
-          <div style={{ padding: 14, borderTop: "1px solid #e7e5e4", display: "flex", flexDirection: "column", gap: 8 }}>
-            <button
-              onClick={saveLayout}
-              disabled={!isDirty || status === "saving"}
-              style={{
-                padding: "10px 14px",
-                background: isDirty ? "#171717" : "#f5f5f4",
-                color: isDirty ? "white" : "#a8a29e",
-                border: "none", borderRadius: 3,
-                cursor: isDirty ? "pointer" : "default",
-                fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase",
-                transition: "background 0.15s, color 0.15s",
-              }}
-            >
-              {status === "saving" ? "Saving…" : status === "saved" ? "✓ Saved" : status === "error" ? "Error — retry" : "Save Layout"}
-            </button>
-            <Link
-              href={`/admin/pages/${page}`}
-              style={{
-                padding: "8px 12px", textAlign: "center" as const,
-                background: "white", border: "1px solid #e7e5e4",
-                color: "#57534e", textDecoration: "none", borderRadius: 3,
-                fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase",
-              }}
-            >
-              Edit Content →
-            </Link>
-          </div>
+              <div style={{ flex: 1, overflowY: "auto" }}>
+                {orderedItems.map((s, i) => (
+                  <div
+                    key={s.id}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const target = document.querySelector(`[data-builder-section="${s.id}"]`);
+                      target?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }}
+                    style={{
+                      display: "flex", alignItems: "center", gap: 8,
+                      padding: "10px 14px", borderBottom: "1px solid #f5f5f4",
+                      cursor: "pointer", opacity: hidden.has(s.id) ? 0.45 : 1,
+                      background: "white", transition: "background 0.12s",
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "#fafaf9")}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = "white")}
+                  >
+                    <span style={{ fontSize: 10, color: "#a8a29e", fontFamily: "monospace", width: 18 }}>{String(i + 1).padStart(2, "0")}</span>
+                    <span style={{ flex: 1, fontSize: 13, color: hidden.has(s.id) ? "#a8a29e" : "#292524", textDecoration: hidden.has(s.id) ? "line-through" : "none" }}>
+                      {s.label}
+                    </span>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setEditingSection(s.id); }}
+                      style={{ border: "none", background: "none", color: "#7c3aed", padding: 4, cursor: "pointer", display: "flex" }}
+                      title="Edit section"
+                    >
+                      <IconPencil />
+                    </button>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); toggleHidden(s.id); }}
+                      style={{ border: "none", background: "none", color: hidden.has(s.id) ? "#a8a29e" : "#57534e", padding: 4, cursor: "pointer", display: "flex" }}
+                      title={hidden.has(s.id) ? "Show" : "Hide"}
+                    >
+                      <IconEye off={hidden.has(s.id)} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ padding: 14, borderTop: "1px solid #e7e5e4", display: "flex", flexDirection: "column", gap: 8 }}>
+                <button
+                  onClick={saveLayout}
+                  disabled={!isDirty || status === "saving"}
+                  style={{
+                    padding: "10px 14px",
+                    background: isDirty ? "#171717" : "#f5f5f4",
+                    color: isDirty ? "white" : "#a8a29e",
+                    border: "none", borderRadius: 3,
+                    cursor: isDirty ? "pointer" : "default",
+                    fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase",
+                    transition: "background 0.15s, color 0.15s",
+                  }}
+                >
+                  {status === "saving" ? "Saving…" : status === "saved" ? "✓ Saved" : status === "error" ? "Error — retry" : "Save Layout"}
+                </button>
+                <Link
+                  href={`/admin/pages/${page}`}
+                  style={{
+                    padding: "8px 12px", textAlign: "center" as const,
+                    background: "white", border: "1px solid #e7e5e4",
+                    color: "#57534e", textDecoration: "none", borderRadius: 3,
+                    fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase",
+                  }}
+                >
+                  Edit Content →
+                </Link>
+              </div>
+            </>
+          )}
         </aside>
 
         {/* ── Visual canvas — the actual page rendered inline ─────────── */}
@@ -366,6 +422,7 @@ export default function PageBuilder({
                     label={s.label}
                     isHidden={hidden.has(s.id)}
                     onToggleHidden={toggleHidden}
+                    onEdit={setEditingSection}
                   >
                     {s.node}
                   </DraggableSection>

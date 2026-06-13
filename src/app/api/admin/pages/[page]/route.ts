@@ -6,6 +6,8 @@ import {
   getContactContent,
   getWatchContent,
   getAboutContent,
+  getServicesContent,
+  getMediaKitContent,
   upsertPageContent,
   type PageKey,
 } from "@/lib/page-content-db";
@@ -14,19 +16,23 @@ import { requireAdmin } from "@/lib/admin-guard";
 import { pingIndexNow, indexNowUrl } from "@/lib/indexnow";
 
 const PAGE_TO_PATH: Record<string, string> = {
-  home: "/",
-  portfolio: "/portfolio",
-  contact: "/contact",
-  watch: "/watch",
-  about: "/about",
+  home:        "/",
+  portfolio:   "/portfolio",
+  contact:     "/contact",
+  watch:       "/watch",
+  about:       "/about",
+  services:    "/services",
+  "media-kit": "/media-kit",
 };
 
 const FETCHERS: Record<PageKey, () => Promise<unknown>> = {
-  home: getHomeContent,
-  portfolio: getPortfolioContent,
-  contact: getContactContent,
-  watch: getWatchContent,
-  about: getAboutContent,
+  home:        getHomeContent,
+  portfolio:   getPortfolioContent,
+  contact:     getContactContent,
+  watch:       getWatchContent,
+  about:       getAboutContent,
+  services:    getServicesContent,
+  "media-kit": getMediaKitContent,
 };
 
 export async function GET(

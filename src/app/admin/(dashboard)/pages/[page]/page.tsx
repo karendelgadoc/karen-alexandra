@@ -7,6 +7,8 @@ import {
   getContactContent,
   getWatchContent,
   getAboutContent,
+  getServicesContent,
+  getMediaKitContent,
   type PageKey,
 } from "@/lib/page-content-db";
 import PageEditor from "./PageEditor";
@@ -14,12 +16,14 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-const FETCHERS = {
-  home: getHomeContent,
-  portfolio: getPortfolioContent,
-  contact: getContactContent,
-  watch: getWatchContent,
-  about: getAboutContent,
+const FETCHERS: Record<PageKey, () => Promise<unknown>> = {
+  home:        getHomeContent,
+  portfolio:   getPortfolioContent,
+  contact:     getContactContent,
+  watch:       getWatchContent,
+  about:       getAboutContent,
+  services:    getServicesContent,
+  "media-kit": getMediaKitContent,
 };
 
 export default async function PageEditorPage({
