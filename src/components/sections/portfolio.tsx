@@ -4,10 +4,6 @@ import type { ReactNode } from "react";
 import type { PortfolioContent } from "@/lib/page-content-db";
 import type { Post } from "@/lib/posts";
 
-const LOGOS = [
-  "SHOPBOP", "FOUR SEASONS", "IHG", "CITIZENS OF HUMANITY", "RIVER ISLAND",
-  "AGOLDE", "SISLEY PARIS", "MAKEUP FOREVER", "ASOS", "NORDSTROM",
-];
 
 export function HeroSection({ c }: { c: PortfolioContent }) {
   return (
@@ -38,12 +34,13 @@ export function FactsSection({ c }: { c: PortfolioContent }) {
   );
 }
 
-export function LogosSection() {
+export function LogosSection({ c }: { c: PortfolioContent }) {
+  const logos = c.clientLogos ?? [];
   return (
     <section className="ka-rp" style={{ padding: "80px 64px", borderBottom: "1px solid var(--ka-line)" }}>
       <span className="ka-eyebrow" style={{ display: "block", marginBottom: "40px" }}>Brands I&apos;ve worked with</span>
       <div className="ka-r-logos" style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "1px", background: "var(--ka-line)", border: "1px solid var(--ka-line)" }}>
-        {LOGOS.map((logo) => (
+        {logos.map((logo) => (
           <div key={logo} style={{ background: "var(--ka-bg)", padding: "28px 20px", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <span style={{ fontFamily: "var(--ka-body)", fontSize: "10px", letterSpacing: "0.22em", textTransform: "uppercase" as const, color: "var(--ka-ink-soft)", textAlign: "center" as const }}>{logo}</span>
           </div>
@@ -128,7 +125,7 @@ export function buildPortfolioSectionMap(c: PortfolioContent, extra: PortfolioEx
   return {
     "hero":          <HeroSection c={c} />,
     "facts":         <FactsSection c={c} />,
-    "logos":         <LogosSection />,
+    "logos":         <LogosSection c={c} />,
     "capabilities":  <CapabilitiesSection c={c} />,
     "selected-work": <SelectedWorkSection posts={extra.posts} />,
     "press":         <PressSection c={c} />,

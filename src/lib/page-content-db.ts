@@ -95,6 +95,7 @@ export interface PortfolioContent extends SectionLayout {
   capabilities: Array<{ title: string; desc: string }>;
   press: Array<{ publication: string; quote: string; date: string }>;
   cta: { headline: string; buttonLabel: string };
+  clientLogos: string[];
   galleryImages: string[];
 }
 
@@ -205,6 +206,10 @@ export const PORTFOLIO_DEFAULTS: PortfolioContent = {
     headline: "Begin a conversation.",
     buttonLabel: "Get in touch →",
   },
+  clientLogos: [
+    "SHOPBOP", "FOUR SEASONS", "IHG", "CITIZENS OF HUMANITY", "RIVER ISLAND",
+    "AGOLDE", "SISLEY PARIS", "MAKEUP FOREVER", "ASOS", "NORDSTROM",
+  ],
   galleryImages: [
     "https://5xkq5mmr.us-east.insforge.app/api/storage/buckets/blog-images/objects/site%2FIMG_4585-edited.jpg",
     "https://5xkq5mmr.us-east.insforge.app/api/storage/buckets/blog-images/objects/site%2FIMG_4593.jpg",

@@ -189,10 +189,11 @@ function PortfolioEditor({ initial, focusSectionId }: { initial: PortfolioConten
   const [capabilities, setCapabilities] = useState(initial.capabilities);
   const [press, setPress] = useState(initial.press);
   const [cta, setCta] = useState(initial.cta);
+  const [clientLogos, setClientLogos] = useState(initial.clientLogos ?? []);
   const [galleryImages, setGalleryImages] = useState(initial.galleryImages);
 
   const show = (id: string) => !focusSectionId || focusSectionId === id;
-  const editable = ["hero", "facts", "capabilities", "press", "cta"];
+  const editable = ["hero", "facts", "capabilities", "logos", "press", "cta"];
 
   return (
     <>
@@ -213,6 +214,18 @@ function PortfolioEditor({ initial, focusSectionId }: { initial: PortfolioConten
               <Field label="Note" value={s.note} onChange={(v) => { const n = [...stats]; n[i] = { ...n[i], note: v }; setStats(n); }} />
             </div>
           ))}
+        </SectionCard>
+      )}
+
+      {show("logos") && (
+        <SectionCard title="Client logos" onSave={() => save("clientLogos", clientLogos)} status={statuses.clientLogos ?? "idle"}>
+          <p className="text-xs text-stone-400 mb-2">One brand name per line. Names display in uppercase automatically.</p>
+          <textarea
+            value={clientLogos.join("\n")}
+            onChange={(e) => setClientLogos(e.target.value.split("\n"))}
+            rows={12}
+            className="w-full border border-stone-200 rounded px-3 py-2 text-sm text-stone-800 focus:outline-none focus:border-stone-400 resize-y font-mono"
+          />
         </SectionCard>
       )}
 
