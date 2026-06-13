@@ -31,7 +31,7 @@ export function HeroSection({ c }: { c: MediaKitContent }) {
             {c.hero.subhead}
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <a href="/media-kit.pdf" className="ka-btn" style={{ background: "var(--ka-ink)", color: "var(--ka-bg)" }}>
+            <a href="/media-kit.pdf" download="Karen Alexandra — Media Kit.pdf" className="ka-btn" style={{ background: "var(--ka-ink)", color: "var(--ka-bg)" }}>
               ↓ Download PDF kit
             </a>
             <a href="mailto:press@karenalexandra.com" className="ka-arrow-link" style={{ fontSize: 11 }}>
@@ -284,9 +284,9 @@ export function CtaSection({ c }: { c: MediaKitContent }) {
           </p>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-          <a href="/media-kit.pdf" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "clamp(16px,2vw,28px) clamp(20px,2.5vw,32px)", border: "1px solid var(--ka-bg)", textDecoration: "none", color: "var(--ka-bg)" }}>
+          <a href="/media-kit.pdf" download="Karen Alexandra — Media Kit.pdf" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "clamp(16px,2vw,28px) clamp(20px,2.5vw,32px)", border: "1px solid var(--ka-bg)", textDecoration: "none", color: "var(--ka-bg)" }}>
             <div>
-              <div className="ka-eyebrow" style={{ color: "rgba(250,247,242,0.5)", marginBottom: 8 }}>PDF · 12 MB</div>
+              <div className="ka-eyebrow" style={{ color: "rgba(250,247,242,0.5)", marginBottom: 8 }}>PDF · 10 MB</div>
               <div style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(18px,2vw,24px)" }}>Download Media Kit</div>
             </div>
             <span style={{ fontSize: 28 }}>↓</span>

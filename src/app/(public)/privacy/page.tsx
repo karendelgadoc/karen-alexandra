@@ -99,10 +99,10 @@ export default function PrivacyPage() {
             rectificar o suprimir cualquier dato personal que pudiéramos tener
             sobre ti. Para ejercerlos, escríbenos a{" "}
             <a
-              href="mailto:karendelgadoc2@gmail.com"
+              href="mailto:studio@karenalexandra.com"
               className="text-[var(--charcoal)] underline underline-offset-2 hover:text-[var(--taupe)]"
             >
-              karendelgadoc2@gmail.com
+              studio@karenalexandra.com
             </a>
             .
           </p>
