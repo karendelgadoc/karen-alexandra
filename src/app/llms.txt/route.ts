@@ -49,7 +49,8 @@ ${caseStudies.slice(0, 20).map((p) => `- [${p.title}](${SITE}/case-studies/${p.s
 
 ## Contact
 
-- Press, partnerships, consulting and speaking inquiries: studio@karenalexandra.com
+- Press, features and brand partnerships: press@karenalexandra.com
+- E-commerce consulting and speaking inquiries: studio@karenalexandra.com
 - Replies in ≤ 5 business days. By appointment between New York and the Côte d'Azur.
 `;
 

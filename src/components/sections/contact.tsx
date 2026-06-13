@@ -3,10 +3,10 @@ import type { ReactNode } from "react";
 import type { ContactContent } from "@/lib/page-content-db";
 
 const INQUIRY_ITEMS = [
-  { n: "I",   title: "Brand partnerships",     who: "Fashion houses, hospitality, beauty",   note: "Long-form collaborations — editorial campaigns, ambassadorship, residencies. Open for select houses.", email: "partnerships@karenalexandra.com" },
+  { n: "I",   title: "Brand partnerships",     who: "Fashion houses, hospitality, beauty",   note: "Long-form collaborations — editorial campaigns, ambassadorship, residencies. Open for select houses.", email: "press@karenalexandra.com" },
   { n: "II",  title: "Press & features",       who: "Editors, journalists, podcasters",      note: "Interview requests, contributing essays, comment for editorial. Press kit available on request.",       email: "press@karenalexandra.com" },
   { n: "III", title: "E-commerce consulting",  who: "Independent labels & growth teams",     note: "Strategy engagements for direct storefronts, merchandising rhythm, audience and retention work.",      email: "studio@karenalexandra.com" },
-  { n: "IV",  title: "Speaking & moderating",  who: "Conferences, panels, boardrooms",       note: "Keynotes and conversations on the new luxury consumer, slow wardrobes, and editorial commerce.",     email: "speaking@karenalexandra.com" },
+  { n: "IV",  title: "Speaking & moderating",  who: "Conferences, panels, boardrooms",       note: "Keynotes and conversations on the new luxury consumer, slow wardrobes, and editorial commerce.",     email: "studio@karenalexandra.com" },
 ];
 
 const FAQ_ITEMS = [
