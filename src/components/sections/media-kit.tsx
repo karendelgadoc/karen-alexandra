@@ -191,9 +191,8 @@ export function ReachSection({
 export function PartnersSection({ c }: { c: MediaKitContent }) {
   return (
     <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingBottom: 32, marginBottom: 48, borderBottom: "1px solid var(--ka-ink)", flexWrap: "wrap", gap: 12 }}>
+      <div style={{ paddingBottom: 32, marginBottom: 48, borderBottom: "1px solid var(--ka-ink)" }}>
         <div className="ka-eyebrow">N° 03 — Selected partnerships</div>
-        <a href="mailto:press@karenalexandra.com" className="ka-arrow-link" style={{ fontSize: 10 }}>Full client list on request <span className="ka-arrow">→</span></a>
       </div>
       <div className="ka-mk-partner-grid">
         {c.partners.map((p, i) => (
