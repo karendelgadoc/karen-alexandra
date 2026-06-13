@@ -298,11 +298,12 @@ function WorldMapDetails({ active }: { active: number }) {
 
 export default function AboutContent({ content }: { content: AboutContentType }) {
   const [active, setActive] = useState(PLACES.length - 1);
+  const hidden = content.hiddenSections ?? [];
 
   return (
     <>
       {/* Hero */}
-      <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px) clamp(32px,5vw,64px)", borderBottom: "1px solid var(--ka-line)" }}>
+      {!hidden.includes("hero") && <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px) clamp(32px,5vw,64px)", borderBottom: "1px solid var(--ka-line)" }}>
         <div className="ka-eyebrow" style={{ marginBottom: "clamp(24px,4vw,48px)" }}>{content.hero.eyebrow}</div>
         <div className="ka-about-hero-grid">
           <h1 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(64px,12vw,144px)", fontWeight: 300, lineHeight: 0.93 }}>
@@ -312,10 +313,10 @@ export default function AboutContent({ content }: { content: AboutContentType })
             {content.hero.subhead}
           </p>
         </div>
-      </section>
+      </section>}
 
       {/* Manifesto */}
-      <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)", background: "var(--ka-bg-soft)" }}>
+      {!hidden.includes("manifesto") && <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)", background: "var(--ka-bg-soft)" }}>
         <div className="ka-about-manifesto-grid">
           <div className="ka-eyebrow">{content.manifesto.eyebrow}</div>
           <div>
@@ -332,10 +333,10 @@ export default function AboutContent({ content }: { content: AboutContentType })
             </div>
           </div>
         </div>
-      </section>
+      </section>}
 
       {/* Bio */}
-      <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)", borderTop: "1px solid var(--ka-line)" }}>
+      {!hidden.includes("bio") && <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)", borderTop: "1px solid var(--ka-line)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingBottom: 32, marginBottom: 48, borderBottom: "1px solid var(--ka-ink)", flexWrap: "wrap", gap: 12 }}>
           <div className="ka-eyebrow">N° 02 — About the author</div>
           <Link href="/media-kit" className="ka-arrow-link" style={{ fontSize: 10 }}>Press kit <span className="ka-arrow">→</span></Link>
@@ -378,10 +379,10 @@ export default function AboutContent({ content }: { content: AboutContentType })
             </div>
           </div>
         </div>
-      </section>
+      </section>}
 
       {/* World Map */}
-      <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)", background: "var(--ka-bg-soft)", borderTop: "1px solid var(--ka-line)" }}>
+      {!hidden.includes("map") && <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)", background: "var(--ka-bg-soft)", borderTop: "1px solid var(--ka-line)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingBottom: 32, marginBottom: 48, borderBottom: "1px solid var(--ka-ink)", flexWrap: "wrap", gap: 12 }}>
           <div className="ka-eyebrow">N° 03 — A world-citizen, in order</div>
           <div className="ka-eyebrow">11 places · 3 passports</div>
@@ -430,10 +431,10 @@ export default function AboutContent({ content }: { content: AboutContentType })
           </div>
           </div>
         </div>
-      </section>
+      </section>}
 
       {/* Joys */}
-      <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)" }}>
+      {!hidden.includes("joys") && <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingBottom: 32, marginBottom: 48, borderBottom: "1px solid var(--ka-ink)", flexWrap: "wrap", gap: 12 }}>
           <div className="ka-eyebrow">N° 04 — A short list of joys</div>
           <div className="ka-eyebrow" style={{ color: "var(--ka-muted)" }}>In rough order →</div>
@@ -457,10 +458,10 @@ export default function AboutContent({ content }: { content: AboutContentType })
             </div>
           ))}
         </div>
-      </section>
+      </section>}
 
       {/* Closing CTA */}
-      <section style={{ padding: "clamp(56px,10vw,140px) clamp(20px,5vw,64px)", background: "var(--ka-ink)", color: "var(--ka-bg)", textAlign: "center" }}>
+      {!hidden.includes("cta") && <section style={{ padding: "clamp(56px,10vw,140px) clamp(20px,5vw,64px)", background: "var(--ka-ink)", color: "var(--ka-bg)", textAlign: "center" }}>
         <div className="ka-eyebrow" style={{ color: "rgba(250,247,242,0.5)", marginBottom: 32 }}>— A small invitation</div>
         <h2 style={{ fontFamily: "var(--ka-display)", color: "var(--ka-bg)", fontSize: "clamp(32px,6vw,80px)", fontStyle: "italic", lineHeight: 1, maxWidth: 1100, margin: "0 auto" }}>
           {content.cta.headline}
@@ -476,7 +477,7 @@ export default function AboutContent({ content }: { content: AboutContentType })
             Write to Karen <span className="ka-arrow">→</span>
           </Link>
         </div>
-      </section>
+      </section>}
     </>
   );
 }
