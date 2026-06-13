@@ -541,9 +541,10 @@ function MediaKitEditor({ initial, focusSectionId }: { initial: MediaKitContent;
             <Field label="Eyebrow left" value={hero.eyebrowLeft} onChange={(v) => setHero({ ...hero, eyebrowLeft: v })} />
             <Field label="Eyebrow right" value={hero.eyebrowRight} onChange={(v) => setHero({ ...hero, eyebrowRight: v })} />
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <Field label="Headline" value={hero.headline} onChange={(v) => setHero({ ...hero, headline: v })} />
-            <Field label="Headline italic" value={hero.headlineItalic} onChange={(v) => setHero({ ...hero, headlineItalic: v })} />
+          <div className="grid grid-cols-3 gap-4">
+            <Field label="Headline line 1" value={hero.headline} onChange={(v) => setHero({ ...hero, headline: v })} />
+            <Field label="Headline line 2 (italic)" value={hero.headlineItalic} onChange={(v) => setHero({ ...hero, headlineItalic: v })} />
+            <Field label="Headline line 3 (+ purple dot)" value={hero.headlineLine3 ?? ""} onChange={(v) => setHero({ ...hero, headlineLine3: v })} />
           </div>
           <Field label="Subhead" value={hero.subhead} onChange={(v) => setHero({ ...hero, subhead: v })} area rows={3} />
         </SectionCard>

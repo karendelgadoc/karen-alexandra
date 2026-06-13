@@ -23,8 +23,8 @@ export function HeroSection({ c }: { c: MediaKitContent }) {
       <div className="ka-mk-hero-grid">
         <h1 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(56px,10vw,140px)", fontWeight: 300, lineHeight: 0.94 }}>
           {c.hero.headline}<br />
-          <span style={{ fontStyle: "italic" }}>{c.hero.headlineItalic}<span style={{ color: "var(--ka-accent-deep)" }}>.</span></span><br />
-          audience.
+          <span style={{ fontStyle: "italic" }}>{c.hero.headlineItalic}</span><br />
+          {c.hero.headlineLine3 ?? "audience"}<span style={{ color: "var(--ka-accent-deep)" }}>.</span>
         </h1>
         <div style={{ alignSelf: "end", maxWidth: 400 }}>
           <p style={{ fontSize: "clamp(14px,1.2vw,17px)", lineHeight: 1.7, color: "var(--ka-ink)", marginBottom: 32 }}>

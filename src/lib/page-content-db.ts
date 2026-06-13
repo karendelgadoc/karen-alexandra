@@ -129,7 +129,7 @@ export interface ServicesContent extends SectionLayout {
 }
 
 export interface MediaKitContent extends SectionLayout {
-  hero: { eyebrowLeft: string; eyebrowRight: string; headline: string; headlineItalic: string; subhead: string };
+  hero: { eyebrowLeft: string; eyebrowRight: string; headline: string; headlineItalic: string; headlineLine3: string; subhead: string };
   bio: { eyebrow: string; headline: string; bioText: string; basedValue: string; languagesValue: string; workingWithValue: string; portraitUrl: string };
   reach: Array<{ v: string; l: string }>;
   demo: Array<{ label: string; pct: number }>;
@@ -318,6 +318,7 @@ export const MEDIA_KIT_DEFAULTS: MediaKitContent = {
     eyebrowRight: "For press & partners",
     headline: "A small,",
     headlineItalic: "considered",
+    headlineLine3: "audience",
     subhead: "Karen Alexandra is a luxury fashion e-commerce lead and lifestyle correspondent. Read by a quietly compounding audience that prefers fewer letters, deeper.",
   },
   bio: {
