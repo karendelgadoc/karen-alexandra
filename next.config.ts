@@ -16,11 +16,11 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://assets.calendly.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://assets.calendly.com https://www.googletagmanager.com https://www.google-analytics.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://assets.calendly.com",
       "img-src 'self' data: blob: https://*.insforge.app https://*.insforge.dev https://karenalexandra.com https://i.ytimg.com https://*.ytimg.com https://assets.calendly.com https://www.dior.com https://*.dior.com https://cdn.mos.cms.futurecdn.net https://www.businesstoday.com.my https://api.factmagazines.com https://cms.factmagazines.com",
       "font-src 'self' https://fonts.gstatic.com",
-      "connect-src 'self' https://*.insforge.app https://accounts.google.com https://calendly.com https://api.calendly.com",
+      "connect-src 'self' https://*.insforge.app https://accounts.google.com https://calendly.com https://api.calendly.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com",
       "frame-src https://calendly.com",
       "object-src 'none'",
       "base-uri 'self'",

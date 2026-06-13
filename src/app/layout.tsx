@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Jost, JetBrains_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import CookieBanner from "@/components/CookieBanner";
 import { JsonLd, personSchema, organizationSchema, websiteSchema } from "@/components/JsonLd";
@@ -108,6 +109,13 @@ export default function RootLayout({
         <JsonLd data={websiteSchema()} />
         {children}
         <CookieBanner />
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-LMY9584PW6" strategy="afterInteractive" />
+        <Script id="ga-init" strategy="afterInteractive">{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-LMY9584PW6');
+        `}</Script>
       </body>
     </html>
   );
