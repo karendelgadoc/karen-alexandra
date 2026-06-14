@@ -46,7 +46,7 @@ function ContactFormInner() {
       setStatus("success");
     } catch {
       setStatus("error");
-      setErrorMsg("Something went wrong — please email karendelgadoc2@gmail.com directly.");
+      setErrorMsg("Something went wrong — please email studio@karenalexandra.com directly.");
     }
   }
 

@@ -19,7 +19,7 @@ export default function PrivacyPage() {
             Responsable del tratamiento
           </h2>
           <p>
-            Karen Alexandra Delgado — karendelgadoc2@gmail.com
+            Karen Alexandra Delgado — studio@karenalexandra.com
             <br />
             Sitio web: karenalexandra.com
           </p>
