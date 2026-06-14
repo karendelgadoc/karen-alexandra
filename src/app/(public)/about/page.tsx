@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { getAboutContent } from "@/lib/page-content-db";
 import AboutContent from "./AboutContent";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "About — Karen Alexandra",
   description:
