@@ -102,25 +102,29 @@ function NoFormNotice() {
 function useSection(page: PageKey) {
   const [statuses, setStatuses] = useState<Record<string, "idle" | "saving" | "saved" | "error">>({});
 
-  async function save(section: string, data: unknown) {
-    setStatuses((s) => ({ ...s, [section]: "saving" }));
+  async function saveFields(fields: Record<string, unknown>, statusKey: string) {
+    setStatuses((s) => ({ ...s, [statusKey]: "saving" }));
     try {
       const getRes = await fetch(`/api/admin/pages/${page}`);
       const current = getRes.ok ? await getRes.json() : {};
-      const merged = { ...current, [section]: data };
+      const merged = { ...current, ...fields };
       const res = await fetch(`/api/admin/pages/${page}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(merged),
       });
-      setStatuses((s) => ({ ...s, [section]: res.ok ? "saved" : "error" }));
-      if (res.ok) setTimeout(() => setStatuses((s) => ({ ...s, [section]: "idle" })), 2500);
+      setStatuses((s) => ({ ...s, [statusKey]: res.ok ? "saved" : "error" }));
+      if (res.ok) setTimeout(() => setStatuses((s) => ({ ...s, [statusKey]: "idle" })), 2500);
     } catch {
-      setStatuses((s) => ({ ...s, [section]: "error" }));
+      setStatuses((s) => ({ ...s, [statusKey]: "error" }));
     }
   }
 
-  return { statuses, save };
+  function save(section: string, data: unknown) {
+    return saveFields({ [section]: data }, section);
+  }
+
+  return { statuses, save, saveFields };
 }
 
 // ── Home editor ───────────────────────────────────────────────────────────────
@@ -580,10 +584,12 @@ function ServicesEditor({ initial, focusSectionId }: { initial: ServicesContent;
 // ── Media Kit editor ──────────────────────────────────────────────────────────
 
 function MediaKitEditor({ initial, focusSectionId }: { initial: MediaKitContent; focusSectionId?: string }) {
-  const { statuses, save } = useSection("media-kit");
+  const { statuses, save, saveFields } = useSection("media-kit");
   const [hero, setHero] = useState(initial.hero);
   const [bio, setBio] = useState(initial.bio);
   const [reach, setReach] = useState(initial.reach);
+  const [audienceHeadline, setAudienceHeadline] = useState(initial.audienceHeadline);
+  const [audienceNote, setAudienceNote] = useState(initial.audienceNote);
   const [demo, setDemo] = useState(initial.demo);
   const [partners, setPartners] = useState(initial.partners);
   const [press, setPress] = useState(initial.press);
@@ -627,13 +633,16 @@ function MediaKitEditor({ initial, focusSectionId }: { initial: MediaKitContent;
 
       {show("reach") && (
         <>
-          <SectionCard title="Reach Stats" onSave={() => save("reach", reach)} status={statuses.reach ?? "idle"}>
+          <SectionCard title="Reach Stats" onSave={() => saveFields({ reach, audienceHeadline, audienceNote }, "reach")} status={statuses.reach ?? "idle"}>
             {reach.map((r, i) => (
               <div key={i} className="grid grid-cols-2 gap-3">
                 <Field label={`Stat ${i + 1} — Value`} value={r.v} onChange={(v) => { const n = [...reach]; n[i] = { ...n[i], v }; setReach(n); }} />
                 <Field label="Label" value={r.l} onChange={(v) => { const n = [...reach]; n[i] = { ...n[i], l: v }; setReach(n); }} />
               </div>
             ))}
+            <hr className="border-stone-100" />
+            <Field label="Audience headline" value={audienceHeadline} onChange={setAudienceHeadline} />
+            <Field label="Audience note" value={audienceNote} onChange={setAudienceNote} area rows={2} />
           </SectionCard>
 
           <SectionCard title="Audience Demographics" onSave={() => save("demo", demo)} status={statuses.demo ?? "idle"}>

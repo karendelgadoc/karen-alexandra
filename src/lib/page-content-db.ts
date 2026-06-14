@@ -149,6 +149,8 @@ export interface MediaKitContent extends SectionLayout {
   hero: { eyebrowLeft: string; eyebrowRight: string; headline: string; headlineItalic: string; headlineLine3: string; subhead: string };
   bio: { eyebrow: string; headline: string; bioText: string; basedValue: string; languagesValue: string; workingWithValue: string; portraitUrl: string };
   reach: Array<{ v: string; l: string }>;
+  audienceHeadline: string;
+  audienceNote: string;
   demo: Array<{ label: string; pct: number }>;
   partners: string[];
   press: Array<{ p: string; q: string; d: string }>;
@@ -410,6 +412,8 @@ export const MEDIA_KIT_DEFAULTS: MediaKitContent = {
     { v: "94K",   l: "YouTube · The Reel" },
     { v: "12.4M", l: "Monthly impressions" },
   ],
+  audienceHeadline: "Read by women who research before they buy.",
+  audienceNote: "A first-party survey of 2,400 subscribers, conducted Q1 MMXXVI.",
   demo: [
     { label: "Women, 28–45",      pct: 78 },
     { label: "US · UK · EU",      pct: 84 },

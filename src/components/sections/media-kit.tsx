@@ -95,7 +95,7 @@ export function ReachSection({
       <section style={{ padding: "clamp(48px,8vw,120px) clamp(20px,5vw,64px)", borderBottom: "1px solid var(--ka-line)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingBottom: 32, marginBottom: 48, borderBottom: "1px solid var(--ka-ink)", flexWrap: "wrap", gap: 12 }}>
           <div className="ka-eyebrow">N° 02 — The audience</div>
-          <a href="mailto:press@karenalexandra.com" className="ka-arrow-link" style={{ fontSize: 10 }}>Full deck on request <span className="ka-arrow">→</span></a>
+          <a href="/media-kit.pdf" download="Karen Alexandra — Media Kit.pdf" className="ka-arrow-link" style={{ fontSize: 10 }}>Download the kit <span className="ka-arrow">→</span></a>
         </div>
         <div className="ka-mk-reach-grid">
           {c.reach.map((s, i) => (
@@ -111,10 +111,10 @@ export function ReachSection({
           <div>
             <div className="ka-eyebrow" style={{ marginBottom: 16 }}>Audience profile</div>
             <h3 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(22px,2.5vw,32px)", fontStyle: "italic", lineHeight: 1.1 }}>
-              Read by women who research before they buy.
+              {c.audienceHeadline}
             </h3>
             <p style={{ color: "var(--ka-muted)", fontSize: 15, lineHeight: 1.7, marginTop: 20, maxWidth: 380 }}>
-              A first-party survey of 2,400 subscribers, conducted Q1 MMXXVI.
+              {c.audienceNote}
             </p>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
