@@ -3,6 +3,7 @@ import {
   PAGE_KEYS,
   getHomeContent,
   getPortfolioContent,
+  getJournalContent,
   getContactContent,
   getWatchContent,
   getAboutContent,
@@ -18,6 +19,7 @@ import { pingIndexNow, indexNowUrl } from "@/lib/indexnow";
 const PAGE_TO_PATH: Record<string, string> = {
   home:        "/",
   portfolio:   "/portfolio",
+  journal:     "/journal",
   contact:     "/contact",
   watch:       "/watch",
   about:       "/about",
@@ -28,6 +30,7 @@ const PAGE_TO_PATH: Record<string, string> = {
 const FETCHERS: Record<PageKey, () => Promise<unknown>> = {
   home:        getHomeContent,
   portfolio:   getPortfolioContent,
+  journal:     getJournalContent,
   contact:     getContactContent,
   watch:       getWatchContent,
   about:       getAboutContent,

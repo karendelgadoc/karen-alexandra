@@ -1,3 +1,4 @@
+import React from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
@@ -6,6 +7,7 @@ import {
   PAGE_SECTIONS,
   getHomeContent,
   getPortfolioContent,
+  getJournalContent,
   getContactContent,
   getWatchContent,
   getAboutContent,
@@ -13,6 +15,7 @@ import {
   getMediaKitContent,
   HOME_DEFAULTS,
   PORTFOLIO_DEFAULTS,
+  JOURNAL_DEFAULTS,
   CONTACT_DEFAULTS,
   WATCH_DEFAULTS,
   ABOUT_DEFAULTS,
@@ -49,6 +52,22 @@ async function buildSections(page: PageKey) {
       const [posts, content] = await Promise.all([getAllPosts(), getPortfolioContent().catch(() => null)]);
       const c = content ?? PORTFOLIO_DEFAULTS;
       return { c, sectionMap: buildPortfolioSectionMap(c, { posts }), defaults: PORTFOLIO_DEFAULTS };
+    }
+    case "journal": {
+      const content = await getJournalContent().catch(() => null);
+      const c = content ?? JOURNAL_DEFAULTS;
+      const sectionMap: Record<string, React.ReactNode> = {
+        "hero": <section style={{ padding: "80px 64px 48px", borderBottom: "1px solid var(--ka-line)" }}>
+          <div style={{ fontFamily: "var(--ka-mono)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 20 }}>{c.hero.eyebrow}</div>
+          <h1 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(56px,7vw,96px)", fontStyle: "italic", fontWeight: 400, lineHeight: 1, marginBottom: 20 }}>{c.hero.headline}</h1>
+          <p style={{ fontSize: 15, color: "var(--ka-muted)", maxWidth: 440, lineHeight: 1.7 }}>{c.hero.subhead}</p>
+        </section>,
+        "pull-quote": <section style={{ padding: "64px", textAlign: "center", borderTop: "1px solid var(--ka-line)" }}>
+          <div style={{ width: 48, height: 2, background: "var(--ka-accent-deep)", margin: "0 auto 32px" }} />
+          <p style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(28px,4vw,44px)", fontStyle: "italic", maxWidth: 680, margin: "0 auto", lineHeight: 1.2 }}>&ldquo;{c.pullQuote}&rdquo;</p>
+        </section>,
+      };
+      return { c, sectionMap, defaults: JOURNAL_DEFAULTS };
     }
     case "about": {
       const content = await getAboutContent().catch(() => null);

@@ -4,6 +4,7 @@ import {
   PAGE_LABELS,
   getHomeContent,
   getPortfolioContent,
+  getJournalContent,
   getContactContent,
   getWatchContent,
   getAboutContent,
@@ -19,6 +20,7 @@ export const dynamic = "force-dynamic";
 const FETCHERS: Record<PageKey, () => Promise<unknown>> = {
   home:        getHomeContent,
   portfolio:   getPortfolioContent,
+  journal:     getJournalContent,
   contact:     getContactContent,
   watch:       getWatchContent,
   about:       getAboutContent,

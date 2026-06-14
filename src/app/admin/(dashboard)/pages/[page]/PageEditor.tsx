@@ -6,6 +6,7 @@ import type {
   PageKey,
   HomeContent,
   PortfolioContent,
+  JournalContent,
   ContactContent,
   WatchContent,
   AboutContent,
@@ -343,6 +344,35 @@ function WatchEditor({ initial, focusSectionId }: { initial: WatchContent; focus
         </SectionCard>
       )}
       {focusSectionId && focusSectionId !== "hero" && <NoFormNotice />}
+    </>
+  );
+}
+
+// ── Journal editor ────────────────────────────────────────────────────────────
+
+function JournalEditor({ initial, focusSectionId }: { initial: JournalContent; focusSectionId?: string }) {
+  const { statuses, save } = useSection("journal");
+  const [hero, setHero] = useState(initial.hero);
+  const [pullQuote, setPullQuote] = useState(initial.pullQuote);
+
+  const show = (id: string) => !focusSectionId || focusSectionId === id;
+  const editable = ["hero", "pull-quote"];
+
+  return (
+    <>
+      {show("hero") && (
+        <SectionCard title="Hero" onSave={() => save("hero", hero)} status={statuses.hero ?? "idle"}>
+          <Field label="Eyebrow" value={hero.eyebrow} onChange={(v) => setHero({ ...hero, eyebrow: v })} />
+          <Field label="Headline" value={hero.headline} onChange={(v) => setHero({ ...hero, headline: v })} area rows={2} />
+          <Field label="Subhead" value={hero.subhead} onChange={(v) => setHero({ ...hero, subhead: v })} area rows={3} />
+        </SectionCard>
+      )}
+      {show("pull-quote") && (
+        <SectionCard title="Pull Quote" onSave={() => save("pullQuote", pullQuote)} status={statuses.pullQuote ?? "idle"}>
+          <Field label="Quote" value={pullQuote} onChange={setPullQuote} area rows={3} />
+        </SectionCard>
+      )}
+      {focusSectionId && !editable.includes(focusSectionId) && <NoFormNotice />}
     </>
   );
 }
@@ -706,6 +736,7 @@ export default function PageEditor({
 }) {
   if (page === "home") return <HomeEditor initial={initialData as HomeContent} page={page} focusSectionId={focusSectionId} />;
   if (page === "portfolio") return <PortfolioEditor initial={initialData as PortfolioContent} focusSectionId={focusSectionId} />;
+  if (page === "journal") return <JournalEditor initial={initialData as JournalContent} focusSectionId={focusSectionId} />;
   if (page === "contact") return <ContactEditor initial={initialData as ContactContent} focusSectionId={focusSectionId} />;
   if (page === "watch") return <WatchEditor initial={initialData as WatchContent} focusSectionId={focusSectionId} />;
   if (page === "about") return <AboutEditor initial={initialData as AboutContent} focusSectionId={focusSectionId} />;

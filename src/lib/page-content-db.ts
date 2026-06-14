@@ -33,6 +33,10 @@ export const PAGE_SECTIONS = {
     { id: "video-grid", label: "Video Grid" },
     { id: "meta",       label: "Footer Note" },
   ],
+  journal: [
+    { id: "hero",       label: "Hero" },
+    { id: "pull-quote", label: "Pull Quote" },
+  ],
   about: [
     { id: "hero",      label: "Hero" },
     { id: "manifesto", label: "On This Place" },
@@ -108,6 +112,11 @@ export interface ContactContent extends SectionLayout {
 
 export interface WatchContent extends SectionLayout {
   hero: { eyebrow: string; headline: string; subhead: string };
+}
+
+export interface JournalContent extends SectionLayout {
+  hero: { eyebrow: string; headline: string; subhead: string };
+  pullQuote: string;
 }
 
 export interface AboutContent extends SectionLayout {
@@ -256,6 +265,17 @@ export const WATCH_DEFAULTS: WatchContent = {
     headline: "On Film.",
     subhead: "Travel, fashion and the quiet moments in between — on camera.",
   },
+};
+
+export const JOURNAL_DEFAULTS: JournalContent = {
+  sectionOrder: PAGE_SECTIONS.journal.map((s) => s.id),
+  hiddenSections: [],
+  hero: {
+    eyebrow: "The Edit",
+    headline: "The Art of Well",
+    subhead: "A global citizen's guide to well living — fashion, travel, wellness and the life that happens in between.",
+  },
+  pullQuote: "To dress well is to live well — both require intention.",
 };
 
 export const ABOUT_DEFAULTS: AboutContent = {
@@ -445,6 +465,7 @@ export const getHomeContent      = () => fetchPageContent<HomeContent>("home", H
 export const getPortfolioContent = () => fetchPageContent<PortfolioContent>("portfolio", PORTFOLIO_DEFAULTS);
 export const getContactContent   = () => fetchPageContent<ContactContent>("contact", CONTACT_DEFAULTS);
 export const getWatchContent     = () => fetchPageContent<WatchContent>("watch", WATCH_DEFAULTS);
+export const getJournalContent   = () => fetchPageContent<JournalContent>("journal", JOURNAL_DEFAULTS);
 export const getAboutContent     = () => fetchPageContent<AboutContent>("about", ABOUT_DEFAULTS);
 export const getServicesContent  = () => fetchPageContent<ServicesContent>("services", SERVICES_DEFAULTS);
 export const getMediaKitContent  = () => fetchPageContent<MediaKitContent>("media-kit", MEDIA_KIT_DEFAULTS);
@@ -472,12 +493,13 @@ export async function upsertPageContent(page: string, content: unknown): Promise
   if (err) throw new Error(err.message);
 }
 
-export const PAGE_KEYS = ["home", "portfolio", "contact", "watch", "about", "services", "media-kit"] as const;
+export const PAGE_KEYS = ["home", "portfolio", "journal", "contact", "watch", "about", "services", "media-kit"] as const;
 export type PageKey = (typeof PAGE_KEYS)[number];
 
 export const PAGE_LABELS: Record<PageKey, string> = {
   home:        "Home",
   portfolio:   "Portfolio",
+  journal:     "Journal (The Edit)",
   contact:     "Contact",
   watch:       "Watch",
   about:       "About",

@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getAllBlogPosts, getFeaturedBlogPosts } from "@/lib/blog-db";
 import type { BlogPost, BlogCategory } from "@/lib/blog-db";
+import { getJournalContent, JOURNAL_DEFAULTS } from "@/lib/page-content-db";
 
 export const revalidate = 60;
 
@@ -104,10 +105,12 @@ export default async function JournalPage({
   const { category } = await searchParams;
   const categoryFilter = category as BlogCategory | undefined;
 
-  const [allPosts, featuredArr] = await Promise.all([
+  const [allPosts, featuredArr, pageContent] = await Promise.all([
     getAllBlogPosts(categoryFilter).catch(() => []),
     getFeaturedBlogPosts(1).catch(() => []),
+    getJournalContent().catch(() => JOURNAL_DEFAULTS),
   ]);
+  const pc = pageContent ?? JOURNAL_DEFAULTS;
 
   const featured = featuredArr[0] ?? null;
   // Remaining posts (excluding featured) for collage
@@ -124,7 +127,7 @@ export default async function JournalPage({
         }}
       >
         <span className="ka-eyebrow" style={{ display: "block", marginBottom: "20px" }}>
-          The Edit
+          {pc.hero.eyebrow}
         </span>
         <h1
           style={{
@@ -137,7 +140,7 @@ export default async function JournalPage({
             marginBottom: "20px",
           }}
         >
-          The Art of Well
+          {pc.hero.headline}
         </h1>
         <p
           style={{
@@ -149,8 +152,7 @@ export default async function JournalPage({
             fontWeight: 300,
           }}
         >
-          A global citizen&apos;s guide to well living — fashion, travel, wellness and the
-          life that happens in between.
+          {pc.hero.subhead}
         </p>
       </section>
 
@@ -322,7 +324,7 @@ export default async function JournalPage({
             lineHeight: 1.2,
           }}
         >
-          &ldquo;To dress well is to live well — both require intention.&rdquo;
+          &ldquo;{pc.pullQuote}&rdquo;
         </p>
       </section>
 
