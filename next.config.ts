@@ -42,7 +42,18 @@ const nextConfig: NextConfig = {
   },
 
   async headers() {
-    return [{ source: "/(.*)", headers: securityHeaders }];
+    return [
+      { source: "/(.*)", headers: securityHeaders },
+      {
+        source: "/media-kit.pdf",
+        headers: [
+          {
+            key: "Content-Disposition",
+            value: 'attachment; filename="Karen Alexandra Media Kit 2026.pdf"',
+          },
+        ],
+      },
+    ];
   },
 
   images: {
