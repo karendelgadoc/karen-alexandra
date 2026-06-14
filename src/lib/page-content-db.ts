@@ -162,6 +162,23 @@ export interface MenuContent {
   rightLinks: Array<{ label: string; href: string }>;
 }
 
+export interface FooterLink {
+  label: string;
+  href: string;
+  external?: boolean;
+}
+
+export interface FooterColumn {
+  title: string;
+  links: FooterLink[];
+}
+
+export interface FooterContent {
+  tagline: string;
+  columns: FooterColumn[];
+  bottomLinks: FooterLink[];
+}
+
 // ── Defaults ──────────────────────────────────────────────────────────────────
 
 export const HOME_DEFAULTS: HomeContent = {
@@ -415,6 +432,54 @@ export const MEDIA_KIT_DEFAULTS: MediaKitContent = {
   ctaSubhead: "Twenty-page PDF with audience demographics, partnership formats, sample deliverables, and rate ranges. Updated quarterly.",
 };
 
+export const FOOTER_DEFAULTS: FooterContent = {
+  tagline: "The art of well — stories from a life lived in cashmere, on marble lobbies, and at the front row.",
+  columns: [
+    {
+      title: "Explore",
+      links: [
+        { label: "Home",          href: "/" },
+        { label: "The Edit",      href: "/journal" },
+        { label: "Fashion News",  href: "/fashion-news" },
+        { label: "On Film",       href: "/watch" },
+        { label: "About",         href: "/about" },
+      ],
+    },
+    {
+      title: "Work",
+      links: [
+        { label: "Portfolio",    href: "/portfolio" },
+        { label: "Media Kit",    href: "/media-kit" },
+        { label: "Services",     href: "/services" },
+        { label: "Case Studies", href: "/case-studies" },
+        { label: "Contact",      href: "/contact" },
+      ],
+    },
+    {
+      title: "Categories",
+      links: [
+        { label: "Fashion",   href: "/journal?category=fashion" },
+        { label: "Travel",    href: "/journal?category=travel" },
+        { label: "Wellness",  href: "/journal?category=wellness" },
+        { label: "Lifestyle", href: "/journal?category=lifestyle" },
+      ],
+    },
+    {
+      title: "Elsewhere",
+      links: [
+        { label: "YouTube",   href: "https://www.youtube.com/@KarenAlexandra",          external: true },
+        { label: "Pinterest", href: "https://www.pinterest.com/karenalexandra__/",       external: true },
+        { label: "LinkedIn",  href: "https://www.linkedin.com/in/karenalexandrac",       external: true },
+      ],
+    },
+  ],
+  bottomLinks: [
+    { label: "Privacy",    href: "/privacy" },
+    { label: "Press",      href: "/contact" },
+    { label: "Inquiries",  href: "/contact" },
+  ],
+};
+
 export const MENU_DEFAULTS: MenuContent = {
   leftLinks: [
     { label: "The Edit",      href: "/journal" },
@@ -461,6 +526,7 @@ async function fetchPageContent<T>(page: string, defaults: T): Promise<T> {
 
 // ── Public read API ───────────────────────────────────────────────────────────
 
+export const getFooterContent    = () => fetchPageContent<FooterContent>("footer", FOOTER_DEFAULTS);
 export const getHomeContent      = () => fetchPageContent<HomeContent>("home", HOME_DEFAULTS);
 export const getPortfolioContent = () => fetchPageContent<PortfolioContent>("portfolio", PORTFOLIO_DEFAULTS);
 export const getContactContent   = () => fetchPageContent<ContactContent>("contact", CONTACT_DEFAULTS);

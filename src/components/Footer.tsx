@@ -1,7 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
+import { getFooterContent } from "@/lib/page-content-db";
 
-export default function Footer() {
+export default async function Footer() {
+  const fc = await getFooterContent();
   const year = new Date().getFullYear();
 
   return (
@@ -18,76 +20,38 @@ export default function Footer() {
               style={{ height: "auto" }}
             />
           </div>
-          <p className="ka-footer-tag">
-            The art of well — stories from a life lived in cashmere, on marble
-            lobbies, and at the front row.
-          </p>
+          <p className="ka-footer-tag">{fc.tagline}</p>
         </div>
 
-        {/* Explore */}
-        <div>
-          <h4>Explore</h4>
-          <ul>
-            <li><Link href="/">Home</Link></li>
-            <li><Link href="/journal">The Edit</Link></li>
-            <li><Link href="/fashion-news">Fashion News</Link></li>
-            <li><Link href="/watch">On Film</Link></li>
-            <li><Link href="/about">About</Link></li>
-          </ul>
-        </div>
-
-        {/* Collaborate */}
-        <div>
-          <h4>Work</h4>
-          <ul>
-            <li><Link href="/portfolio">Portfolio</Link></li>
-            <li><Link href="/media-kit">Media Kit</Link></li>
-            <li><Link href="/services">Services</Link></li>
-            <li><Link href="/case-studies">Case Studies</Link></li>
-            <li><Link href="/contact">Contact</Link></li>
-          </ul>
-        </div>
-
-        {/* Categories */}
-        <div>
-          <h4>Categories</h4>
-          <ul>
-            <li><Link href="/journal?category=fashion">Fashion</Link></li>
-            <li><Link href="/journal?category=travel">Travel</Link></li>
-            <li><Link href="/journal?category=wellness">Wellness</Link></li>
-            <li><Link href="/journal?category=lifestyle">Lifestyle</Link></li>
-          </ul>
-        </div>
-
-        {/* Elsewhere */}
-        <div>
-          <h4>Elsewhere</h4>
-          <ul>
-            <li>
-              <a href="https://www.youtube.com/@KarenAlexandra" target="_blank" rel="noopener noreferrer">
-                YouTube
-              </a>
-            </li>
-            <li>
-              <a href="https://www.pinterest.com/karenalexandra__/" target="_blank" rel="noopener noreferrer">
-                Pinterest
-              </a>
-            </li>
-            <li>
-              <a href="https://www.linkedin.com/in/karenalexandrac" target="_blank" rel="noopener noreferrer">
-                LinkedIn
-              </a>
-            </li>
-          </ul>
-        </div>
+        {/* Dynamic columns */}
+        {fc.columns.map((col) => (
+          <div key={col.title}>
+            <h4>{col.title}</h4>
+            <ul>
+              {col.links.map((link) => (
+                <li key={link.href + link.label}>
+                  {link.external ? (
+                    <a href={link.href} target="_blank" rel="noopener noreferrer">
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link href={link.href}>{link.label}</Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
 
       <div className="ka-footer-meta">
         <span>© {year} Karen Alexandra. All rights reserved.</span>
         <div style={{ display: "flex", gap: "32px" }}>
-          <Link href="/privacy">Privacy</Link>
-          <Link href="/contact">Press</Link>
-          <Link href="/contact">Inquiries</Link>
+          {fc.bottomLinks.map((link) => (
+            <Link key={link.href + link.label} href={link.href}>
+              {link.label}
+            </Link>
+          ))}
         </div>
       </div>
     </footer>
