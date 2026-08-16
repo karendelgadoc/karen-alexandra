@@ -6,6 +6,7 @@ import { getAllBlogSlugs, getBlogPostBySlug } from "@/lib/blog-db";
 import { JsonLd, articleSchema, faqSchema, breadcrumbSchema } from "@/components/JsonLd";
 import { sanitizeHtml } from "@/lib/sanitize";
 import BogotaMap from "@/components/BogotaMap";
+import AtitlanMap from "@/components/AtitlanMap";
 
 export const revalidate = 60;
 
@@ -246,6 +247,11 @@ export default async function JournalPostPage({ params }: Props) {
             // [!MAP-BOGOTA]  — custom illustrated Bogotá map
             if (para.trim() === "[!MAP-BOGOTA]") {
               return <BogotaMap key={i} />;
+            }
+
+            // [!MAP-ATITLAN]  — custom illustrated Lake Atitlán map
+            if (para.trim() === "[!MAP-ATITLAN]") {
+              return <AtitlanMap key={i} />;
             }
 
             // [!COLLAGE src1="…" alt1="…" … caption="…"]  — 2–4 photo collage
