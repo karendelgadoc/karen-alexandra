@@ -120,13 +120,13 @@ Every hotel review row in `blog_posts` must have **all** of these populated befo
 | Field | Rule |
 |-------|------|
 | `slug` | `<hotel-name>-<city>` kebab-case, no "the/at/in" filler. `four-seasons-casa-medina-bogota`, `aman-tokyo`, `le-sirenuse-positano` |
-| `title` | Editorial sentence with both the hotel name and the city. 50–70 chars. Casa Medina precedent: "A Retreat Within Bogota: Two Nights at The Four Seasons Casa Medina" |
+| `title` | A sentence that makes a claim, with the hotel name in it. 50–70 chars. **Never include the number of nights** — "Two Nights at…", "One Night at…", "48 Hours in…" are all out; nobody is searching for how long Karen stayed and it dates the piece to one trip. Say who it's for or what it's best at instead. Live examples: "Four Seasons Casa Medina is the best staycation within Bogota", "If you're burned out you must unplug at Casa Prana, Lake Atitlan", "Have a few extra days in Peru? You must visit Hotel Paracas" |
 | `category` | `"travel"` |
 | `date` | ISO date of stay (`YYYY-MM-DD`) |
 | `excerpt` | 2–3 sentences. The opening hook — usually the "tension" of the hotel's story. Used in OG preview and journal listing |
 | `hero_image` | Full URL, **vertical 4:5 crop**. This image is also pulled into the homepage hero feature slot — landscape will look wrong. Upload a vertical option to `/admin/photos` if needed |
 | `hero_alt` | Specific, descriptive, mentions the hotel + visible subject. SEO + accessibility |
-| `seo_title` | 50–60 chars. Can mirror `title` or be punchier. Include hotel name + city |
+| `seo_title` | 50–60 chars. Can mirror `title` or be punchier. Include hotel name + city. Same rule: no night counts |
 | `seo_description` | 140–160 chars. Promise + payoff. Mention hotel, city, neighborhood, and one specific lure (spa, suite, neighborhood) |
 | `focus_keyword` | Hotel name in canonical form. `"Four Seasons Casa Medina"`, `"Aman Tokyo"`. The post body and seo_title must use this string verbatim at least once |
 | `key_takeaway` | 1–2 sentences answering "if I only read one paragraph, what do I learn?" This powers the AI-overview / Google generative answers — write it for an LLM summary as much as a human skim |
@@ -184,6 +184,7 @@ After inserting, tell Karen:
 
 - Section called "Pros and Cons" or "Verdict / Rating" — not the voice.
 - Star ratings, scores, "8/10" — never.
+- **Night counts in the title.** "Two Nights at…", "One Night at…", "A Weekend at…", "48 Hours in…". How long Karen stayed belongs in the body, not the headline.
 - Listicle of "Top 5 things to do" — instead, prose with specific named recommendations.
 - Generic Google-Maps screenshot or static image of a map — must be the interactive React component.
 - Body text written as Q&A formatting (use prose; reserve Q&A for the `faq_items` JSONB).
