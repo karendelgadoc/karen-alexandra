@@ -7,6 +7,7 @@ import { JsonLd, articleSchema, faqSchema, breadcrumbSchema } from "@/components
 import { sanitizeHtml } from "@/lib/sanitize";
 import BogotaMap from "@/components/BogotaMap";
 import AtitlanMap from "@/components/AtitlanMap";
+import DtlaMap from "@/components/DtlaMap";
 
 export const revalidate = 60;
 
@@ -252,6 +253,11 @@ export default async function JournalPostPage({ params }: Props) {
             // [!MAP-ATITLAN]  — custom illustrated Lake Atitlán map
             if (para.trim() === "[!MAP-ATITLAN]") {
               return <AtitlanMap key={i} />;
+            }
+
+            // [!MAP-DTLA]  — custom illustrated Downtown LA map
+            if (para.trim() === "[!MAP-DTLA]") {
+              return <DtlaMap key={i} />;
             }
 
             // [!COLLAGE src1="…" alt1="…" … caption="…"]  — 2–4 photo collage
