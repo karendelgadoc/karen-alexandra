@@ -9,6 +9,7 @@ import BogotaMap from "@/components/BogotaMap";
 import AtitlanMap from "@/components/AtitlanMap";
 import DtlaMap from "@/components/DtlaMap";
 import ParacasMap from "@/components/ParacasMap";
+import DavosMap from "@/components/DavosMap";
 
 export const revalidate = 60;
 
@@ -264,6 +265,11 @@ export default async function JournalPostPage({ params }: Props) {
             // [!MAP-PARACAS]  — custom illustrated Paracas map
             if (para.trim() === "[!MAP-PARACAS]") {
               return <ParacasMap key={i} />;
+            }
+
+            // [!MAP-DAVOS]  — custom illustrated Davos map
+            if (para.trim() === "[!MAP-DAVOS]") {
+              return <DavosMap key={i} />;
             }
 
             // [!COLLAGE src1="…" alt1="…" … caption="…"]  — 2–4 photo collage
