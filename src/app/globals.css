@@ -1277,6 +1277,21 @@ img {
   .ka-r-logos { grid-template-columns: repeat(2, 1fr) !important; }
 }
 
+/* 12-col collage grids → 2-up on tablet, clearing spans and stagger offsets.
+   Without this the collage kept its 12-column spans at tablet width, which
+   left the cards far too narrow to read. */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .ka-r-collage {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 40px 24px !important;
+  }
+  .ka-r-collage > * {
+    grid-column: auto !important;
+    grid-row: auto !important;
+    margin-top: 0 !important;
+  }
+}
+
 /* 12-col collage grids → single column, clearing each child's span */
 @media (max-width: 767px) {
   .ka-r-collage { grid-template-columns: 1fr !important; gap: 32px !important; }

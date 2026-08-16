@@ -32,12 +32,16 @@ If a fact would genuinely improve the piece, go find it (the hotel's own site, a
 ### What that means in practice
 
 - **Plain words over elevated ones.** *Beautiful*, *quiet*, *worth it*, *easy*, *cold at night* beat *breathtaking*, *sublime*, *world-class*, *perfectly curated*, *exceptional*. If a sentence sounds like a brochure or a press release, rewrite it.
+- **Plain words, not thin observations.** Casual vocabulary is the style; it is not permission to say nothing. "The rooms are simple and I liked that" is flat — it describes without telling the reader anything. Keep the easy words and raise what you're actually saying with them.
 - **No writerly performance.** Cut constructions that exist to sound literary: "the highway did what highways do," "it is that kind of view," "there is no fourth option," "which is the whole point" as a closer on every paragraph, personified objects ("the volcano hasn't finished having opinions"), and stacked em-dash asides. One good observation beats three ornamental ones.
 - **First person, matter-of-fact.** "We spent most of the weekend on the terrace." "I spent an entire afternoon there and would do it again." Say what happened and whether it was good. Skip the performed reverie.
 - **Opinions are welcome, adjectives are not a substitute for them.** "I liked that there's no Mayan textile styling anywhere" is more useful than "a perfectly curated aesthetic."
 - **Concrete facts do the work.** Name the year, the neighborhood, the elevation, the cooperative, the price of entry. Those carry the piece; adjectives don't. But only name what you actually know.
 - **American English.** Use *neighborhood, center, traveler, gray, meters, recognized, color, program, optimize, summarize, prioritize*. Not the British forms — Karen is American.
 - **Aesthetic over inventory.** Give the feeling and look of a room — palette, light, mood — not a list of furniture. Skip bathrooms entirely.
+- **Say why the design is the way it is.** This is the difference between a description and a review. Every good hotel's look is answering something: where it is, what the weather does, what the building used to be, what the place expects you to spend your day doing. Connect the two. *"Pale walls, wood floors, bamboo behind the beds — it's the palette outside brought indoors, and it fits how the place works, since you're outside from breakfast on"* does real work. *"The rooms are simple"* doesn't. A material, a color or a layout is only worth naming if you then say what it's doing there.
+- **Captions say what's happening, not what's in frame.** The reader can see the photo. A caption that labels the contents — "the lawn between the rooms and the water", "the main pool" — is wasted space. Use it for the moment, the timing, or the tip: *"A cocktail before heading back out to explore more of Paracas"*, *"Midday, when the pool actually fills up"*. Alt text is the opposite job — that one stays plainly descriptive, for people who can't see the image.
+- **Nouns need a reason to be on the page.** Before naming a thing, ask what it tells the reader. Bamboo panelling matters because it ties the room to the coast; a firewood bowl matters because the nights get cold. If you can't say what it's doing, cut it — that's how a paragraph turns into "the room has a bed."
 - **One adjective per noun, usually zero.** Never stack them.
 
 ### Quick self-check before delivering
@@ -54,7 +58,9 @@ Every hotel review must have these sections in this order. Section headings are 
 
    If the hotel has a real, verifiable history — a founder, an architect, a documented origin — use it. If it doesn't, **do not manufacture one**, and do not write an "essay opening" to fill the space. Most hotels don't have a dramatic origin story, and a plain, useful opening beats an invented tension every time. Never open with a fabricated travel scene.
 
-2. **The rooms** — `## The rooms`. One full-width `[!GRID]` block (image right, text left) and one `[!GRID-LEFT]` block (image left, text right) showing two different room views. Focus on **overall aesthetic and atmosphere**: the design sensibility (mid-century, colonial, minimalist, maximalist, etc.), the color palette, the quality of light, the mood. Do *not* enumerate every item in the room (bed, desk, chair, lamp, trunk, drapes). Skip the bathroom entirely — no plumbing, no toiletries, no tile. End with a sentence on the city's atmospheric quirk (altitude, humidity, ocean air) and how the room's design responds to it.
+2. **The rooms** — `## The rooms`. One full-width `[!GRID]` block (image right, text left) and one `[!GRID-LEFT]` block (image left, text right) showing two different room views. Focus on **overall aesthetic and atmosphere**: the design sensibility (mid-century, colonial, minimalist, maximalist, beachy, etc.), the color palette, the quality of light, the mood. Do *not* enumerate every item in the room (bed, desk, chair, lamp, trunk, drapes). Skip the bathroom entirely — no plumbing, no toiletries, no tile.
+
+   Name the sensibility, then say what it's responding to. A beach resort, a city hotel in a converted bank and a mountain lodge are all making different arguments, and the room is where you can read them. Tie the palette and materials to the landscape outside, the climate, the building's past life, or what the hotel expects you to do all day. End on the destination's atmospheric quirk — altitude, humidity, ocean air, wind, street noise — and how the room handles it.
 
 3. **Wellness** — *mandatory*, never skip. `## Wellness` or a plain contextual title. Spa, treatments, pool, sauna, gym, yoga, anything ritual. Use one `[!HIGHLIGHT label="..." text="..."]` block for the thing most worth booking.
 
@@ -190,6 +196,8 @@ After inserting, tell Karen:
 - **Invented specifics.** Named dishes she didn't eat, treatment durations nobody gave you, herb lists, thread counts, invented founders or architects. A vaguer true sentence always beats a precise false one.
 - Press-release vocabulary: *nestled, boasts, oasis, hidden gem, sanctuary, curated, elevated, effortless, unparalleled, world-class, a feast for the senses*.
 - Literary throat-clearing: "there is something about…", "it is the kind of place that…", "what surprised me most was…", "and that is the point."
+- **Describing without interpreting.** "The rooms are simple." "The walls are white." "There's a pool." Facts with no read on them. Every description should leave the reader knowing something they couldn't have guessed from a booking page.
+- **Leaning on *simple*, *plain*, *understated* or *minimal* as the whole observation.** Minimalism is a choice made for a reason — say the reason. These words are fine as a starting point and useless as an ending one.
 
 ## Checklist before declaring done
 

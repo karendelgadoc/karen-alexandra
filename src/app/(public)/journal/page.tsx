@@ -15,16 +15,23 @@ export const metadata: Metadata = {
 
 const CATEGORIES = ["All entries", "Fashion", "Travel", "Wellness", "Lifestyle"];
 
-// Asymmetric collage layout config (12-column grid)
+// Asymmetric collage layout config (12-column grid).
+//
+// Column spans only — no explicit grid-row. Auto-placement then guarantees
+// cards can never occupy the same cell; the previous config pinned explicit
+// rows and had two genuine collisions (cards 4↔6 and 7↔8 overlapped on top
+// of each other). Each group of spans sums to exactly 12 so every row tiles
+// edge to edge, and `mt` staggers cards vertically to keep the collage feel
+// without any risk of overlap.
 const COLLAGE_POSITIONS = [
-  { col: "1 / 6", row: "1", aspect: "5/6", mt: 0 },
-  { col: "6 / 10", row: "1", aspect: "4/5", mt: 0 },
-  { col: "10 / 13", row: "1 / 3", aspect: "3/4", mt: 0 },
-  { col: "2 / 6", row: "2 / 4", aspect: "5/6", mt: 0 },
-  { col: "6 / 10", row: "2", aspect: "5/4", mt: 0 },
-  { col: "1 / 4", row: "3", aspect: "4/5", mt: 0 },
-  { col: "7 / 11", row: "3", aspect: "4/5", mt: 0 },
-  { col: "10 / 13", row: "3", aspect: "3/4", mt: 0 },
+  { col: "span 5", aspect: "5/6", mt: 0 },  // ┐
+  { col: "span 4", aspect: "4/5", mt: 48 }, // ├ 5 + 4 + 3 = 12
+  { col: "span 3", aspect: "3/4", mt: 0 },  // ┘
+  { col: "span 4", aspect: "5/6", mt: 0 },  // ┐
+  { col: "span 5", aspect: "5/4", mt: 40 }, // ├ 4 + 5 + 3 = 12
+  { col: "span 3", aspect: "3/4", mt: 0 },  // ┘
+  { col: "span 6", aspect: "5/4", mt: 0 },  // ┐ 6 + 6 = 12
+  { col: "span 6", aspect: "4/5", mt: 40 }, // ┘
 ];
 
 function PostCard({
@@ -39,9 +46,9 @@ function PostCard({
       href={`/journal/${post.slug}`}
       style={{
         gridColumn: position.col,
-        gridRow: position.row,
         marginTop: position.mt ? `${position.mt}px` : undefined,
         display: "block",
+        minWidth: 0,
       }}
     >
       <div
@@ -58,7 +65,7 @@ function PostCard({
             alt={post.heroAlt}
             fill
             style={{ objectFit: "cover" }}
-            sizes="(max-width: 768px) 100vw, 33vw"
+            sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 40vw"
           />
         ) : (
           <div style={{ width: "100%", height: "100%", background: "var(--ka-sand)" }} />
