@@ -64,3 +64,6 @@ uploads.zip
 
 # InsForge & AI agent skills
 .claude
+
+# Source photos for blog posts — originals stay local, web copies live in InsForge storage
+blog photos/
