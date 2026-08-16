@@ -8,6 +8,7 @@ import { sanitizeHtml } from "@/lib/sanitize";
 import BogotaMap from "@/components/BogotaMap";
 import AtitlanMap from "@/components/AtitlanMap";
 import DtlaMap from "@/components/DtlaMap";
+import ParacasMap from "@/components/ParacasMap";
 
 export const revalidate = 60;
 
@@ -258,6 +259,11 @@ export default async function JournalPostPage({ params }: Props) {
             // [!MAP-DTLA]  — custom illustrated Downtown LA map
             if (para.trim() === "[!MAP-DTLA]") {
               return <DtlaMap key={i} />;
+            }
+
+            // [!MAP-PARACAS]  — custom illustrated Paracas map
+            if (para.trim() === "[!MAP-PARACAS]") {
+              return <ParacasMap key={i} />;
             }
 
             // [!COLLAGE src1="…" alt1="…" … caption="…"]  — 2–4 photo collage
