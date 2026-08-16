@@ -19,25 +19,50 @@ This skill is the contract for what "a Karen Alexandra hotel review" means.
 
 ## Editorial voice
 
-- **Elevated but not stuffy.** Editorial, observant, warm. Closer to *Condé Nast Traveler* essays than hotel-brochure copy, but with enough lift that the language feels aspirational. Karen is writing as a correspondent who genuinely loves the places she stays.
-- **First-person, but lightly.** Use moments of presence — "I stood there for longer than was probably polite," "the kind of white linen that makes the morning difficult to leave." Embodied, specific, but never cold.
-- **PR-leaning language is welcome.** Words like *stunning*, *breathtaking*, *world-class*, *perfectly curated*, *exceptional*, *luxurious* sound natural to Karen's voice — use them when they fit the moment. The goal isn't to scrub the prose of glamour; it's to pair the glamour with concrete observation so it doesn't read as empty marketing.
+### The two rules that override everything else
+
+**1. Never invent anything.** Not a detail, not a scene, not a sensory impression, not a number. Write only from what Karen actually told you, what's in her photos, and what you verified from a real source. If you don't know whether the hotel serves a particular dish, don't recommend it. If you don't know which herbs are in the steam room, say "herbal steam sauna" and stop. If she didn't say the drive was beautiful, don't write that the car went quiet.
+
+This is the single most common failure. It shows up as scene-setting that reads well and never happened: roadside fruit stalls, a bus overtaking on a curve, "everyone stopped talking," a named dish she never ate, a treatment duration nobody gave you. Fabricated texture is worse than thin texture — it's a real person's byline on something she didn't experience. When you have less material than the section seems to want, write the shorter section.
+
+If a fact would genuinely improve the piece, go find it (the hotel's own site, a reputable write-up) and cite it accurately, or ask Karen. Never fill the gap yourself.
+
+**2. Write how people actually talk.** Casual, plain, first-person. Short sentences are good. Contractions are good. "It sounds like a hassle and it really isn't" is the register. If you wouldn't say a phrase out loud to a friend who asked about the trip, cut it.
+
+### What that means in practice
+
+- **Plain words over elevated ones.** *Beautiful*, *quiet*, *worth it*, *easy*, *cold at night* beat *breathtaking*, *sublime*, *world-class*, *perfectly curated*, *exceptional*. If a sentence sounds like a brochure or a press release, rewrite it.
+- **No writerly performance.** Cut constructions that exist to sound literary: "the highway did what highways do," "it is that kind of view," "there is no fourth option," "which is the whole point" as a closer on every paragraph, personified objects ("the volcano hasn't finished having opinions"), and stacked em-dash asides. One good observation beats three ornamental ones.
+- **First person, matter-of-fact.** "We spent most of the weekend on the terrace." "I spent an entire afternoon there and would do it again." Say what happened and whether it was good. Skip the performed reverie.
+- **Opinions are welcome, adjectives are not a substitute for them.** "I liked that there's no Mayan textile styling anywhere" is more useful than "a perfectly curated aesthetic."
+- **Concrete facts do the work.** Name the year, the neighborhood, the elevation, the cooperative, the price of entry. Those carry the piece; adjectives don't. But only name what you actually know.
 - **American English.** Use *neighborhood, center, traveler, gray, meters, recognized, color, program, optimize, summarize, prioritize*. Not the British forms — Karen is American.
-- **Concrete details earn the adjectives.** Name the architect. Name the year. Name the chef, the neighborhood, the local brand. "A stunning lobby of salvaged 17th-century stonework" works because the *salvaged 17th-century stonework* anchors the *stunning*. "Stunning lobby" alone does not.
-- **Focus on aesthetic and atmosphere, not inventory.** Talk about the feeling, the palette, the light, the design sensibility — not a checklist of furniture or fixtures. "The suite read like a private library — dark beamed ceilings, deep leather, the kind of low light that makes you want to stay in" is the register. Avoid item-by-item enumeration ("the bed, the chair, the trunk, the desk, the curtains, the bathroom").
-- **Restraint with adjectives even in PR mode.** One or two strong adjectives per noun, max. Stacking them ("stunning, exquisite, breathtaking") dilutes the effect.
+- **Aesthetic over inventory.** Give the feeling and look of a room — palette, light, mood — not a list of furniture. Skip bathrooms entirely.
+- **One adjective per noun, usually zero.** Never stack them.
+
+### Quick self-check before delivering
+
+Read the opening paragraph out loud. Does it sound like Karen telling a friend where she went, or like a hotel's website? If it's the second, rewrite it.
+
+Then go through every concrete detail and ask: *do I actually know this?* Delete anything you can't source to Karen, her photos, or a real reference.
 
 ## Required structure
 
 Every hotel review must have these sections in this order. Section headings are `##` (h2). Sub-emphasis via `[!HIGHLIGHT]`, `[!QUOTE]`, `[!RULE]` blocks.
 
-1. **Lead image + opening section** — a hero `[!IMG]` block followed by a `##` heading like "A building that should not exist" (or whatever is the hotel's defining tension/story). Open with **why this hotel exists at all** — its origin, its building, its preservation history, its founder. Hotels are objects with histories; treat them that way. This section should run 2–3 paragraphs and feel like an essay opening, not a check-in summary.
+1. **Lead image + opening section** — a hero `[!IMG]` block followed by a plain `##` heading ("Getting there", "The hotel", or the one thing that actually defines the place). Cover how you get there and what the place is: location, how to arrive and how hard it is, size, setting, and the one fact that makes it distinctive. 2–4 short paragraphs.
+
+   If the hotel has a real, verifiable history — a founder, an architect, a documented origin — use it. If it doesn't, **do not manufacture one**, and do not write an "essay opening" to fill the space. Most hotels don't have a dramatic origin story, and a plain, useful opening beats an invented tension every time. Never open with a fabricated travel scene.
 
 2. **The rooms** — `## The rooms`. One full-width `[!GRID]` block (image right, text left) and one `[!GRID-LEFT]` block (image left, text right) showing two different room views. Focus on **overall aesthetic and atmosphere**: the design sensibility (mid-century, colonial, minimalist, maximalist, etc.), the color palette, the quality of light, the mood. Do *not* enumerate every item in the room (bed, desk, chair, lamp, trunk, drapes). Skip the bathroom entirely — no plumbing, no toiletries, no tile. End with a sentence on the city's atmospheric quirk (altitude, humidity, ocean air) and how the room's design responds to it.
 
-3. **Wellness** — *mandatory*, never skip. `## Wellness` or a contextual title ("The wellness hour", "Below ground", etc.). Spa, treatments, pool, hammam, gym, anything ritual. Use one `[!HIGHLIGHT label="..." text="..."]` block to spotlight the signature treatment or ritual, with treatment name, duration, what it actually does, and why it's tied to this place (local coffee, local salt, local herbs, local water).
+3. **Wellness** — *mandatory*, never skip. `## Wellness` or a plain contextual title. Spa, treatments, pool, sauna, gym, yoga, anything ritual. Use one `[!HIGHLIGHT label="..." text="..."]` block for the thing most worth booking.
 
-4. **Food** — *mandatory*. `## Food` (or restaurant name as heading). Cover: the hotel's main restaurant, the bar, breakfast, and any standout in-room moment. Name the chef if notable, name dishes specifically, note the wine/spirit program if relevant. One `[!IMG]` of food or interior. A second `[!HIGHLIGHT]` block can spotlight one dish or a tasting menu pairing.
+   Include treatment names, durations, and ingredients **only if you actually have them**. Do not invent a duration, a list of herbs, or a local-ingredient story because the block looks better with one. "An herbal steam sauna and a massage, booked directly with the hotel" is a complete and honest highlight. If the wellness offering is small, say it's small — that's a real observation and often a compliment.
+
+4. **Food** — *mandatory*. `## Food` (or the restaurant name). Cover how eating there works — restaurant or house kitchen, breakfast, the bar, room service — and what's good about it. One `[!IMG]` of food or the setting.
+
+   Name the chef and specific dishes **only when you know them**. Never recommend a dish you can't confirm is served, and never describe a meal Karen didn't report eating. If all you know is "à la carte, ordered ahead, produce from the garden," write that — it's genuinely useful and it's true. A second `[!HIGHLIGHT]` is optional; use it for something practical (how to book, private dining, dietary notes) rather than inventing a tasting-menu pairing.
 
 5. **Beyond the hotel** — *mandatory*. `## Beyond the hotel` or `## The neighborhood` or similar. 3–6 specific things to do in the destination that Karen would actually prioritize, with neighborhood context. Examples: a museum + which floor to skip to; a coffee bar + what to order; a walk + the time of day; a market + the stall. Use `[!COLLAGE]` for a 3-image grid of the destination if photos exist. Each item is a short paragraph or bulleted under bolded sub-headings — be specific, no generic "Visit the cathedral" entries.
 
@@ -159,12 +184,18 @@ After inserting, tell Karen:
 - Repeating the hotel name in every paragraph — vary with "the hotel," "the building," "the property" (sparingly), or just elide.
 - Item-by-item room inventories. Don't list "the bed, the lamp, the desk, the trunk, the curtains" — give the *feeling and aesthetic* of the room instead.
 - **Anything about bathrooms.** No tile, no marble, no rain shower, no toiletries, no double vanity. Skip it entirely.
-- Adjective stacking — *stunning* on its own works; *stunning, exquisite, breathtaking* in a row reads as desperate.
+- Adjective stacking — and be sparing even with one. *Stunning, exquisite, breathtaking* in a row reads as desperate; so does *stunning* in every third sentence.
 - Closing line that summarizes ("In conclusion, Aman Tokyo is…"). End on an image, a quote, a moment.
+- **Invented scene-setting.** No fruit stalls, no chicken buses, no "everyone went quiet," no weather or roadside detail Karen didn't report. If she said "3 hour drive, worth it," you have exactly that much material — use it and move on.
+- **Invented specifics.** Named dishes she didn't eat, treatment durations nobody gave you, herb lists, thread counts, invented founders or architects. A vaguer true sentence always beats a precise false one.
+- Press-release vocabulary: *nestled, boasts, oasis, hidden gem, sanctuary, curated, elevated, effortless, unparalleled, world-class, a feast for the senses*.
+- Literary throat-clearing: "there is something about…", "it is the kind of place that…", "what surprised me most was…", "and that is the point."
 
 ## Checklist before declaring done
 
-- [ ] Voice check: read the opening paragraph out loud. Does it sound like a magazine essay, or a hotel website?
+- [ ] **Fabrication check (do this first).** Go line by line. Every concrete detail — a dish, a duration, a scene, a number, a name — traces to Karen, her photos, or a verified source. Delete anything that doesn't.
+- [ ] Voice check: read the opening paragraph out loud. Does it sound like Karen telling a friend about the trip? If it sounds like a magazine essay or a hotel website, rewrite it.
+- [ ] No press-release vocabulary and no literary throat-clearing (see Anti-patterns)
 - [ ] All 7 required sections present + map block at the end
 - [ ] At least one `[!HIGHLIGHT]` in Wellness, one `[!HIGHLIGHT]` or `[!QUOTE]` somewhere in Food/Closing
 - [ ] At least 2 `[!IMG]` / `[!GRID]` / `[!GRID-LEFT]` blocks (image-text variety, not all single column)
