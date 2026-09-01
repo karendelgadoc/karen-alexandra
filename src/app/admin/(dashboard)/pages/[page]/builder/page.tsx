@@ -40,13 +40,14 @@ export const dynamic = "force-dynamic";
 async function buildSections(page: PageKey) {
   switch (page) {
     case "home": {
-      const [content, featuredPosts] = await Promise.all([
+      const [content, featuredPosts, videos] = await Promise.all([
         getHomeContent().catch(() => null),
         getFeaturedBlogPosts(3).catch(() => []),
+        getLatestVideos(3).catch(() => []),
       ]);
       const c = content ?? HOME_DEFAULTS;
       const newsTitle = c.hero.letterCardTitle ?? "The week in fashion news.";
-      return { c, sectionMap: buildHomeSectionMap(c, { featuredPosts, newsTitle, newsSlug: null, newsImage: null }), defaults: HOME_DEFAULTS };
+      return { c, sectionMap: buildHomeSectionMap(c, { featuredPosts, newsTitle, newsSlug: null, newsImage: null, videos }), defaults: HOME_DEFAULTS };
     }
     case "portfolio": {
       const [posts, content] = await Promise.all([getAllPosts(), getPortfolioContent().catch(() => null)]);
