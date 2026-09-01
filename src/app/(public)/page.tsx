@@ -1,14 +1,16 @@
 import { getFeaturedBlogPosts, getLatestFashionNewsPost } from "@/lib/blog-db";
 import { getHomeContent, HOME_DEFAULTS } from "@/lib/page-content-db";
 import { buildHomeSectionMap } from "@/components/sections/home";
+import { getLatestVideos } from "@/lib/youtube";
 
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [content, featuredPosts, latestNews] = await Promise.all([
+  const [content, featuredPosts, latestNews, videos] = await Promise.all([
     getHomeContent().catch(() => null),
     getFeaturedBlogPosts(3).catch(() => []),
     getLatestFashionNewsPost().catch(() => null),
+    getLatestVideos(3).catch(() => []),
   ]);
   const c = content ?? HOME_DEFAULTS;
   const newsTitle = latestNews
@@ -19,7 +21,7 @@ export default async function HomePage() {
 
   const hidden = new Set(c.hiddenSections ?? []);
   const order = c.sectionOrder ?? HOME_DEFAULTS.sectionOrder;
-  const sectionMap = buildHomeSectionMap(c, { featuredPosts, newsTitle, newsSlug, newsImage });
+  const sectionMap = buildHomeSectionMap(c, { featuredPosts, newsTitle, newsSlug, newsImage, videos });
 
   return (
     <>

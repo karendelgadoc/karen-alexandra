@@ -4,10 +4,13 @@ import type { ReactNode } from "react";
 import { KaMarquee, KaSectionHead } from "@/components/KaComponents";
 import type { HomeContent } from "@/lib/page-content-db";
 import type { getFeaturedBlogPosts } from "@/lib/blog-db";
+import type { VideoCard } from "@/lib/youtube";
 
 type FeaturedPosts = Awaited<ReturnType<typeof getFeaturedBlogPosts>>;
 
-const VIDEOS = [
+// Shown only to pad the reel out to three cards while the channel has fewer
+// than three uploads. Real videos always fill the leading slots.
+const PLACEHOLDER_VIDEOS = [
   { title: "A week in Mykonos — villas, yacht days & the best restaurants", category: "Travel", length: "18:42", image: "/photos/mykonos-infinity.jpg" },
   { title: "What I packed for Mallorca — resort wardrobe breakdown", category: "Fashion", length: "12:18", image: "/photos/mallorca-cliff.jpg" },
   { title: "Morning routine in Santorini — wellness habits I never skip", category: "Wellness", length: "09:55", image: "/photos/santorini-pool.jpg" },
@@ -123,28 +126,57 @@ export function EditorNoteSection({ c }: { c: HomeContent }) {
   );
 }
 
-export function FromTheReelSection() {
+export function FromTheReelSection({ videos }: { videos: VideoCard[] }) {
+  const real = videos.slice(0, 3).map((v) => ({
+    key: v.id || v.url,
+    title: v.title,
+    category: v.category,
+    length: v.length,
+    image: v.thumbnail,
+    href: v.url,
+    external: true,
+  }));
+  const placeholders = PLACEHOLDER_VIDEOS.slice(0, Math.max(0, 3 - real.length)).map((v, i) => ({
+    key: `placeholder-${i}`,
+    title: v.title,
+    category: v.category,
+    length: v.length,
+    image: v.image,
+    href: "/watch",
+    external: false,
+  }));
+  const cards = [...real, ...placeholders];
+
   return (
     <section style={{ padding: "96px 0" }}>
       <KaSectionHead num="02" title="From the Reel" href="/watch" linkLabel="Watch all" />
       <div className="ka-rp ka-r-stack" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px", padding: "0 64px" }}>
-        {VIDEOS.map((v, i) => (
-          <Link key={i} href="/watch" style={{ display: "block" }}>
-            <div style={{ aspectRatio: "16/9", position: "relative", overflow: "hidden", background: "var(--ka-sand)" }}>
-              <Image src={v.image} alt={v.title} fill style={{ objectFit: "cover" }} sizes="33vw" />
-              <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(10,10,10,0.15)" }}>
-                <div style={{ width: "52px", height: "52px", borderRadius: "50%", background: "var(--ka-bg)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <svg width="18" height="18" viewBox="0 0 18 18" fill="var(--ka-ink)"><polygon points="5,3 15,9 5,15" /></svg>
+        {cards.map((v) => {
+          const inner = (
+            <>
+              <div style={{ aspectRatio: "16/9", position: "relative", overflow: "hidden", background: "var(--ka-sand)" }}>
+                <Image src={v.image} alt={v.title} fill style={{ objectFit: "cover" }} sizes="33vw" unoptimized={v.image.includes("ytimg.com")} />
+                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(10,10,10,0.15)" }}>
+                  <div style={{ width: "52px", height: "52px", borderRadius: "50%", background: "var(--ka-bg)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="var(--ka-ink)"><polygon points="5,3 15,9 5,15" /></svg>
+                  </div>
                 </div>
+                {v.length !== "\u2014" && (
+                  <span style={{ position: "absolute", bottom: "10px", right: "10px", fontFamily: "var(--ka-mono)", fontSize: "10px", background: "var(--ka-ink)", color: "var(--ka-bg)", padding: "2px 6px" }}>{v.length}</span>
+                )}
               </div>
-              <span style={{ position: "absolute", bottom: "10px", right: "10px", fontFamily: "var(--ka-mono)", fontSize: "10px", background: "var(--ka-ink)", color: "var(--ka-bg)", padding: "2px 6px" }}>{v.length}</span>
-            </div>
-            <div style={{ padding: "14px 0 0" }}>
-              <span className="ka-eyebrow">{v.category}</span>
-              <p style={{ fontFamily: "var(--ka-display)", fontSize: "20px", fontStyle: "italic", marginTop: "6px", lineHeight: 1.25 }}>{v.title}</p>
-            </div>
-          </Link>
-        ))}
+              <div style={{ padding: "14px 0 0" }}>
+                <span className="ka-eyebrow">{v.category}</span>
+                <p style={{ fontFamily: "var(--ka-display)", fontSize: "20px", fontStyle: "italic", marginTop: "6px", lineHeight: 1.25 }}>{v.title}</p>
+              </div>
+            </>
+          );
+          return v.external ? (
+            <a key={v.key} href={v.href} target="_blank" rel="noopener noreferrer" style={{ display: "block" }}>{inner}</a>
+          ) : (
+            <Link key={v.key} href={v.href} style={{ display: "block" }}>{inner}</Link>
+          );
+        })}
       </div>
     </section>
   );
@@ -195,6 +227,7 @@ export interface HomeExtraProps {
   newsTitle: string;
   newsSlug: string | null;
   newsImage: string | null;
+  videos: VideoCard[];
 }
 
 export function buildHomeSectionMap(c: HomeContent, extra: HomeExtraProps): Record<string, ReactNode> {
@@ -203,7 +236,7 @@ export function buildHomeSectionMap(c: HomeContent, extra: HomeExtraProps): Reco
     "marquee":          <MarqueeSection c={c} />,
     "featured-stories": <FeaturedStoriesSection featuredPosts={extra.featuredPosts} />,
     "editor-note":      <EditorNoteSection c={c} />,
-    "from-the-reel":    <FromTheReelSection />,
+    "from-the-reel":    <FromTheReelSection videos={extra.videos} />,
     "categories":       <CategoriesSection />,
     "newsletter":       <NewsletterSection />,
   };
