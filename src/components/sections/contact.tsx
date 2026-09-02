@@ -164,22 +164,9 @@ export function FormSection({ c }: { c: ContactContent }) {
   );
 }
 
-export function CloseQuoteSection({ c }: { c: ContactContent }) {
-  return (
-    <section className="ka-rp" style={{ padding: "140px 64px", borderTop: "1px solid var(--ka-line)", textAlign: "center" }}>
-      <div style={{ width: 56, height: 1, background: "var(--ka-accent-deep)", margin: "0 auto 48px" }} />
-      <p style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(32px, 4vw, 56px)", fontStyle: "italic", maxWidth: 1100, margin: "0 auto", lineHeight: 1.15 }}>
-        &ldquo;{c.close.quote}&rdquo;
-      </p>
-      <div className="ka-eyebrow" style={{ marginTop: 48 }}>— From the editor&apos;s desk</div>
-    </section>
-  );
-}
-
 export function buildContactSectionMap(c: ContactContent): Record<string, ReactNode> {
   return {
-    "hero":        <HeroSection c={c} />,
-    "form":        <FormSection c={c} />,
-    "close-quote": <CloseQuoteSection c={c} />,
+    "hero": <HeroSection c={c} />,
+    "form": <FormSection c={c} />,
   };
 }

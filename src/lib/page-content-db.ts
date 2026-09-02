@@ -18,13 +18,12 @@ export const PAGE_SECTIONS = {
     { id: "logos",         label: "Client Logos" },
     { id: "capabilities",  label: "Capabilities" },
     { id: "selected-work", label: "Selected Work" },
-    { id: "press",         label: "Press" },
+    { id: "press",         label: "Testimonials" },
     { id: "cta",           label: "CTA" },
   ],
   contact: [
     { id: "hero",        label: "Hero" },
     { id: "form",        label: "Contact Form" },
-    { id: "close-quote", label: "Closing Quote" },
   ],
   watch: [
     { id: "hero",       label: "Hero" },
@@ -107,7 +106,6 @@ export interface PortfolioContent extends SectionLayout {
 export interface ContactContent extends SectionLayout {
   hero: { eyebrow: string; headlineLine1: string; headlineLine2: string; subhead: string };
   sidebar: { quote: string; location: string; availability: string; responseNote: string };
-  close: { quote: string };
 }
 
 export interface WatchContent extends SectionLayout {
@@ -276,10 +274,6 @@ export const CONTACT_DEFAULTS: ContactContent = {
     location: "New York · Côte d'Azur",
     availability: "By appointment",
     responseNote: "Replies in ≤ 5 business days",
-  },
-  close: {
-    quote:
-      "Considered always beats prompt. Write when you have something to say — not before.",
   },
 };
 

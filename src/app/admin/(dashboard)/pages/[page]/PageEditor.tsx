@@ -290,10 +290,9 @@ function ContactEditor({ initial, focusSectionId }: { initial: ContactContent; f
   const { statuses, save } = useSection("contact");
   const [hero, setHero] = useState(initial.hero);
   const [sidebar, setSidebar] = useState(initial.sidebar);
-  const [close, setClose] = useState(initial.close);
 
   const show = (id: string) => !focusSectionId || focusSectionId === id;
-  const editable = ["hero", "form", "close-quote"];
+  const editable = ["hero", "form"];
 
   return (
     <>
@@ -316,12 +315,6 @@ function ContactEditor({ initial, focusSectionId }: { initial: ContactContent; f
             <Field label="Availability" value={sidebar.availability} onChange={(v) => setSidebar({ ...sidebar, availability: v })} />
           </div>
           <Field label="Response note" value={sidebar.responseNote} onChange={(v) => setSidebar({ ...sidebar, responseNote: v })} />
-        </SectionCard>
-      )}
-
-      {show("close-quote") && (
-        <SectionCard title="Closing quote" onSave={() => save("close", close)} status={statuses.close ?? "idle"}>
-          <Field label="Quote" value={close.quote} onChange={(v) => setClose({ quote: v })} area rows={2} />
         </SectionCard>
       )}
 
