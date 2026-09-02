@@ -1,10 +1,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getFooterContent } from "@/lib/page-content-db";
+import { filterHiddenLinks } from "@/lib/site-flags";
 
 export default async function Footer() {
   const fc = await getFooterContent();
   const year = new Date().getFullYear();
+
+  const columns = fc.columns
+    .map((col) => ({ ...col, links: filterHiddenLinks(col.links) }))
+    .filter((col) => col.links.length > 0);
+  const bottomLinks = filterHiddenLinks(fc.bottomLinks);
 
   return (
     <footer className="ka-footer ka-rp">
@@ -24,7 +30,7 @@ export default async function Footer() {
         </div>
 
         {/* Dynamic columns */}
-        {fc.columns.map((col) => (
+        {columns.map((col) => (
           <div key={col.title}>
             <h4>{col.title}</h4>
             <ul>
@@ -47,7 +53,7 @@ export default async function Footer() {
       <div className="ka-footer-meta">
         <span>© {year} Karen Alexandra. All rights reserved.</span>
         <div style={{ display: "flex", gap: "32px" }}>
-          {fc.bottomLinks.map((link) => (
+          {bottomLinks.map((link) => (
             <Link key={link.href + link.label} href={link.href}>
               {link.label}
             </Link>

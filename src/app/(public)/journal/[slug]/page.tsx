@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { STUDIO_CTA } from "@/lib/site-flags";
 import { getAllBlogSlugs, getBlogPostBySlug } from "@/lib/blog-db";
 import { JsonLd, articleSchema, faqSchema, breadcrumbSchema } from "@/components/JsonLd";
 import { sanitizeHtml } from "@/lib/sanitize";
@@ -368,8 +369,8 @@ export default async function JournalPostPage({ params }: Props) {
           <p>
             Editorial partnerships, e-commerce strategy, and brand direction — selectively offered, long-form by design.
           </p>
-          <Link href="/services" className="ka-arrow-link" style={{ fontSize: 10 }}>
-            The studio <span className="ka-arrow">→</span>
+          <Link href={STUDIO_CTA.href} className="ka-arrow-link" style={{ fontSize: 10 }}>
+            {STUDIO_CTA.label} <span className="ka-arrow">→</span>
           </Link>
         </div>
       </div>

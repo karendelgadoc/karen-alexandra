@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PAGE_KEYS, PAGE_LABELS } from "@/lib/page-content-db";
+import { SERVICES_ENABLED } from "@/lib/site-flags";
 
 export const dynamic = "force-dynamic";
 
@@ -10,6 +11,7 @@ const PAGE_DESCRIPTIONS: Record<string, string> = {
   watch:       "Hero headline and subhead",
   about:       "Hero copy, portrait image, gallery images",
   services:    "Hero, principle strip, service cards (4), process steps, testimonials, FAQ, CTA",
+  // note: /services is hidden from the public site (SERVICES_ENABLED in src/lib/site-flags.ts)
   "media-kit": "Hero, bio, reach stats, audience demographics, partners, press, testimonials, Instagram, CTA",
 };
 
@@ -41,7 +43,14 @@ export default function PagesListPage() {
             className="flex items-center justify-between p-5 bg-white border border-stone-200 rounded-lg"
           >
             <div className="flex-1 min-w-0 mr-6">
-              <p className="font-medium text-stone-900">{PAGE_LABELS[key]}</p>
+              <p className="font-medium text-stone-900">
+                {PAGE_LABELS[key]}
+                {key === "services" && !SERVICES_ENABLED && (
+                  <span className="ml-2 align-middle text-[11px] font-normal uppercase tracking-wider px-2 py-0.5 rounded bg-stone-100 text-stone-500">
+                    Hidden
+                  </span>
+                )}
+              </p>
               <p className="text-sm text-stone-400 mt-0.5">{PAGE_DESCRIPTIONS[key]}</p>
             </div>
             <div className="flex items-center gap-3 flex-shrink-0">

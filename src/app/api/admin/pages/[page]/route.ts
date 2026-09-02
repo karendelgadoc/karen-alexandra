@@ -15,6 +15,7 @@ import {
 
 import { requireAdmin } from "@/lib/admin-guard";
 import { pingIndexNow, indexNowUrl } from "@/lib/indexnow";
+import { isHiddenRoute } from "@/lib/site-flags";
 
 const PAGE_TO_PATH: Record<string, string> = {
   home:        "/",
@@ -70,7 +71,8 @@ export async function PUT(
     const body = await request.json();
     await upsertPageContent(page, body);
     const path = PAGE_TO_PATH[page];
-    if (path) pingIndexNow(indexNowUrl.page(path));
+    // Hidden pages 404 publicly, so there is nothing for IndexNow to crawl.
+    if (path && !isHiddenRoute(path)) pingIndexNow(indexNowUrl.page(path));
     return NextResponse.json({ ok: true });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });

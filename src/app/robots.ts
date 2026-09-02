@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { HIDDEN_ROUTES } from "@/lib/site-flags";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -7,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin/", "/api/", "/login", "/auth/"],
+        disallow: ["/admin/", "/api/", "/login", "/auth/", ...HIDDEN_ROUTES],
       },
       // Explicit allow for AI search/index crawlers (GEO)
       // — listing them by name in case site owners later add deny rules upstream
