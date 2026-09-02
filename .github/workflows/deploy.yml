@@ -36,8 +36,16 @@ jobs:
       # excluded by its own defaults, and .vercelignore covers the rest. The
       # uploads.zip dance isn't needed here — that file is gitignored, so a
       # fresh CI checkout never has it.
+      # Without a token the CLI falls back to interactive OAuth: it prints a
+      # login URL and blocks for five minutes before timing out, which nobody
+      # is there to answer. Fail in seconds with a message that says what to do.
       - name: Deploy to InsForge
-        run: npx --yes @insforge/cli@0.2.8 deployments deploy .
+        run: |
+          if [ -z "$INSFORGE_ACCESS_TOKEN" ]; then
+            echo "::error::INSFORGE_ACCESS_TOKEN is not set. Add it under Settings → Secrets and variables → Actions; the value is user_api_key from ~/.insforge/credentials.json."
+            exit 1
+          fi
+          npx --yes @insforge/cli@0.2.8 deployments deploy .
         env:
           INSFORGE_ACCESS_TOKEN: ${{ secrets.INSFORGE_ACCESS_TOKEN }}
           INSFORGE_PROJECT_ID: 920e1f0c-6261-4331-8e7b-aadabd6287ab
