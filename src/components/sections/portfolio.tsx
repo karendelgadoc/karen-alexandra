@@ -34,8 +34,21 @@ export function FactsSection({ c }: { c: PortfolioContent }) {
   );
 }
 
-export function LogosSection({ c }: { c: PortfolioContent }) {
-  const logos = c.clientLogos ?? [];
+// Fixed rather than read from c.clientLogos, for the same reason as
+// CAPABILITIES/TESTIMONIALS above: page_content likely holds a version of
+// this list that predates "El Corte Inglés" being added, and stored content
+// wins over PORTFOLIO_DEFAULTS in the merge. Source is PORTFOLIO_DEFAULTS'
+// prior clientLogos array with "El Corte Inglés" prepended — if the live
+// grid has brands added via /admin/pages/portfolio since these defaults
+// were last touched, they won't be here; check the live page and say so if
+// anything's missing.
+const CLIENT_LOGOS: string[] = [
+  "EL CORTE INGLÉS", "SHOPBOP", "FOUR SEASONS", "IHG", "CITIZENS OF HUMANITY", "RIVER ISLAND",
+  "AGOLDE", "SISLEY PARIS", "MAKEUP FOREVER", "ASOS", "NORDSTROM",
+];
+
+export function LogosSection() {
+  const logos = CLIENT_LOGOS;
   return (
     <section className="ka-rp" style={{ padding: "80px 64px", borderBottom: "1px solid var(--ka-line)" }}>
       <span className="ka-eyebrow" style={{ display: "block", marginBottom: "40px" }}>Brands I&apos;ve worked with</span>
@@ -164,7 +177,7 @@ export function buildPortfolioSectionMap(c: PortfolioContent, extra: PortfolioEx
   return {
     "hero":          <HeroSection c={c} />,
     "facts":         <FactsSection c={c} />,
-    "logos":         <LogosSection c={c} />,
+    "logos":         <LogosSection />,
     "capabilities":  <CapabilitiesSection />,
     "selected-work": <SelectedWorkSection posts={extra.posts} />,
     "press":         <TestimonialsSection />,

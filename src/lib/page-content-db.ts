@@ -243,8 +243,11 @@ export const PORTFOLIO_DEFAULTS: PortfolioContent = {
     headline: "Begin a conversation.",
     buttonLabel: "Get in touch →",
   },
+  // Rendered from a fixed CLIENT_LOGOS array in LogosSection, not from this
+  // field — see the comment above it in components/sections/portfolio.tsx.
+  // Kept in sync so the two don't contradict each other; edit both together.
   clientLogos: [
-    "SHOPBOP", "FOUR SEASONS", "IHG", "CITIZENS OF HUMANITY", "RIVER ISLAND",
+    "EL CORTE INGLÉS", "SHOPBOP", "FOUR SEASONS", "IHG", "CITIZENS OF HUMANITY", "RIVER ISLAND",
     "AGOLDE", "SISLEY PARIS", "MAKEUP FOREVER", "ASOS", "NORDSTROM",
   ],
   galleryImages: [
