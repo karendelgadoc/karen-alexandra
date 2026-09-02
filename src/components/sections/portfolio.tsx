@@ -34,21 +34,16 @@ export function FactsSection({ c }: { c: PortfolioContent }) {
   );
 }
 
-// Fixed rather than read from c.clientLogos, for the same reason as
-// CAPABILITIES/TESTIMONIALS above: page_content likely holds a version of
-// this list that predates "El Corte Inglés" being added, and stored content
-// wins over PORTFOLIO_DEFAULTS in the merge. Source is PORTFOLIO_DEFAULTS'
-// prior clientLogos array with "El Corte Inglés" prepended — if the live
-// grid has brands added via /admin/pages/portfolio since these defaults
-// were last touched, they won't be here; check the live page and say so if
-// anything's missing.
-const CLIENT_LOGOS: string[] = [
-  "EL CORTE INGLÉS", "SHOPBOP", "FOUR SEASONS", "IHG", "CITIZENS OF HUMANITY", "RIVER ISLAND",
-  "AGOLDE", "SISLEY PARIS", "MAKEUP FOREVER", "ASOS", "NORDSTROM",
-];
-
-export function LogosSection() {
-  const logos = CLIENT_LOGOS;
+// Unlike CAPABILITIES/TESTIMONIALS above, this list is NOT hardcoded — it
+// reads c.clientLogos as before. A hardcode here went wrong once already:
+// PORTFOLIO_DEFAULTS.clientLogos in this repo turned out not to match
+// Karen's real, DB-stored list, and replacing the section with the
+// defaults-plus-one array silently deleted her actual brands. Whatever is
+// really in page_content is the source of truth and this code can't see it
+// from here — so only prepend the one name that was actually asked for,
+// and leave the rest of whatever the DB returns untouched.
+export function LogosSection({ c }: { c: PortfolioContent }) {
+  const logos = ["EL CORTE INGLÉS", ...(c.clientLogos ?? [])];
   return (
     <section className="ka-rp" style={{ padding: "80px 64px", borderBottom: "1px solid var(--ka-line)" }}>
       <span className="ka-eyebrow" style={{ display: "block", marginBottom: "40px" }}>Brands I&apos;ve worked with</span>
@@ -177,7 +172,7 @@ export function buildPortfolioSectionMap(c: PortfolioContent, extra: PortfolioEx
   return {
     "hero":          <HeroSection c={c} />,
     "facts":         <FactsSection c={c} />,
-    "logos":         <LogosSection />,
+    "logos":         <LogosSection c={c} />,
     "capabilities":  <CapabilitiesSection />,
     "selected-work": <SelectedWorkSection posts={extra.posts} />,
     "press":         <TestimonialsSection />,
