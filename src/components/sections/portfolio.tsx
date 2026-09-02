@@ -131,23 +131,22 @@ export function TestimonialsSection() {
   );
 }
 
-// Fixed for the same reason as TESTIMONIALS above: this used to be a
-// "Let's collaborate" headline + "Get in touch" link (c.cta.headline /
-// c.cta.buttonLabel). Karen asked for the contact page's closing quote
-// moved here instead, with a mailto button styled like the "Or write
-// directly" card on /media-kit's CtaSection, using the studio inbox rather
-// than press.
-export function CtaSection() {
+// Same "Let's collaborate" / c.cta.headline layout as before. Only the
+// button changed: the old ka-btn "Get in touch" link to /contact is now a
+// mailto card styled like the "Or write directly" button on /media-kit's
+// CtaSection, pointed at the studio inbox rather than press. No quote here
+// — that lives on /contact again (this file briefly moved it here, but
+// Karen only wanted the button swapped, not the section replaced).
+export function CtaSection({ c }: { c: PortfolioContent }) {
   return (
-    <section className="ka-rp" style={{ background: "var(--ka-ink)", color: "var(--ka-bg)", padding: "96px 64px", textAlign: "center" }}>
-      <div style={{ width: 56, height: 1, background: "var(--ka-accent)", margin: "0 auto 48px" }} />
-      <p style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(32px, 4vw, 56px)", fontStyle: "italic", maxWidth: 1100, margin: "0 auto", lineHeight: 1.15, color: "var(--ka-bg)" }}>
-        &ldquo;Considered always beats prompt. Write when you have something to say — not before.&rdquo;
-      </p>
-      <div className="ka-eyebrow" style={{ marginTop: 48, marginBottom: 56, color: "rgba(250,247,242,0.5)" }}>— From the editor&apos;s desk</div>
+    <section className="ka-rp ka-r-stack" style={{ background: "var(--ka-ink)", color: "var(--ka-bg)", padding: "96px 64px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "32px" }}>
+      <div>
+        <span className="ka-eyebrow" style={{ display: "block", marginBottom: "16px", color: "var(--ka-accent)" }}>Let&apos;s collaborate</span>
+        <h2 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(40px, 5vw, 64px)", fontStyle: "italic", fontWeight: 400, color: "var(--ka-bg)" }}>{c.cta.headline}</h2>
+      </div>
       <a
         href="mailto:studio@karenalexandra.com"
-        style={{ display: "inline-flex", justifyContent: "space-between", alignItems: "center", gap: 40, maxWidth: 420, width: "100%", padding: "clamp(16px,2vw,28px) clamp(20px,2.5vw,32px)", border: "1px solid rgba(250,247,242,0.3)", textDecoration: "none", color: "var(--ka-bg)", textAlign: "left" }}
+        style={{ display: "flex", flexShrink: 0, justifyContent: "space-between", alignItems: "center", gap: 40, padding: "clamp(16px,2vw,28px) clamp(20px,2.5vw,32px)", border: "1px solid rgba(250,247,242,0.3)", textDecoration: "none", color: "var(--ka-bg)" }}
       >
         <div>
           <div className="ka-eyebrow" style={{ color: "rgba(250,247,242,0.5)", marginBottom: 8 }}>Or write directly</div>
@@ -169,6 +168,6 @@ export function buildPortfolioSectionMap(c: PortfolioContent, extra: PortfolioEx
     "capabilities":  <CapabilitiesSection />,
     "selected-work": <SelectedWorkSection posts={extra.posts} />,
     "press":         <TestimonialsSection />,
-    "cta":           <CtaSection />,
+    "cta":           <CtaSection c={c} />,
   };
 }
