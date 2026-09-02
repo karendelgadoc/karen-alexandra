@@ -6,7 +6,7 @@ const INQUIRY_ITEMS = [
   { n: "I",   title: "Fractional Brand Marketing Director", who: "For the up-and-coming brands",             note: "Hire me as your Fractional Brand Marketing Director to create and execute on your brand's marketing strategy.", email: "studio@karenalexandra.com" },
   { n: "II",  title: "Influencer Campaign Management",      who: "For established brands and agencies",      note: "Full influencer marketing management from strategy to day-to-day campaign management.",                       email: "studio@karenalexandra.com" },
   { n: "III", title: "E-commerce & Blog Content",           who: "Independent labels and content teams",     note: "Up-level your digital storefront through SEO/GEO optimized content, and curated digital merchandising.",       email: "studio@karenalexandra.com" },
-  { n: "IV",  title: "Brand partnerships",                  who: "Fashion houses, hospitality, beauty",      note: "Long-form collaborations — editorial campaigns, ambassadorship, residencies. Open for select houses.",        email: "press@karenalexandra.com" },
+  { n: "IV",  title: "Brand partnerships",                  who: "Fashion houses, hospitality, beauty",      note: "Long-form collaborations either on my own channels or UGC for your brand's content.",                          email: "press@karenalexandra.com" },
 ];
 
 const FAQ_ITEMS = [
