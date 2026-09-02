@@ -234,7 +234,7 @@ export const PORTFOLIO_DEFAULTS: PortfolioContent = {
     { title: "Fractional Brand Marketing Director", desc: "Hire me as your Fractional Brand Marketing Director to create and execute on your brand's marketing strategy." },
     { title: "Influencer Campaign Management",      desc: "Full influencer marketing management from strategy to day-to-day campaign management." },
     { title: "E-commerce & Blog Content",           desc: "Up-level your digital storefront through SEO/GEO optimized content, and curated digital merchandising." },
-    { title: "Brand partnerships",                  desc: "Long-form collaborations — editorial campaigns, ambassadorship, residencies. Open for select houses." },
+    { title: "Brand partnerships",                  desc: "Long-form collaborations either on my own channels or UGC for your brand's content." },
   ],
   press: [
     { publication: "Shopbop", quote: "A natural storyteller — Karen brings the kind of editorial eye that makes products feel aspirational.", date: "2019" },

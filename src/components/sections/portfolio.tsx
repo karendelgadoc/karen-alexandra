@@ -60,7 +60,7 @@ const CAPABILITIES: { title: string; desc: string }[] = [
   { title: "Fractional Brand Marketing Director", desc: "Hire me as your Fractional Brand Marketing Director to create and execute on your brand's marketing strategy." },
   { title: "Influencer Campaign Management",      desc: "Full influencer marketing management from strategy to day-to-day campaign management." },
   { title: "E-commerce & Blog Content",           desc: "Up-level your digital storefront through SEO/GEO optimized content, and curated digital merchandising." },
-  { title: "Brand partnerships",                  desc: "Long-form collaborations — editorial campaigns, ambassadorship, residencies. Open for select houses." },
+  { title: "Brand partnerships",                  desc: "Long-form collaborations either on my own channels or UGC for your brand's content." },
 ];
 
 export function CapabilitiesSection() {
