@@ -107,27 +107,54 @@ export function SelectedWorkSection({ posts }: { posts: Post[] }) {
   );
 }
 
-export function PressSection({ c }: { c: PortfolioContent }) {
+// Fixed rather than read from c.press, for the same reason as CAPABILITIES
+// above: copied over from the (hidden but still live in the DB)
+// /services page's testimonials, so it's sourced from SERVICES_DEFAULTS in
+// page-content-db.ts rather than from anything portfolio-specific. If Karen
+// has edited the actual testimonial text via /admin/pages/services since
+// these defaults were written, this won't reflect that — update here by hand.
+const TESTIMONIALS: { q: string; who: string }[] = [
+  { q: "I so appreciated your time! And after our call, I already got started on our new TikTok posting strategy. You're a rock star!", who: "Stacy Flax · Founder, Bored Rebel" },
+  { q: "Had an insightful and inspiring chat with Karen today. We talked about my marketing strategy, pivots to a new ideal client, and emerging trends. I highly recommend connecting with her if you're looking to scale or pivot — her expertise in brand marketing and her kindness are off the charts!", who: "Sandra Kaye · Consulting client" },
+];
+
+export function TestimonialsSection() {
   return (
-    <section className="ka-rp ka-r-stack" style={{ padding: "96px 64px", borderBottom: "1px solid var(--ka-line)", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "48px" }}>
-      {c.press.map(({ publication, quote, date }) => (
-        <div key={publication}>
-          <span className="ka-eyebrow" style={{ display: "block", marginBottom: "20px" }}>{publication} · {date}</span>
-          <p style={{ fontFamily: "var(--ka-display)", fontSize: "22px", fontStyle: "italic", lineHeight: 1.35, color: "var(--ka-ink)" }}>&ldquo;{quote}&rdquo;</p>
+    <section className="ka-rp ka-r-stack" style={{ padding: "96px 64px", borderBottom: "1px solid var(--ka-line)", display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "64px" }}>
+      {TESTIMONIALS.map(({ q, who }) => (
+        <div key={who}>
+          <p style={{ fontFamily: "var(--ka-display)", fontSize: "22px", fontStyle: "italic", lineHeight: 1.35, color: "var(--ka-ink)", marginBottom: "20px" }}>&ldquo;{q}&rdquo;</p>
+          <span className="ka-eyebrow" style={{ display: "block" }}>{who}</span>
         </div>
       ))}
     </section>
   );
 }
 
-export function CtaSection({ c }: { c: PortfolioContent }) {
+// Fixed for the same reason as TESTIMONIALS above: this used to be a
+// "Let's collaborate" headline + "Get in touch" link (c.cta.headline /
+// c.cta.buttonLabel). Karen asked for the contact page's closing quote
+// moved here instead, with a mailto button styled like the "Or write
+// directly" card on /media-kit's CtaSection, using the studio inbox rather
+// than press.
+export function CtaSection() {
   return (
-    <section className="ka-rp ka-r-stack" style={{ background: "var(--ka-ink)", color: "var(--ka-bg)", padding: "96px 64px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "32px" }}>
-      <div>
-        <span className="ka-eyebrow" style={{ display: "block", marginBottom: "16px", color: "var(--ka-accent)" }}>Let&apos;s collaborate</span>
-        <h2 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(40px, 5vw, 64px)", fontStyle: "italic", fontWeight: 400, color: "var(--ka-bg)" }}>{c.cta.headline}</h2>
-      </div>
-      <Link href="/contact" className="ka-btn ka-btn-light" style={{ flexShrink: 0 }}>{c.cta.buttonLabel}</Link>
+    <section className="ka-rp" style={{ background: "var(--ka-ink)", color: "var(--ka-bg)", padding: "96px 64px", textAlign: "center" }}>
+      <div style={{ width: 56, height: 1, background: "var(--ka-accent)", margin: "0 auto 48px" }} />
+      <p style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(32px, 4vw, 56px)", fontStyle: "italic", maxWidth: 1100, margin: "0 auto", lineHeight: 1.15, color: "var(--ka-bg)" }}>
+        &ldquo;Considered always beats prompt. Write when you have something to say — not before.&rdquo;
+      </p>
+      <div className="ka-eyebrow" style={{ marginTop: 48, marginBottom: 56, color: "rgba(250,247,242,0.5)" }}>— From the editor&apos;s desk</div>
+      <a
+        href="mailto:studio@karenalexandra.com"
+        style={{ display: "inline-flex", justifyContent: "space-between", alignItems: "center", gap: 40, maxWidth: 420, width: "100%", padding: "clamp(16px,2vw,28px) clamp(20px,2.5vw,32px)", border: "1px solid rgba(250,247,242,0.3)", textDecoration: "none", color: "var(--ka-bg)", textAlign: "left" }}
+      >
+        <div>
+          <div className="ka-eyebrow" style={{ color: "rgba(250,247,242,0.5)", marginBottom: 8 }}>Or write directly</div>
+          <div style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(16px,1.8vw,22px)", fontStyle: "italic" }}>studio@karenalexandra.com</div>
+        </div>
+        <span style={{ fontSize: 22 }}>→</span>
+      </a>
     </section>
   );
 }
@@ -141,7 +168,7 @@ export function buildPortfolioSectionMap(c: PortfolioContent, extra: PortfolioEx
     "logos":         <LogosSection c={c} />,
     "capabilities":  <CapabilitiesSection />,
     "selected-work": <SelectedWorkSection posts={extra.posts} />,
-    "press":         <PressSection c={c} />,
-    "cta":           <CtaSection c={c} />,
+    "press":         <TestimonialsSection />,
+    "cta":           <CtaSection />,
   };
 }
