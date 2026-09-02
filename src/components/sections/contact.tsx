@@ -3,10 +3,10 @@ import type { ReactNode } from "react";
 import type { ContactContent } from "@/lib/page-content-db";
 
 const INQUIRY_ITEMS = [
-  { n: "I",   title: "Brand partnerships",     who: "Fashion houses, hospitality, beauty",   note: "Long-form collaborations — editorial campaigns, ambassadorship, residencies. Open for select houses.", email: "press@karenalexandra.com" },
-  { n: "II",  title: "Press & features",       who: "Editors, journalists, podcasters",      note: "Interview requests, contributing essays, comment for editorial. Press kit available on request.",       email: "press@karenalexandra.com" },
-  { n: "III", title: "E-commerce consulting",  who: "Independent labels & growth teams",     note: "Strategy engagements for direct storefronts, merchandising rhythm, audience and retention work.",      email: "studio@karenalexandra.com" },
-  { n: "IV",  title: "Speaking & moderating",  who: "Conferences, panels, boardrooms",       note: "Keynotes and conversations on the new luxury consumer, slow wardrobes, and editorial commerce.",     email: "studio@karenalexandra.com" },
+  { n: "I",   title: "Fractional Brand Marketing Director", who: "For the up-and-coming brands",             note: "Hire me as your Fractional Brand Marketing Director to create and execute on your brand's marketing strategy.", email: "studio@karenalexandra.com" },
+  { n: "II",  title: "Influencer Campaign Management",      who: "For established brands and agencies",      note: "Full influencer marketing management from strategy to day-to-day campaign management.",                       email: "studio@karenalexandra.com" },
+  { n: "III", title: "E-commerce & Blog Content",           who: "Independent labels and content teams",     note: "Up-level your digital storefront through SEO/GEO optimized content, and curated digital merchandising.",       email: "studio@karenalexandra.com" },
+  { n: "IV",  title: "Brand partnerships",                  who: "Fashion houses, hospitality, beauty",      note: "Long-form collaborations — editorial campaigns, ambassadorship, residencies. Open for select houses.",        email: "press@karenalexandra.com" },
 ];
 
 const FAQ_ITEMS = [
@@ -57,7 +57,7 @@ export function FormSection({ c }: { c: ContactContent }) {
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 64, borderBottom: "1px solid var(--ka-line)", paddingBottom: 24 }}>
           <div style={{ display: "flex", gap: 24, alignItems: "baseline" }}>
             <span style={{ fontFamily: "var(--ka-mono)", fontSize: 11, letterSpacing: "0.12em", color: "var(--ka-accent-deep)" }}>N° 01</span>
-            <h2 style={{ fontFamily: "var(--ka-display)", fontWeight: 400, fontSize: 32, fontStyle: "italic" }}>What is this about?</h2>
+            <h2 style={{ fontFamily: "var(--ka-display)", fontWeight: 400, fontSize: 32, fontStyle: "italic" }}>Ways we can work together</h2>
           </div>
           <a href="mailto:studio@karenalexandra.com" className="ka-arrow-link">Or write directly <span className="ka-arrow">→</span></a>
         </div>
