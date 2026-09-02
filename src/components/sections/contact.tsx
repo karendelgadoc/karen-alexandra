@@ -28,13 +28,23 @@ export function HeroSection({ c }: { c: ContactContent }) {
     <section className="ka-rp" style={{ padding: "120px 64px 80px", borderBottom: "1px solid var(--ka-line)" }}>
       <div className="ka-eyebrow" style={{ marginBottom: 56 }}>{c.hero.eyebrow}</div>
       <div className="ka-r-stack-md" style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 80, alignItems: "end" }}>
+        {/* Headline and subhead are fixed in code rather than read from
+            c.hero.*, because page_content already holds an older version of
+            this copy and stored values win over CONTACT_DEFAULTS in the merge.
+            Editing the defaults would leave the live page unchanged. The
+            trade-off: these two no longer respond to /admin/pages/contact —
+            change them here. The eyebrow above still comes from the DB. */}
         <h1 style={{ fontFamily: "var(--ka-display)", fontWeight: 400, fontSize: "clamp(56px, 9vw, 132px)", lineHeight: 0.96, letterSpacing: "-0.02em" }}>
-          {c.hero.headlineLine1}
+          Let&rsquo;s work
           <br />
-          <span style={{ fontStyle: "italic" }}>{c.hero.headlineLine2}</span>
+          <span style={{ fontStyle: "italic" }}>together</span>
           <span style={{ color: "var(--ka-accent-deep)" }}>.</span>
         </h1>
-        <p style={{ fontSize: 17, lineHeight: 1.7, color: "var(--ka-muted)", maxWidth: 400, justifySelf: "end", fontFamily: "var(--ka-body)" }}>{c.hero.subhead}</p>
+        <p style={{ fontSize: 17, lineHeight: 1.7, color: "var(--ka-muted)", maxWidth: 400, justifySelf: "end", fontFamily: "var(--ka-body)" }}>
+          Whether you&rsquo;re looking for a brand marketing strategy overhaul, an
+          e-commerce revamp, or campaign management, my email is the best way to
+          reach me.
+        </p>
       </div>
     </section>
   );

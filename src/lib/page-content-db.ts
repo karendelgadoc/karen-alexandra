@@ -257,11 +257,15 @@ export const CONTACT_DEFAULTS: ContactContent = {
   sectionOrder: PAGE_SECTIONS.contact.map((s) => s.id),
   hiddenSections: [],
   hero: {
+    // The contact hero's headline and subhead are rendered from fixed strings
+    // in components/sections/contact.tsx, not from these values — a stored
+    // page_content row would otherwise override whatever is set here. Kept in
+    // sync so the two don't contradict each other; edit both together.
     eyebrow: "Inquiries · MMXXVI",
-    headlineLine1: "Begin a",
-    headlineLine2: "correspondence",
+    headlineLine1: "Let's work",
+    headlineLine2: "together",
     subhead:
-      "Whether you're writing about a season, a feature, or a long partnership — the door is open. Responses, considered, within five business days.",
+      "Whether you're looking for a brand marketing strategy overhaul, an e-commerce revamp, or campaign management, my email is the best way to reach me.",
   },
   sidebar: {
     quote:
