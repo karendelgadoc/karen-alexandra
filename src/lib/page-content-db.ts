@@ -227,11 +227,14 @@ export const PORTFOLIO_DEFAULTS: PortfolioContent = {
     { value: "20+", label: "Brand Partners", note: "Shopbop, Four Seasons, IHG, Citizens of Humanity and more" },
     { value: "3", label: "Industries", note: "Fashion · Travel · Tech" },
   ],
+  // Rendered from a fixed array in CapabilitiesSection, not from this field —
+  // see the comment above CAPABILITIES in components/sections/portfolio.tsx.
+  // Kept in sync so the two don't contradict each other; edit both together.
   capabilities: [
-    { title: "E-Commerce Strategy", desc: "Digital merchandising, product assortment curation, Shopify store architecture and conversion optimisation." },
-    { title: "Brand & Creative", desc: "Narrative development, content direction, editorial storytelling across fashion and travel verticals." },
-    { title: "Digital Growth", desc: "Audience building on Instagram and Pinterest. Data-informed content strategy and community engagement." },
-    { title: "Partnerships", desc: "Brand collaboration, influencer outreach and partnership alignment with luxury and lifestyle labels." },
+    { title: "Fractional Brand Marketing Director", desc: "Hire me as your Fractional Brand Marketing Director to create and execute on your brand's marketing strategy." },
+    { title: "Influencer Campaign Management",      desc: "Full influencer marketing management from strategy to day-to-day campaign management." },
+    { title: "E-commerce & Blog Content",           desc: "Up-level your digital storefront through SEO/GEO optimized content, and curated digital merchandising." },
+    { title: "Brand partnerships",                  desc: "Long-form collaborations — editorial campaigns, ambassadorship, residencies. Open for select houses." },
   ],
   press: [
     { publication: "Shopbop", quote: "A natural storyteller — Karen brings the kind of editorial eye that makes products feel aspirational.", date: "2019" },

@@ -50,12 +50,25 @@ export function LogosSection({ c }: { c: PortfolioContent }) {
   );
 }
 
-export function CapabilitiesSection({ c }: { c: PortfolioContent }) {
+// Fixed rather than read from c.capabilities, for the same reason as the
+// contact hero (see components/sections/contact.tsx): page_content already
+// holds an older version of this copy, and fetchPageContent deep-merges
+// stored content over PORTFOLIO_DEFAULTS, so the stored value wins. Order
+// and copy match the "Ways we can work together" cards on /contact — no
+// numbering or email here, matching this section's own existing style.
+const CAPABILITIES: { title: string; desc: string }[] = [
+  { title: "Fractional Brand Marketing Director", desc: "Hire me as your Fractional Brand Marketing Director to create and execute on your brand's marketing strategy." },
+  { title: "Influencer Campaign Management",      desc: "Full influencer marketing management from strategy to day-to-day campaign management." },
+  { title: "E-commerce & Blog Content",           desc: "Up-level your digital storefront through SEO/GEO optimized content, and curated digital merchandising." },
+  { title: "Brand partnerships",                  desc: "Long-form collaborations — editorial campaigns, ambassadorship, residencies. Open for select houses." },
+];
+
+export function CapabilitiesSection() {
   return (
     <section className="ka-rp" style={{ padding: "96px 64px", borderBottom: "1px solid var(--ka-line)" }}>
       <span className="ka-eyebrow" style={{ display: "block", marginBottom: "56px" }}>What I do</span>
       <div className="ka-r-stack" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px", background: "var(--ka-line)", border: "1px solid var(--ka-line)" }}>
-        {c.capabilities.map(({ title, desc }) => (
+        {CAPABILITIES.map(({ title, desc }) => (
           <div key={title} style={{ background: "var(--ka-bg)", padding: "48px 40px" }}>
             <h3 style={{ fontFamily: "var(--ka-display)", fontSize: "28px", fontStyle: "italic", marginBottom: "16px" }}>{title}</h3>
             <p style={{ fontSize: "15px", color: "var(--ka-ink-soft)", lineHeight: 1.7, fontWeight: 300 }}>{desc}</p>
@@ -126,7 +139,7 @@ export function buildPortfolioSectionMap(c: PortfolioContent, extra: PortfolioEx
     "hero":          <HeroSection c={c} />,
     "facts":         <FactsSection c={c} />,
     "logos":         <LogosSection c={c} />,
-    "capabilities":  <CapabilitiesSection c={c} />,
+    "capabilities":  <CapabilitiesSection />,
     "selected-work": <SelectedWorkSection posts={extra.posts} />,
     "press":         <PressSection c={c} />,
     "cta":           <CtaSection c={c} />,
