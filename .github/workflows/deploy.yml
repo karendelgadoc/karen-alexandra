@@ -1,0 +1,43 @@
+name: Deploy to production
+
+# Every push to main deploys the site. Also runnable by hand from the
+# Actions tab (workflow_dispatch) if you need to re-deploy without a commit.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Never let two deploys race. A newer push waits for the running one to
+# finish rather than cancelling it, so a half-uploaded deploy can't win.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Gate: type-check and compile before shipping. If this fails the deploy
+      # step never runs, so code that doesn't build can't reach the live site.
+      - name: Build
+        run: npm run build
+
+      # The CLI uploads the working directory; node_modules, .git and .next are
+      # excluded by its own defaults, and .vercelignore covers the rest. The
+      # uploads.zip dance isn't needed here — that file is gitignored, so a
+      # fresh CI checkout never has it.
+      - name: Deploy to InsForge
+        run: npx --yes @insforge/cli@0.2.8 deployments deploy .
+        env:
+          INSFORGE_ACCESS_TOKEN: ${{ secrets.INSFORGE_ACCESS_TOKEN }}
+          INSFORGE_PROJECT_ID: 920e1f0c-6261-4331-8e7b-aadabd6287ab
