@@ -30,6 +30,13 @@ npx @insforge/cli deployments deploy .   # deploy to Vercel
 mv uploads.zip /tmp/ && npx @insforge/cli deployments deploy . && mv /tmp/uploads.zip .
 ```
 
+**Automatic deploys:** every push to `main` deploys via `.github/workflows/deploy.yml`
+(build gate first, then the InsForge CLI). It needs one repo secret,
+`INSFORGE_ACCESS_TOKEN` — the `user_api_key` from `~/.insforge/credentials.json`.
+The manual command above is only needed for deploying uncommitted local work.
+CI checkouts never contain `uploads.zip` (it's gitignored), so the move-it-out
+dance doesn't apply there.
+
 ### Architecture
 
 - **App Router** with `src/` directory layout
