@@ -196,16 +196,43 @@ async function fetchViaRss(limit: number): Promise<VideoCard[]> {
   return videos;
 }
 
+// ─── Exclusions ──────────────────────────────────────────────────────────────
+//
+// Videos to keep off the site even though the channel still returns them.
+// Applied centrally so a hidden video disappears from every surface at once —
+// the /watch grid and featured slot, and the homepage reel.
+//
+// Prefer IDs: they never change, whereas a retitled video would slip past a
+// title rule (and a title rule can over-match a future video that happens to
+// share the wording).
+const EXCLUDED_VIDEO_IDS: string[] = [];
+
+// Case-insensitive substring match against the video title. Fallback for when
+// the ID isn't to hand.
+const EXCLUDED_TITLE_MATCHES: string[] = ["little black shell"];
+
+function isExcluded(video: VideoCard): boolean {
+  if (EXCLUDED_VIDEO_IDS.includes(video.id)) return true;
+  const title = video.title.toLowerCase();
+  return EXCLUDED_TITLE_MATCHES.some((m) => title.includes(m.toLowerCase()));
+}
+
 // ─── Public entry point ──────────────────────────────────────────────────────
 
 export async function getLatestVideos(limit = 12): Promise<VideoCard[]> {
   const apiKey = process.env.YOUTUBE_API_KEY;
+  // Over-fetch by the number of exclusions so filtering can't leave the caller
+  // short of `limit` when an excluded video is among the most recent uploads.
+  const fetchLimit = limit + EXCLUDED_VIDEO_IDS.length + EXCLUDED_TITLE_MATCHES.length;
   try {
+    let videos: VideoCard[] = [];
     if (apiKey) {
-      const fromApi = await fetchViaApi(apiKey, limit);
-      if (fromApi.length > 0) return fromApi;
+      videos = await fetchViaApi(apiKey, fetchLimit);
     }
-    return await fetchViaRss(limit);
+    if (videos.length === 0) {
+      videos = await fetchViaRss(fetchLimit);
+    }
+    return videos.filter((v) => !isExcluded(v)).slice(0, limit);
   } catch (e) {
     console.error("[youtube] fetch failed", e instanceof Error ? e.message : e);
     return [];
