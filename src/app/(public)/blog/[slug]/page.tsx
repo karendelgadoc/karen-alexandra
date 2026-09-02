@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { SERVICES_ENABLED } from "@/lib/site-flags";
 import { getAllBlogSlugs, getBlogPostBySlug } from "@/lib/blog-db";
 import { sanitizeHtml } from "@/lib/sanitize";
 
@@ -91,12 +92,14 @@ export default async function BlogPostPage({ params }: Props) {
             I partner with luxury and premium lifestyle brands on blog, YouTube, and social — and work with fashion brands on e-commerce strategy.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
-            <Link
-              href="/services"
-              className="text-xs tracking-[0.2em] uppercase border border-[var(--charcoal)] px-8 py-3 hover:bg-[var(--charcoal)] hover:text-[var(--cream)] transition-colors"
-            >
-              View Services
-            </Link>
+            {SERVICES_ENABLED && (
+              <Link
+                href="/services"
+                className="text-xs tracking-[0.2em] uppercase border border-[var(--charcoal)] px-8 py-3 hover:bg-[var(--charcoal)] hover:text-[var(--cream)] transition-colors"
+              >
+                View Services
+              </Link>
+            )}
             <Link
               href="/contact"
               className="text-xs tracking-[0.2em] uppercase bg-[var(--charcoal)] text-[var(--cream)] px-8 py-3 hover:bg-[var(--taupe)] transition-colors"

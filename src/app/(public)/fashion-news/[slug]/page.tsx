@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { STUDIO_CTA } from "@/lib/site-flags";
 import { getAllFashionNewsSlugs, getFashionNewsPostBySlug } from "@/lib/blog-db";
 import { JsonLd, articleSchema, faqSchema, breadcrumbSchema } from "@/components/JsonLd";
 import { sanitizeHtml } from "@/lib/sanitize";
@@ -202,7 +203,7 @@ export default async function FashionNewsPostPage({ params }: Props) {
         <div className="ka-work-with-me">
           <h3>Work with Karen?</h3>
           <p>Editorial partnerships, e-commerce strategy, and brand direction — selectively offered, long-form by design.</p>
-          <Link href="/services" className="ka-arrow-link" style={{ fontSize: 10 }}>The studio <span className="ka-arrow">→</span></Link>
+          <Link href={STUDIO_CTA.href} className="ka-arrow-link" style={{ fontSize: 10 }}>{STUDIO_CTA.label} <span className="ka-arrow">→</span></Link>
         </div>
       </div>
     </>

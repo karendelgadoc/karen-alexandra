@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { STUDIO_CTA } from "@/lib/site-flags";
 import Image from "next/image";
 import { getAllPosts } from "@/lib/posts-db";
 import type { Post } from "@/lib/posts";
@@ -183,8 +184,8 @@ export default async function CaseStudiesPage() {
           <p>
             Strategy, creative direction, editorial partnerships — four engagements, taken on at a time.
           </p>
-          <Link href="/services" className="ka-arrow-link" style={{ fontSize: 10 }}>
-            The studio <span className="ka-arrow">→</span>
+          <Link href={STUDIO_CTA.href} className="ka-arrow-link" style={{ fontSize: 10 }}>
+            {STUDIO_CTA.label} <span className="ka-arrow">→</span>
           </Link>
         </div>
       </section>

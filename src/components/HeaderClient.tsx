@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { isHiddenRoute } from "@/lib/site-flags";
 
 interface NavLink {
   label: string;
@@ -15,7 +16,7 @@ const WORK_ITEMS = [
   { name: "Case Studies", href: "/case-studies", note: "In depth" },
   { name: "Services",     href: "/services",     note: "Engage" },
   { name: "Media Kit",    href: "/media-kit",    note: "Press" },
-];
+].filter((item) => !isHiddenRoute(item.href));
 
 const MOBILE_GROUPS = [
   {
@@ -42,7 +43,9 @@ const MOBILE_GROUPS = [
       { name: "Contact", href: "/contact" },
     ],
   },
-];
+]
+  .map((group) => ({ ...group, items: group.items.filter((item) => !isHiddenRoute(item.href)) }))
+  .filter((group) => group.items.length > 0);
 
 export default function HeaderClient({
   leftLinks,

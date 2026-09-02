@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { SERVICES_ENABLED } from "@/lib/site-flags";
 import type { Section } from "@/lib/posts";
 import { getAllSlugs, getPostBySlug } from "@/lib/posts-db";
 import { sanitizeHtml } from "@/lib/sanitize";
@@ -232,9 +233,11 @@ export default async function CaseStudyPage({ params }: Props) {
             I help luxury and premium fashion brands grow their e-commerce and digital presence — on retainer or project basis.
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "24px", justifyContent: "center" }}>
-            <Link href="/services" className="ka-arrow-link">
-              View Services <span className="ka-arrow">→</span>
-            </Link>
+            {SERVICES_ENABLED && (
+              <Link href="/services" className="ka-arrow-link">
+                View Services <span className="ka-arrow">→</span>
+              </Link>
+            )}
             <Link href="/contact" className="ka-arrow-link">
               Get in Touch <span className="ka-arrow">→</span>
             </Link>

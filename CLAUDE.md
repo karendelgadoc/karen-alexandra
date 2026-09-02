@@ -54,7 +54,7 @@ dance doesn't apply there.
 | `/portfolio` | `src/app/(public)/portfolio/page.tsx` | |
 | `/about` | `src/app/(public)/about/page.tsx` | Redirects → `/portfolio` |
 | `/contact` | `src/app/(public)/contact/page.tsx` | DB-driven editorial contact page |
-| `/services` | `src/app/(public)/services/page.tsx` | Consulting + brand partnerships |
+| `/services` | `src/app/(public)/services/page.tsx` | **Hidden** — 404s publicly; see Hidden Pages below |
 | `/media-kit` | `src/app/(public)/media-kit/page.tsx` | Audience stats, past partners, CTA |
 | `/watch` | `src/app/(public)/watch/page.tsx` | ISR 1 min; nav label: "On Film" |
 | `/blog` | `src/app/(public)/blog/page.tsx` | Redirects → `/journal` |
@@ -77,6 +77,23 @@ dance doesn't apply there.
 | `/robots.txt` | `src/app/robots.ts` | |
 | `/llms.txt` | `src/app/llms.txt/route.ts` | ISR 1 hr |
 | `/manifest.webmanifest` | `src/app/manifest.ts` | PWA manifest |
+
+### Hidden Pages
+
+`/services` is hidden from the public site. It is controlled by a single flag,
+`SERVICES_ENABLED` in `src/lib/site-flags.ts` (currently `false`):
+
+- the route returns 404 and is marked `noindex, nofollow`
+- `/services` is disallowed in `robots.txt` and absent from `sitemap.xml`
+- it is filtered out of the header dropdown, mobile menu and footer — including
+  menus stored in the database — via `filterHiddenLinks()` / `isHiddenRoute()`
+- the "work with me" CTAs on journal, fashion-news and case-study pages fall
+  back to `/contact` through `STUDIO_CTA`
+- IndexNow is not pinged when the page is saved in admin
+
+The content itself is untouched: it stays in `page_content` and is still
+editable at `/admin/pages/services` (flagged **Hidden** in the admin pages
+list). Flipping `SERVICES_ENABLED` to `true` restores every link and the page.
 
 ### Navigation Labels vs URL Paths
 
