@@ -202,14 +202,20 @@ async function fetchViaRss(limit: number): Promise<VideoCard[]> {
 // Applied centrally so a hidden video disappears from every surface at once —
 // the /watch grid and featured slot, and the homepage reel.
 //
-// Prefer IDs: they never change, whereas a retitled video would slip past a
-// title rule (and a title rule can over-match a future video that happens to
-// share the wording).
+// One-off exclusions go here, by ID. IDs never change, so a retitled video
+// can't slip past. Empty for now: the livestream rule below covers the only
+// thing currently being hidden.
 const EXCLUDED_VIDEO_IDS: string[] = [];
 
-// Case-insensitive substring match against the video title. Fallback for when
-// the ID isn't to hand.
-const EXCLUDED_TITLE_MATCHES: string[] = ["little black shell"];
+// Standing rule: Karen doesn't do livestreams, so any that appear on the
+// channel stay off the site. Ordinary uploads are unaffected, now and in
+// future — this matches the word, not the topic.
+//
+// Case-insensitive substring match on the title, covering both spellings.
+// Deliberately not "live" on its own: that would hit delivered, olive, lively.
+// A stream titled only "LIVE: ..." would slip through — pin its ID above if
+// one ever does.
+const EXCLUDED_TITLE_MATCHES: string[] = ["livestream", "live stream"];
 
 function isExcluded(video: VideoCard): boolean {
   if (EXCLUDED_VIDEO_IDS.includes(video.id)) return true;
