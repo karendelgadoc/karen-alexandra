@@ -36,11 +36,13 @@ jobs:
       # excluded by its own defaults, and .vercelignore covers the rest. The
       # uploads.zip dance isn't needed here — that file is gitignored, so a
       # fresh CI checkout never has it.
-      # `login` is required: the deploy command's auth check reads the
-      # credentials file (~/.insforge/credentials.json), not INSFORGE_ACCESS_TOKEN,
-      # so setting only the env var still drops it into interactive OAuth — it
-      # prints a login URL and blocks for five minutes with nobody there to
-      # answer. `login --user-api-key` writes that file, and deploy then finds it.
+      # `deployments deploy` reads both its credentials and its project from
+      # files on disk, never from the environment: requireAuth() reads
+      # ~/.insforge/credentials.json, and deployProject() calls getProjectConfig(),
+      # which reads .insforge in the working directory. A fresh runner has
+      # neither, so the env vars alone get you an interactive OAuth prompt
+      # followed by "No project linked". `login` writes the first file and
+      # `link` writes the second; the deploy then finds both.
       - name: Deploy to InsForge
         run: |
           if [ -z "$INSFORGE_ACCESS_TOKEN" ]; then
@@ -48,6 +50,7 @@ jobs:
             exit 1
           fi
           npx --yes @insforge/cli@0.2.8 login --user-api-key "$INSFORGE_ACCESS_TOKEN"
+          npx --yes @insforge/cli@0.2.8 link --project-id "$INSFORGE_PROJECT_ID"
           npx --yes @insforge/cli@0.2.8 deployments deploy .
         env:
           INSFORGE_ACCESS_TOKEN: ${{ secrets.INSFORGE_ACCESS_TOKEN }}
