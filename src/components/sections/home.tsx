@@ -3,10 +3,10 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import { KaMarquee, KaSectionHead } from "@/components/KaComponents";
 import type { HomeContent } from "@/lib/page-content-db";
-import type { getFeaturedBlogPosts } from "@/lib/blog-db";
+import type { JournalEntry } from "@/lib/journal";
 import type { VideoCard } from "@/lib/youtube";
 
-type FeaturedPosts = Awaited<ReturnType<typeof getFeaturedBlogPosts>>;
+type FeaturedPosts = JournalEntry[];
 
 // Shown only to pad the reel out to three cards while the channel has fewer
 // than three uploads. Real videos always fill the leading slots.
@@ -84,26 +84,44 @@ export function MarqueeSection({ c }: { c: HomeContent }) {
 }
 
 export function FeaturedStoriesSection({ featuredPosts }: { featuredPosts: FeaturedPosts }) {
-  const fallback = [
-    { image: "/photos/mykonos-villa.jpg", title: "On the art of slow travel", category: "Travel", slug: "#", heroAlt: "", excerpt: "" },
-    { image: "/photos/marbella-beach.jpg", title: "The Mallorca edit", category: "Fashion", slug: "#", heroAlt: "", excerpt: "" },
-    { image: "/photos/santorini-caldera.jpg", title: "Morning rituals abroad", category: "Wellness", slug: "#", heroAlt: "", excerpt: "" },
+  const fallback: FeaturedPosts = [
+    { key: "fallback-1", href: "/journal", external: false, date: "", heroImage: "/photos/mykonos-villa.jpg", title: "On the art of slow travel", category: "travel", heroAlt: "", excerpt: "" },
+    { key: "fallback-2", href: "/journal", external: false, date: "", heroImage: "/photos/marbella-beach.jpg", title: "The Mallorca edit", category: "fashion", heroAlt: "", excerpt: "" },
+    { key: "fallback-3", href: "/journal", external: false, date: "", heroImage: "/photos/santorini-caldera.jpg", title: "Morning rituals abroad", category: "wellness", heroAlt: "", excerpt: "" },
   ];
-  const posts = featuredPosts.length > 0
-    ? featuredPosts.map(p => ({ image: p.heroImage ?? "", title: p.title, category: p.category, slug: p.slug, heroAlt: p.heroAlt, excerpt: p.excerpt }))
-    : fallback;
+  const posts = featuredPosts.length > 0 ? featuredPosts : fallback;
 
   return (
     <section style={{ padding: "96px 0" }}>
       <KaSectionHead num="01" title="From the Journal" href="/journal" />
       <div className="ka-rp ka-r-stack" style={{ display: "grid", gridTemplateColumns: "5fr 4fr 4fr", gap: "40px", padding: "0 64px" }}>
         {posts.map((post, i) => (
-          <Link key={post.slug + i} href={`/journal/${post.slug}`} className="group" style={{ display: "block" }}>
+          <Link
+            key={post.key}
+            href={post.href}
+            {...(post.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+            className="group"
+            style={{ display: "block" }}
+          >
             <div style={{ aspectRatio: i === 0 ? "5/6" : "4/5", position: "relative", overflow: "hidden", background: "var(--ka-sand)" }}>
-              {post.image ? <Image src={post.image} alt={post.heroAlt || post.title} fill style={{ objectFit: "cover" }} sizes="33vw" /> : <div style={{ width: "100%", height: "100%", background: "var(--ka-sand)" }} />}
+              {post.heroImage ? (
+                <Image
+                  src={post.heroImage}
+                  alt={post.heroAlt || post.title}
+                  fill
+                  style={{ objectFit: "cover" }}
+                  sizes="33vw"
+                  unoptimized={post.heroImage.includes("substackcdn.com")}
+                />
+              ) : (
+                <div style={{ width: "100%", height: "100%", background: "var(--ka-sand)" }} />
+              )}
             </div>
             <div style={{ padding: "18px 0 0" }}>
-              <span className="ka-eyebrow">{post.category}</span>
+              <span className="ka-eyebrow">
+                {post.category}
+                {post.external ? "  ·  Substack" : ""}
+              </span>
               <p style={{ fontFamily: "var(--ka-display)", fontSize: "24px", fontStyle: "italic", marginTop: "8px", lineHeight: 1.2 }}>{post.title}</p>
               {post.excerpt && <p style={{ fontSize: "14px", color: "var(--ka-ink-soft)", marginTop: "8px", lineHeight: 1.6, fontWeight: 300 }}>{post.excerpt}</p>}
             </div>

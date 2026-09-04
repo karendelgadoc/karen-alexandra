@@ -2,56 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getAllBlogPosts, getExplicitlyFeaturedBlogPost } from "@/lib/blog-db";
-import type { BlogPost, BlogCategory } from "@/lib/blog-db";
+import type { BlogCategory } from "@/lib/blog-db";
 import { getLatestSubstackPosts } from "@/lib/substack";
-import type { SubstackPost } from "@/lib/substack";
+import { fromBlogPost, fromSubstackPost } from "@/lib/journal";
+import type { JournalEntry } from "@/lib/journal";
 import { getJournalContent, JOURNAL_DEFAULTS } from "@/lib/page-content-db";
-
-// A journal entry as rendered on the page, whichever of the two sources it
-// came from: a local letter stored in InsForge (`blog_posts`), or a letter
-// synced live from the Substack RSS feed. Substack entries are never copied
-// into the database — they're fetched fresh on every revalidation window
-// (see src/lib/substack.ts) and their cards link straight out to Substack,
-// the same way "On Film" cards link out to YouTube.
-interface JournalEntry {
-  key: string;
-  href: string;
-  external: boolean;
-  title: string;
-  date: string;
-  category: string;
-  heroImage: string;
-  heroAlt: string;
-  excerpt: string;
-}
-
-function fromBlogPost(post: BlogPost): JournalEntry {
-  return {
-    key: `local-${post.slug}`,
-    href: `/journal/${post.slug}`,
-    external: false,
-    title: post.title,
-    date: post.date,
-    category: post.category,
-    heroImage: post.heroImage,
-    heroAlt: post.heroAlt,
-    excerpt: post.excerpt,
-  };
-}
-
-function fromSubstackPost(post: SubstackPost): JournalEntry {
-  return {
-    key: `substack-${post.slug}`,
-    href: post.url,
-    external: true,
-    title: post.title,
-    date: post.date,
-    category: post.category,
-    heroImage: post.heroImage,
-    heroAlt: post.heroAlt,
-    excerpt: post.excerpt,
-  };
-}
 
 export const revalidate = 60;
 

@@ -30,7 +30,8 @@ import { buildWatchSectionMap }     from "@/components/sections/watch";
 import { buildAboutSectionMap }     from "@/components/sections/about";
 import { buildServicesSectionMap }  from "@/components/sections/services";
 import { buildMediaKitSectionMap }  from "@/components/sections/media-kit";
-import { getFeaturedBlogPosts, getAllBlogPosts } from "@/lib/blog-db";
+import { getAllBlogPosts } from "@/lib/blog-db";
+import { getLatestJournalEntries } from "@/lib/journal";
 import { getAllPosts } from "@/lib/posts-db";
 import { getLatestVideos } from "@/lib/youtube";
 import PageBuilder from "./PageBuilder";
@@ -42,7 +43,7 @@ async function buildSections(page: PageKey) {
     case "home": {
       const [content, featuredPosts, videos] = await Promise.all([
         getHomeContent().catch(() => null),
-        getFeaturedBlogPosts(3).catch(() => []),
+        getLatestJournalEntries(3).catch(() => []),
         getLatestVideos(3).catch(() => []),
       ]);
       const c = content ?? HOME_DEFAULTS;
