@@ -1,7 +1,7 @@
 // Server-side fetch of latest posts from "The Art of Well" — Karen's
-// Substack publication (note: karenalexandraa.substack.com, with a double
-// "a" — a different, deliberately-named publication from the site's other
-// karenalexandra.substack.com links, which point somewhere else on Substack).
+// Substack publication, at theartofwell.substack.com (a different address
+// from the site's other karenalexandra.substack.com links, which point
+// somewhere else on Substack).
 //
 // Mirrors src/lib/youtube.ts: no API key needed, just the publication's
 // public RSS feed. Posts are NOT stored in InsForge — they're fetched fresh
@@ -11,7 +11,7 @@
 // Cards always link straight out to the Substack post (no local copy is
 // created), matching how "On Film" links out to YouTube.
 
-export const SUBSTACK_PUBLICATION_URL = "https://karenalexandraa.substack.com";
+export const SUBSTACK_PUBLICATION_URL = "https://theartofwell.substack.com";
 export const SUBSTACK_FEED_URL = `${SUBSTACK_PUBLICATION_URL}/feed`;
 
 export interface SubstackPost {
