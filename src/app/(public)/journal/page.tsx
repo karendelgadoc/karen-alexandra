@@ -1,9 +1,57 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { getAllBlogPosts, getFeaturedBlogPosts } from "@/lib/blog-db";
+import { getAllBlogPosts, getExplicitlyFeaturedBlogPost } from "@/lib/blog-db";
 import type { BlogPost, BlogCategory } from "@/lib/blog-db";
+import { getLatestSubstackPosts } from "@/lib/substack";
+import type { SubstackPost } from "@/lib/substack";
 import { getJournalContent, JOURNAL_DEFAULTS } from "@/lib/page-content-db";
+
+// A journal entry as rendered on the page, whichever of the two sources it
+// came from: a local letter stored in InsForge (`blog_posts`), or a letter
+// synced live from the Substack RSS feed. Substack entries are never copied
+// into the database — they're fetched fresh on every revalidation window
+// (see src/lib/substack.ts) and their cards link straight out to Substack,
+// the same way "On Film" cards link out to YouTube.
+interface JournalEntry {
+  key: string;
+  href: string;
+  external: boolean;
+  title: string;
+  date: string;
+  category: string;
+  heroImage: string;
+  heroAlt: string;
+  excerpt: string;
+}
+
+function fromBlogPost(post: BlogPost): JournalEntry {
+  return {
+    key: `local-${post.slug}`,
+    href: `/journal/${post.slug}`,
+    external: false,
+    title: post.title,
+    date: post.date,
+    category: post.category,
+    heroImage: post.heroImage,
+    heroAlt: post.heroAlt,
+    excerpt: post.excerpt,
+  };
+}
+
+function fromSubstackPost(post: SubstackPost): JournalEntry {
+  return {
+    key: `substack-${post.slug}`,
+    href: post.url,
+    external: true,
+    title: post.title,
+    date: post.date,
+    category: post.category,
+    heroImage: post.heroImage,
+    heroAlt: post.heroAlt,
+    excerpt: post.excerpt,
+  };
+}
 
 export const revalidate = 60;
 
@@ -35,15 +83,16 @@ const COLLAGE_POSITIONS = [
 ];
 
 function PostCard({
-  post,
+  entry,
   position,
 }: {
-  post: BlogPost;
+  entry: JournalEntry;
   position: (typeof COLLAGE_POSITIONS)[number];
 }) {
   return (
     <Link
-      href={`/journal/${post.slug}`}
+      href={entry.href}
+      {...(entry.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       style={{
         gridColumn: position.col,
         marginTop: position.mt ? `${position.mt}px` : undefined,
@@ -59,20 +108,24 @@ function PostCard({
           background: "var(--ka-sand)",
         }}
       >
-        {post.heroImage ? (
+        {entry.heroImage ? (
           <Image
-            src={post.heroImage}
-            alt={post.heroAlt}
+            src={entry.heroImage}
+            alt={entry.heroAlt}
             fill
             style={{ objectFit: "cover" }}
             sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 40vw"
+            unoptimized={entry.heroImage.includes("substackcdn.com")}
           />
         ) : (
           <div style={{ width: "100%", height: "100%", background: "var(--ka-sand)" }} />
         )}
       </div>
       <div style={{ padding: "14px 0 0" }}>
-        <span className="ka-eyebrow">{post.category}</span>
+        <span className="ka-eyebrow">
+          {entry.category}
+          {entry.external ? "  ·  Substack" : ""}
+        </span>
         <p
           style={{
             fontFamily: "var(--ka-display)",
@@ -82,7 +135,7 @@ function PostCard({
             lineHeight: 1.2,
           }}
         >
-          {post.title}
+          {entry.title}
         </p>
         <p
           style={{
@@ -93,7 +146,7 @@ function PostCard({
             letterSpacing: "0.08em",
           }}
         >
-          {new Date(post.date).toLocaleDateString("en-US", {
+          {new Date(entry.date).toLocaleDateString("en-US", {
             year: "numeric",
             month: "short",
             day: "numeric",
@@ -112,16 +165,29 @@ export default async function JournalPage({
   const { category } = await searchParams;
   const categoryFilter = category as BlogCategory | undefined;
 
-  const [allPosts, featuredArr, pageContent] = await Promise.all([
+  const [allPosts, explicitFeatured, substackPosts, pageContent] = await Promise.all([
     getAllBlogPosts(categoryFilter).catch(() => []),
-    getFeaturedBlogPosts(1).catch(() => []),
+    getExplicitlyFeaturedBlogPost().catch(() => null),
+    getLatestSubstackPosts(12).catch(() => []),
     getJournalContent().catch(() => JOURNAL_DEFAULTS),
   ]);
   const pc = pageContent ?? JOURNAL_DEFAULTS;
 
-  const featured = featuredArr[0] ?? null;
-  // Remaining posts (excluding featured) for collage
-  const collapsePosts = allPosts.filter((p) => p.slug !== featured?.slug).slice(0, 8);
+  // Merge local letters with the live Substack sync, filter by category (the
+  // DB query already filtered allPosts server-side; Substack posts are
+  // filtered here to match), and sort newest first.
+  const entries: JournalEntry[] = [
+    ...allPosts.map(fromBlogPost),
+    ...substackPosts
+      .filter((p) => !categoryFilter || p.category === categoryFilter)
+      .map(fromSubstackPost),
+  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  // An editor-pinned local letter (`featured: true` in admin) wins the hero
+  // slot; otherwise the newest entry overall — local or synced — takes it.
+  const featured = explicitFeatured ? fromBlogPost(explicitFeatured) : entries[0] ?? null;
+  // Remaining entries (excluding whichever is featured) for the collage
+  const collageEntries = entries.filter((e) => e.key !== featured?.key).slice(0, 8);
 
   return (
     <>
@@ -171,22 +237,29 @@ export default async function JournalPage({
           display: "flex",
           gap: "10px",
           alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
           borderBottom: "1px solid var(--ka-line)",
         }}
       >
-        {CATEGORIES.map((cat) => {
-          const slug = cat === "All entries" ? undefined : cat.toLowerCase();
-          const isActive = slug ? category === slug : !category;
-          return (
-            <Link
-              key={cat}
-              href={slug ? `/journal?category=${slug}` : "/journal"}
-              className={`ka-tag${isActive ? " ka-tag-active" : ""}`}
-            >
-              {cat}
-            </Link>
-          );
-        })}
+        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+          {CATEGORIES.map((cat) => {
+            const slug = cat === "All entries" ? undefined : cat.toLowerCase();
+            const isActive = slug ? category === slug : !category;
+            return (
+              <Link
+                key={cat}
+                href={slug ? `/journal?category=${slug}` : "/journal"}
+                className={`ka-tag${isActive ? " ka-tag-active" : ""}`}
+              >
+                {cat}
+              </Link>
+            );
+          })}
+        </div>
+        <span style={{ fontFamily: "var(--ka-mono)", fontSize: "10px", color: "var(--ka-muted)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+          Auto-sync · New letters appear automatically
+        </span>
       </div>
 
       {/* ── Featured Letter ──────────────────────────────────────────── */}
@@ -205,7 +278,7 @@ export default async function JournalPage({
         >
           <div>
             <span className="ka-eyebrow" style={{ display: "block", marginBottom: "16px" }}>
-              Featured letter
+              Featured letter{featured.external ? "  ·  Substack" : ""}
             </span>
             <h2
               style={{
@@ -245,7 +318,11 @@ export default async function JournalPage({
                 day: "numeric",
               })}
             </p>
-            <Link href={`/journal/${featured.slug}`} className="ka-arrow-link">
+            <Link
+              href={featured.href}
+              {...(featured.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              className="ka-arrow-link"
+            >
               Read the letter <span className="ka-arrow">→</span>
             </Link>
           </div>
@@ -264,6 +341,7 @@ export default async function JournalPage({
                 fill
                 style={{ objectFit: "cover" }}
                 sizes="50vw"
+                unoptimized={featured.heroImage.includes("substackcdn.com")}
               />
             ) : (
               <div style={{ width: "100%", height: "100%", background: "var(--ka-sand)" }} />
@@ -273,7 +351,7 @@ export default async function JournalPage({
       )}
 
       {/* ── Collage Grid ─────────────────────────────────────────────── */}
-      {collapsePosts.length > 0 && (
+      {collageEntries.length > 0 && (
         <section className="ka-rp" style={{ padding: "80px 64px" }}>
           <div
             className="ka-r-collage"
@@ -284,10 +362,10 @@ export default async function JournalPage({
               alignItems: "start",
             }}
           >
-            {collapsePosts.map((post, i) => (
+            {collageEntries.map((entry, i) => (
               <PostCard
-                key={post.slug}
-                post={post}
+                key={entry.key}
+                entry={entry}
                 position={COLLAGE_POSITIONS[i % COLLAGE_POSITIONS.length]}
               />
             ))}
@@ -295,7 +373,7 @@ export default async function JournalPage({
         </section>
       )}
 
-      {allPosts.length === 0 && (
+      {entries.length === 0 && (
         <section className="ka-rp" style={{ padding: "96px 64px", textAlign: "center" }}>
           <p style={{ color: "var(--ka-muted)", fontFamily: "var(--ka-display)", fontSize: "24px", fontStyle: "italic" }}>
             No entries yet — check back soon.
@@ -349,7 +427,7 @@ export default async function JournalPage({
             letterSpacing: "0.08em",
           }}
         >
-          Showing {allPosts.length} entries
+          Showing {entries.length} entries
         </p>
       </div>
     </>

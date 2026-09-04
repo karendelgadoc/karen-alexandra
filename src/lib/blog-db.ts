@@ -119,6 +119,26 @@ export async function getFeaturedBlogPosts(limit = 3): Promise<BlogPost[]> {
   return rows.map(toPost);
 }
 
+// Like getFeaturedBlogPosts, but returns null instead of falling back to the
+// latest post when nothing is explicitly pinned. Used by /journal to decide
+// whether an editor-pinned local post should win the hero slot over whatever
+// is otherwise newest (a local post or a synced Substack letter).
+export async function getExplicitlyFeaturedBlogPost(): Promise<BlogPost | null> {
+  const db = getServerClient();
+  const { data, error } = await db.database
+    .from("blog_posts")
+    .select("*")
+    .eq("published", true)
+    .eq("featured", true)
+    .neq("category", "fashion-news")
+    .order("date", { ascending: false })
+    .limit(1);
+
+  if (error) throw new Error(error.message);
+  const rows = data as DbBlogPost[];
+  return rows.length > 0 ? toPost(rows[0]) : null;
+}
+
 export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
   const db = getServerClient();
   const { data, error } = await db.database
