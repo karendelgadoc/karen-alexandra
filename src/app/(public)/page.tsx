@@ -1,6 +1,7 @@
-import { getFeaturedBlogPosts, getLatestFashionNewsPost } from "@/lib/blog-db";
+import { getLatestFashionNewsPost } from "@/lib/blog-db";
 import { getHomeContent, HOME_DEFAULTS } from "@/lib/page-content-db";
 import { buildHomeSectionMap } from "@/components/sections/home";
+import { getLatestJournalEntries } from "@/lib/journal";
 import { getLatestVideos } from "@/lib/youtube";
 
 export const revalidate = 60;
@@ -8,7 +9,7 @@ export const revalidate = 60;
 export default async function HomePage() {
   const [content, featuredPosts, latestNews, videos] = await Promise.all([
     getHomeContent().catch(() => null),
-    getFeaturedBlogPosts(3).catch(() => []),
+    getLatestJournalEntries(3).catch(() => []),
     getLatestFashionNewsPost().catch(() => null),
     getLatestVideos(3).catch(() => []),
   ]);
