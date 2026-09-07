@@ -70,7 +70,7 @@ export function HeroSection({ c, newsTitle, newsHref, newsExternal, newsImage }:
           <img src={heroImageSrc} alt={heroImageAlt} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
         </Link>
         <div style={{ position: "absolute", bottom: -32, left: -32, background: "var(--ka-bg)", padding: "20px 24px", borderLeft: "2px solid var(--ka-accent-deep)", maxWidth: 280 }}>
-          <div className="ka-eyebrow" style={{ marginBottom: 6 }}>From The Edit</div>
+          <div className="ka-eyebrow" style={{ marginBottom: 6 }}>This week&apos;s article</div>
           <div style={{ fontFamily: "var(--ka-display)", fontStyle: "italic", fontSize: 20, lineHeight: 1.3 }}>{newsTitle}</div>
           <Link href={href} {...externalProps} className="ka-arrow-link" style={{ fontSize: 11, display: "block", marginTop: 12 }}>
             Read now <span className="ka-arrow">→</span>
