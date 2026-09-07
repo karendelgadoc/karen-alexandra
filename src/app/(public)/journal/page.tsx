@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getAllBlogPosts, getExplicitlyFeaturedBlogPost } from "@/lib/blog-db";
 import type { BlogCategory } from "@/lib/blog-db";
-import { getLatestSubstackPosts } from "@/lib/substack";
+import { getLatestSubstackPosts, SUBSTACK_PUBLICATION_URL } from "@/lib/substack";
 import { fromBlogPost, fromSubstackPost } from "@/lib/journal";
 import type { JournalEntry } from "@/lib/journal";
 import { getJournalContent, JOURNAL_DEFAULTS } from "@/lib/page-content-db";
@@ -148,40 +148,49 @@ export default async function JournalPage({
     <>
       {/* ── Hero ─────────────────────────────────────────────────────── */}
       <section
-        className="ka-rp"
+        className="ka-rp ka-r-stack"
         style={{
           padding: "96px 64px 64px",
           borderBottom: "1px solid var(--ka-line)",
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          gap: "48px",
         }}
       >
-        <span className="ka-eyebrow" style={{ display: "block", marginBottom: "20px" }}>
-          {pc.hero.eyebrow}
-        </span>
-        <h1
-          style={{
-            fontFamily: "var(--ka-display)",
-            fontSize: "clamp(56px, 7vw, 96px)",
-            fontStyle: "italic",
-            fontWeight: 400,
-            lineHeight: 1.0,
-            letterSpacing: "-0.02em",
-            marginBottom: "20px",
-          }}
-        >
-          {pc.hero.headline}
-        </h1>
-        <p
-          style={{
-            fontFamily: "var(--ka-body)",
-            fontSize: "15px",
-            color: "var(--ka-ink-soft)",
-            maxWidth: "440px",
-            lineHeight: 1.7,
-            fontWeight: 300,
-          }}
-        >
-          {pc.hero.subhead}
-        </p>
+        <div>
+          <span className="ka-eyebrow" style={{ display: "block", marginBottom: "20px" }}>
+            {pc.hero.eyebrow}
+          </span>
+          <h1
+            style={{
+              fontFamily: "var(--ka-display)",
+              fontSize: "clamp(56px, 7vw, 96px)",
+              fontStyle: "italic",
+              fontWeight: 400,
+              lineHeight: 1.0,
+              letterSpacing: "-0.02em",
+              marginBottom: "20px",
+            }}
+          >
+            {pc.hero.headline}
+          </h1>
+          <p
+            style={{
+              fontFamily: "var(--ka-body)",
+              fontSize: "15px",
+              color: "var(--ka-ink-soft)",
+              maxWidth: "440px",
+              lineHeight: 1.7,
+              fontWeight: 300,
+            }}
+          >
+            {pc.hero.subhead}
+          </p>
+        </div>
+        <a href={SUBSTACK_PUBLICATION_URL} target="_blank" rel="noopener noreferrer" className="ka-btn" style={{ flexShrink: 0 }}>
+          Read on Substack <span>↗</span>
+        </a>
       </section>
 
       {/* ── Filters ──────────────────────────────────────────────────── */}

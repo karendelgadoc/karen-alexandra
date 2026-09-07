@@ -33,6 +33,7 @@ import { buildMediaKitSectionMap }  from "@/components/sections/media-kit";
 import { getLatestJournalEntries } from "@/lib/journal";
 import { getAllPosts } from "@/lib/posts-db";
 import { getLatestVideos } from "@/lib/youtube";
+import { SUBSTACK_PUBLICATION_URL } from "@/lib/substack";
 import PageBuilder from "./PageBuilder";
 
 export const dynamic = "force-dynamic";
@@ -72,10 +73,13 @@ async function buildSections(page: PageKey) {
       const content = await getJournalContent().catch(() => null);
       const c = content ?? JOURNAL_DEFAULTS;
       const sectionMap: Record<string, React.ReactNode> = {
-        "hero": <section style={{ padding: "80px 64px 48px", borderBottom: "1px solid var(--ka-line)" }}>
-          <div style={{ fontFamily: "var(--ka-mono)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 20 }}>{c.hero.eyebrow}</div>
-          <h1 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(56px,7vw,96px)", fontStyle: "italic", fontWeight: 400, lineHeight: 1, marginBottom: 20 }}>{c.hero.headline}</h1>
-          <p style={{ fontSize: 15, color: "var(--ka-muted)", maxWidth: 440, lineHeight: 1.7 }}>{c.hero.subhead}</p>
+        "hero": <section style={{ padding: "80px 64px 48px", borderBottom: "1px solid var(--ka-line)", display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 48 }}>
+          <div>
+            <div style={{ fontFamily: "var(--ka-mono)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 20 }}>{c.hero.eyebrow}</div>
+            <h1 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(56px,7vw,96px)", fontStyle: "italic", fontWeight: 400, lineHeight: 1, marginBottom: 20 }}>{c.hero.headline}</h1>
+            <p style={{ fontSize: 15, color: "var(--ka-muted)", maxWidth: 440, lineHeight: 1.7 }}>{c.hero.subhead}</p>
+          </div>
+          <a href={SUBSTACK_PUBLICATION_URL} target="_blank" rel="noopener noreferrer" className="ka-btn" style={{ flexShrink: 0 }}>Read on Substack ↗</a>
         </section>,
         "pull-quote": <section style={{ padding: "64px", textAlign: "center", borderTop: "1px solid var(--ka-line)" }}>
           <div style={{ width: 48, height: 2, background: "var(--ka-accent-deep)", margin: "0 auto 32px" }} />
