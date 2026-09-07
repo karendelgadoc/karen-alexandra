@@ -199,6 +199,12 @@ a:hover { border-bottom-color: var(--ka-ink); }
   font-style: italic;
   font-family: var(--ka-display);
 }
+.ka-footer-location {
+  font-size: 12px;
+  color: var(--ka-muted);
+  font-family: var(--ka-body);
+  margin-top: 10px;
+}
 
 /* ─── Buttons / links ────────────────────────────────────────────────────── */
 

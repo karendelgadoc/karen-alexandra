@@ -22,6 +22,7 @@ interface FooterColumn {
 
 interface FooterContent {
   tagline: string;
+  location: string;
   columns: FooterColumn[];
   bottomLinks: NavLink[];
 }
@@ -325,7 +326,19 @@ export default function MenusPage() {
                 onChange={(e) => setFooter({ ...footer, tagline: e.target.value })}
                 rows={2}
                 className="w-full text-sm border border-stone-200 rounded p-3 focus:border-stone-500 outline-none resize-none bg-white"
-                placeholder="The art of well — …"
+                placeholder="A global citizen's guide to well living."
+              />
+            </div>
+
+            {/* Location line */}
+            <div>
+              <h3 className="text-sm font-semibold text-stone-700 uppercase tracking-wide mb-3">Location line</h3>
+              <input
+                type="text"
+                value={footer.location}
+                onChange={(e) => setFooter({ ...footer, location: e.target.value })}
+                className="w-full text-sm border border-stone-200 rounded p-3 focus:border-stone-500 outline-none bg-white"
+                placeholder="Based in Madrid, often elsewhere."
               />
             </div>
 
