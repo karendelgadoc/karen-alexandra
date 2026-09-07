@@ -28,6 +28,20 @@ export function KaMarquee({ items = MARQUEE_ITEMS }: { items?: string[] }) {
   );
 }
 
+// A diagonal arrow icon for "opens elsewhere" buttons (YouTube, Substack).
+// Rendered as an inline SVG rather than the Unicode "↗" character: some
+// mobile browsers substitute a chunky emoji-style glyph for that character
+// at small sizes, which doesn't match the thin desktop rendering — an SVG
+// looks identical everywhere.
+export function KaArrowUpRight({ size = 12 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+      <line x1="7" y1="17" x2="17" y2="7" />
+      <polyline points="7 7 17 7 17 17" />
+    </svg>
+  );
+}
+
 export function KaEyebrow({
   children,
   className = "",

@@ -7,6 +7,7 @@ import { getLatestSubstackPosts, SUBSTACK_PUBLICATION_URL } from "@/lib/substack
 import { fromBlogPost, fromSubstackPost } from "@/lib/journal";
 import type { JournalEntry } from "@/lib/journal";
 import { getJournalContent, JOURNAL_DEFAULTS } from "@/lib/page-content-db";
+import { KaArrowUpRight } from "@/components/KaComponents";
 
 export const revalidate = 60;
 
@@ -189,7 +190,7 @@ export default async function JournalPage({
           </p>
         </div>
         <a href={SUBSTACK_PUBLICATION_URL} target="_blank" rel="noopener noreferrer" className="ka-btn" style={{ flexShrink: 0 }}>
-          Read on Substack <span>↗</span>
+          Read on Substack <KaArrowUpRight />
         </a>
       </section>
 

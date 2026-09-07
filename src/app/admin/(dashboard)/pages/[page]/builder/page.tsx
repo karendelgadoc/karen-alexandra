@@ -1,6 +1,7 @@
 import React from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { KaArrowUpRight } from "@/components/KaComponents";
 import {
   PAGE_KEYS,
   PAGE_LABELS,
@@ -79,7 +80,7 @@ async function buildSections(page: PageKey) {
             <h1 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(56px,7vw,96px)", fontStyle: "italic", fontWeight: 400, lineHeight: 1, marginBottom: 20 }}>{c.hero.headline}</h1>
             <p style={{ fontSize: 15, color: "var(--ka-muted)", maxWidth: 440, lineHeight: 1.7 }}>{c.hero.subhead}</p>
           </div>
-          <a href={SUBSTACK_PUBLICATION_URL} target="_blank" rel="noopener noreferrer" className="ka-btn" style={{ flexShrink: 0 }}>Read on Substack ↗</a>
+          <a href={SUBSTACK_PUBLICATION_URL} target="_blank" rel="noopener noreferrer" className="ka-btn" style={{ flexShrink: 0 }}>Read on Substack <KaArrowUpRight /></a>
         </section>,
         "pull-quote": <section style={{ padding: "64px", textAlign: "center", borderTop: "1px solid var(--ka-line)" }}>
           <div style={{ width: 48, height: 2, background: "var(--ka-accent-deep)", margin: "0 auto 32px" }} />
