@@ -1,4 +1,5 @@
 import { getServerClient } from "./insforge";
+import { SUBSTACK_PUBLICATION_URL } from "./substack";
 
 // ── Section registry ──────────────────────────────────────────────────────────
 
@@ -475,6 +476,7 @@ export const FOOTER_DEFAULTS: FooterContent = {
       title: "Elsewhere",
       links: [
         { label: "YouTube",   href: "https://www.youtube.com/@KarenAlexandra",          external: true },
+        { label: "Substack",  href: SUBSTACK_PUBLICATION_URL,                           external: true },
         { label: "Pinterest", href: "https://www.pinterest.com/karenalexandra__/",       external: true },
         { label: "LinkedIn",  href: "https://www.linkedin.com/in/karenalexandrac",       external: true },
       ],
@@ -533,7 +535,21 @@ async function fetchPageContent<T>(page: string, defaults: T): Promise<T> {
 
 // ── Public read API ───────────────────────────────────────────────────────────
 
-export const getFooterContent    = () => fetchPageContent<FooterContent>("footer", FOOTER_DEFAULTS);
+export async function getFooterContent(): Promise<FooterContent> {
+  const stored = await fetchPageContent<FooterContent>("footer", FOOTER_DEFAULTS);
+  // Same stale-array backfill as getMenuContent: a previously-saved column
+  // (e.g. "Elsewhere") keeps whatever the DB has, plus any new default link
+  // for that column (matched by title) that isn't already there by href —
+  // so a link added to FOOTER_DEFAULTS later (like Substack) still shows up
+  // without requiring a re-save in /admin/menus.
+  const columns = stored.columns.map((col) => {
+    const defaultCol = FOOTER_DEFAULTS.columns.find((d) => d.title === col.title);
+    if (!defaultCol) return col;
+    const storedHrefs = new Set(col.links.map((l) => l.href));
+    return { ...col, links: [...col.links, ...defaultCol.links.filter((l) => !storedHrefs.has(l.href))] };
+  });
+  return { ...stored, columns };
+}
 export const getHomeContent      = () => fetchPageContent<HomeContent>("home", HOME_DEFAULTS);
 export const getPortfolioContent = () => fetchPageContent<PortfolioContent>("portfolio", PORTFOLIO_DEFAULTS);
 export const getContactContent   = () => fetchPageContent<ContactContent>("contact", CONTACT_DEFAULTS);
