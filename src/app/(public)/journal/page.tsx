@@ -213,7 +213,7 @@ export default async function JournalPage({
           })}
         </div>
         <span style={{ fontFamily: "var(--ka-mono)", fontSize: "10px", color: "var(--ka-muted)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-          Auto-sync · New letters appear automatically
+          Auto-sync · New publications pull from Substack
         </span>
       </div>
 
