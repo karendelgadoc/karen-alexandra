@@ -174,6 +174,7 @@ export interface FooterColumn {
 
 export interface FooterContent {
   tagline: string;
+  location: string;
   columns: FooterColumn[];
   bottomLinks: FooterLink[];
 }
@@ -435,6 +436,7 @@ export const MEDIA_KIT_DEFAULTS: MediaKitContent = {
 
 export const FOOTER_DEFAULTS: FooterContent = {
   tagline: "A global citizen's guide to well living.",
+  location: "Based in Madrid, often elsewhere.",
   columns: [
     {
       title: "Explore",

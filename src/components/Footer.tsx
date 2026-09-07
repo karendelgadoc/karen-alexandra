@@ -27,6 +27,7 @@ export default async function Footer() {
             />
           </div>
           <p className="ka-footer-tag">{fc.tagline}</p>
+          <p className="ka-footer-location">{fc.location}</p>
         </div>
 
         {/* Dynamic columns */}
