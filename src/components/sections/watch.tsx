@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import type { WatchContent } from "@/lib/page-content-db";
 import { YT_CHANNEL_URL, type VideoCard } from "@/lib/youtube";
+import { KaArrowUpRight } from "@/components/KaComponents";
 import FilteredVideoGrid from "./FilteredVideoGrid";
 
 // Fallback used only if the YouTube fetch returns 0 videos (rate-limit, outage, etc.)
@@ -24,7 +25,7 @@ export function HeroSection({ c }: { c: WatchContent }) {
         <span className="ka-eyebrow" style={{ display: "block", marginBottom: "20px" }}>{c.hero.eyebrow}</span>
         <h1 style={{ fontFamily: "var(--ka-display)", fontSize: "clamp(56px, 7vw, 96px)", fontStyle: "italic", fontWeight: 400, lineHeight: 1.0, letterSpacing: "-0.02em" }}>{c.hero.headline}</h1>
       </div>
-      <a href={YT_CHANNEL_URL} target="_blank" rel="noopener noreferrer" className="ka-btn" style={{ flexShrink: 0 }}>YouTube Channel <span>↗</span></a>
+      <a href={YT_CHANNEL_URL} target="_blank" rel="noopener noreferrer" className="ka-btn" style={{ flexShrink: 0 }}>YouTube Channel <KaArrowUpRight /></a>
     </section>
   );
 }
