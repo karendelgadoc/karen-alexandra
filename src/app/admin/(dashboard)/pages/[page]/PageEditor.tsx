@@ -151,6 +151,7 @@ function HomeEditor({ initial, focusSectionId }: { initial: HomeContent; page: P
             <Field label="Headline italic line" value={hero.headlineItalic} onChange={(v) => setHero({ ...hero, headlineItalic: v })} />
           </div>
           <Field label="Intro paragraph (left)" value={hero.subhead} onChange={(v) => setHero({ ...hero, subhead: v })} area rows={3} />
+          <Field label="Location line (below left paragraph)" value={hero.location} onChange={(v) => setHero({ ...hero, location: v })} />
           <Field label="Intro paragraph (right)" value={hero.subheadRight} onChange={(v) => setHero({ ...hero, subheadRight: v })} area rows={3} />
           <Field label="CTA note (italic text beside button)" value={hero.ctaNote} onChange={(v) => setHero({ ...hero, ctaNote: v })} />
           <Field label="'This week's letter' callout title" value={hero.letterCardTitle} onChange={(v) => setHero({ ...hero, letterCardTitle: v })} />
