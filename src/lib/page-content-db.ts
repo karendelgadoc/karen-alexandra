@@ -434,7 +434,7 @@ export const MEDIA_KIT_DEFAULTS: MediaKitContent = {
 };
 
 export const FOOTER_DEFAULTS: FooterContent = {
-  tagline: "The art of well — stories from a life lived in cashmere, on marble lobbies, and at the front row.",
+  tagline: "A global citizen's guide to well living.",
   columns: [
     {
       title: "Explore",
