@@ -55,8 +55,9 @@ export function HeroSection({ c, newsTitle, newsHref, newsExternal, newsImage }:
             {c.hero.headlineItalic}<span style={{ color: "var(--ka-accent-deep)" }}>.</span>
           </span>
         </h1>
-        <div style={{ marginTop: 64, paddingTop: 32, borderTop: "1px solid var(--ka-line)" }}>
-          <p style={{ fontSize: 16, lineHeight: 1.7, color: "var(--ka-muted)", maxWidth: 360, fontFamily: "var(--ka-body)" }}>{c.hero.subhead}</p>
+        <div className="ka-r-stack" style={{ display: "flex", gap: 40, marginTop: 64, paddingTop: 32, borderTop: "1px solid var(--ka-line)" }}>
+          <p style={{ fontSize: 16, lineHeight: 1.7, color: "var(--ka-muted)", maxWidth: 360, flex: 1, fontFamily: "var(--ka-body)" }}>{c.hero.subhead}</p>
+          <p style={{ fontSize: 16, lineHeight: 1.7, color: "var(--ka-muted)", maxWidth: 360, flex: 1, fontFamily: "var(--ka-body)" }}>{c.hero.subheadRight}</p>
         </div>
         <div style={{ marginTop: 48, display: "flex", gap: 24, alignItems: "center" }}>
           <Link href="/journal" className="ka-btn">{c.hero.ctaLabel}</Link>
