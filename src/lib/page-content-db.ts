@@ -78,8 +78,7 @@ export interface HomeContent extends SectionLayout {
     eyebrow: string;
     headline: string;
     headlineItalic: string;
-    subhead1: string;
-    subhead2: string;
+    subhead: string;
     ctaLabel: string;
     ctaNote: string;
     portraitUrl: string;
@@ -188,10 +187,7 @@ export const HOME_DEFAULTS: HomeContent = {
     eyebrow: "— By Karen Alexandra",
     headline: "The Art",
     headlineItalic: "of Well",
-    subhead1:
-      "A correspondence on the quiet luxuries — the cashmere worth keeping, the suite worth flying for, the morning ritual worth protecting.",
-    subhead2:
-      "Authored by a luxury fashion e-commerce lead and lifestyle correspondent based between New York and the Côte d'Azur.",
+    subhead: "A global citizen's guide to well living.",
     ctaLabel: "Begin Reading",
     ctaNote: "— 48 dispatches, all year long",
     portraitUrl: "/photos/portrait-lavender.jpg",
