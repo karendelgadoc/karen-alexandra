@@ -47,8 +47,22 @@ async function buildSections(page: PageKey) {
         getLatestVideos(3).catch(() => []),
       ]);
       const c = content ?? HOME_DEFAULTS;
-      const newsTitle = c.hero.letterCardTitle ?? "The week in fashion news.";
-      return { c, sectionMap: buildHomeSectionMap(c, { featuredPosts, newsTitle, newsSlug: null, newsImage: null, videos }), defaults: HOME_DEFAULTS };
+      const latestEntry = featuredPosts[0] ?? null;
+      const newsTitle = latestEntry
+        ? latestEntry.title.length > 40 ? latestEntry.title.slice(0, 40).trimEnd() + "…" : latestEntry.title
+        : (c.hero.letterCardTitle ?? "The week in fashion news.");
+      return {
+        c,
+        sectionMap: buildHomeSectionMap(c, {
+          featuredPosts,
+          newsTitle,
+          newsHref: latestEntry?.href ?? null,
+          newsExternal: latestEntry?.external ?? false,
+          newsImage: latestEntry?.heroImage || null,
+          videos,
+        }),
+        defaults: HOME_DEFAULTS,
+      };
     }
     case "portfolio": {
       const [posts, content] = await Promise.all([getAllPosts(), getPortfolioContent().catch(() => null)]);

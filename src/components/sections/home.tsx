@@ -23,15 +23,17 @@ const CATEGORIES = [
   { label: "Lifestyle", desc: "Home, culture and everything in between", image: "/photos/mykonos-cocktail.jpg", slug: "lifestyle" },
 ];
 
-export function HeroSection({ c, newsTitle, newsSlug, newsImage }: {
+export function HeroSection({ c, newsTitle, newsHref, newsExternal, newsImage }: {
   c: HomeContent;
   newsTitle: string;
-  newsSlug: string | null;
+  newsHref: string | null;
+  newsExternal: boolean;
   newsImage: string | null;
 }) {
   const heroImageSrc = newsImage || c.hero.portraitUrl;
   const heroImageAlt = newsImage ? newsTitle : "Karen Alexandra";
-  const newsHref = newsSlug ? `/fashion-news/${newsSlug}` : "/fashion-news";
+  const href = newsHref ?? "/journal";
+  const externalProps = newsExternal ? { target: "_blank", rel: "noopener noreferrer" } : {};
   return (
     <section
       className="ka-rp ka-r-stack-md"
@@ -63,14 +65,14 @@ export function HeroSection({ c, newsTitle, newsSlug, newsImage }: {
         </div>
       </div>
       <div style={{ position: "relative" }}>
-        <Link href={newsHref} style={{ display: "block", aspectRatio: "4 / 5", width: "100%", position: "relative", overflow: "hidden" }}>
+        <Link href={href} {...externalProps} style={{ display: "block", aspectRatio: "4 / 5", width: "100%", position: "relative", overflow: "hidden" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={heroImageSrc} alt={heroImageAlt} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
         </Link>
         <div style={{ position: "absolute", bottom: -32, left: -32, background: "var(--ka-bg)", padding: "20px 24px", borderLeft: "2px solid var(--ka-accent-deep)", maxWidth: 280 }}>
-          <div className="ka-eyebrow" style={{ marginBottom: 6 }}>This week&apos;s news</div>
+          <div className="ka-eyebrow" style={{ marginBottom: 6 }}>From The Edit</div>
           <div style={{ fontFamily: "var(--ka-display)", fontStyle: "italic", fontSize: 20, lineHeight: 1.3 }}>{newsTitle}</div>
-          <Link href={newsHref} className="ka-arrow-link" style={{ fontSize: 11, display: "block", marginTop: 12 }}>
+          <Link href={href} {...externalProps} className="ka-arrow-link" style={{ fontSize: 11, display: "block", marginTop: 12 }}>
             Read now <span className="ka-arrow">→</span>
           </Link>
         </div>
@@ -243,14 +245,15 @@ export function NewsletterSection() {
 export interface HomeExtraProps {
   featuredPosts: FeaturedPosts;
   newsTitle: string;
-  newsSlug: string | null;
+  newsHref: string | null;
+  newsExternal: boolean;
   newsImage: string | null;
   videos: VideoCard[];
 }
 
 export function buildHomeSectionMap(c: HomeContent, extra: HomeExtraProps): Record<string, ReactNode> {
   return {
-    "hero":             <HeroSection c={c} newsTitle={extra.newsTitle} newsSlug={extra.newsSlug} newsImage={extra.newsImage} />,
+    "hero":             <HeroSection c={c} newsTitle={extra.newsTitle} newsHref={extra.newsHref} newsExternal={extra.newsExternal} newsImage={extra.newsImage} />,
     "marquee":          <MarqueeSection c={c} />,
     "featured-stories": <FeaturedStoriesSection featuredPosts={extra.featuredPosts} />,
     "editor-note":      <EditorNoteSection c={c} />,
