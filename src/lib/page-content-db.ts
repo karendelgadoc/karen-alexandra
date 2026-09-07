@@ -79,6 +79,7 @@ export interface HomeContent extends SectionLayout {
     headline: string;
     headlineItalic: string;
     subhead: string;
+    subheadRight: string;
     ctaLabel: string;
     ctaNote: string;
     portraitUrl: string;
@@ -189,6 +190,7 @@ export const HOME_DEFAULTS: HomeContent = {
     headline: "The Art",
     headlineItalic: "of Well",
     subhead: "A global citizen's guide to well living.",
+    subheadRight: "Fashion marketer by day, creating beautiful brands in the digital.",
     ctaLabel: "Begin Reading",
     ctaNote: "— 48 dispatches, all year long",
     portraitUrl: "/photos/portrait-lavender.jpg",
