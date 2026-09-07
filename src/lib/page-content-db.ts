@@ -477,7 +477,7 @@ export const FOOTER_DEFAULTS: FooterContent = {
         { label: "YouTube",   href: "https://www.youtube.com/@KarenAlexandra",          external: true },
         { label: "Substack",  href: "https://substack.com/@karenalexandra",             external: true },
         { label: "Pinterest", href: "https://www.pinterest.com/karenalexandra__/",       external: true },
-        { label: "LinkedIn",  href: "https://www.linkedin.com/in/karenalexandrac",       external: true },
+        { label: "LinkedIn",  href: "https://www.linkedin.com/in/karendelgadocuneo",     external: true },
       ],
     },
   ],
@@ -536,16 +536,24 @@ async function fetchPageContent<T>(page: string, defaults: T): Promise<T> {
 
 export async function getFooterContent(): Promise<FooterContent> {
   const stored = await fetchPageContent<FooterContent>("footer", FOOTER_DEFAULTS);
-  // Same stale-array backfill as getMenuContent: a previously-saved column
-  // (e.g. "Elsewhere") keeps whatever the DB has, plus any new default link
-  // for that column (matched by title) that isn't already there by href —
-  // so a link added to FOOTER_DEFAULTS later (like Substack) still shows up
-  // without requiring a re-save in /admin/menus.
+  // Similar to getMenuContent's stale-array backfill, but keyed by label
+  // rather than href: a previously-saved column (e.g. "Elsewhere") keeps its
+  // link order, but any entry whose label still matches a current default
+  // (YouTube, LinkedIn, …) takes that default's href — so fixing a wrong
+  // URL in code corrects it everywhere immediately, not just for rows never
+  // saved via /admin/menus. Any default link missing entirely (a brand-new
+  // one, like Substack) is appended. A stored link with no matching default
+  // label at all (a genuinely custom admin addition) is left untouched.
   const columns = stored.columns.map((col) => {
     const defaultCol = FOOTER_DEFAULTS.columns.find((d) => d.title === col.title);
     if (!defaultCol) return col;
-    const storedHrefs = new Set(col.links.map((l) => l.href));
-    return { ...col, links: [...col.links, ...defaultCol.links.filter((l) => !storedHrefs.has(l.href))] };
+    const defaultByLabel = new Map(defaultCol.links.map((l) => [l.label, l]));
+    const storedLabels = new Set(col.links.map((l) => l.label));
+    const links = [
+      ...col.links.map((l) => defaultByLabel.get(l.label) ?? l),
+      ...defaultCol.links.filter((l) => !storedLabels.has(l.label)),
+    ];
+    return { ...col, links };
   });
   return { ...stored, columns };
 }
