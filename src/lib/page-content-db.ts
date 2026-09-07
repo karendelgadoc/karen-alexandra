@@ -79,6 +79,7 @@ export interface HomeContent extends SectionLayout {
     headline: string;
     headlineItalic: string;
     subhead: string;
+    location: string;
     subheadRight: string;
     ctaLabel: string;
     ctaNote: string;
@@ -190,6 +191,7 @@ export const HOME_DEFAULTS: HomeContent = {
     headline: "The Art",
     headlineItalic: "of Well",
     subhead: "A global citizen's guide to well living.",
+    location: "Based in Madrid, often elsewhere.",
     subheadRight: "Fashion marketer by day, creating beautiful brands in the digital.",
     ctaLabel: "Begin Reading",
     ctaNote: "— 48 dispatches, all year long",

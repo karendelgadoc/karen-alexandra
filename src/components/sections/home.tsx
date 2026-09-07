@@ -56,7 +56,10 @@ export function HeroSection({ c, newsTitle, newsHref, newsExternal, newsImage }:
           </span>
         </h1>
         <div className="ka-r-stack" style={{ display: "flex", gap: 40, marginTop: 64, paddingTop: 32, borderTop: "1px solid var(--ka-line)" }}>
-          <p style={{ fontSize: 16, lineHeight: 1.7, color: "var(--ka-muted)", maxWidth: 360, flex: 1, fontFamily: "var(--ka-body)" }}>{c.hero.subhead}</p>
+          <div style={{ maxWidth: 360, flex: 1 }}>
+            <p style={{ fontSize: 16, lineHeight: 1.7, color: "var(--ka-muted)", fontFamily: "var(--ka-body)" }}>{c.hero.subhead}</p>
+            <p style={{ fontSize: 16, lineHeight: 1.7, color: "var(--ka-muted)", fontFamily: "var(--ka-body)" }}>{c.hero.location}</p>
+          </div>
           <p style={{ fontSize: 16, lineHeight: 1.7, color: "var(--ka-muted)", maxWidth: 360, flex: 1, fontFamily: "var(--ka-body)" }}>{c.hero.subheadRight}</p>
         </div>
         <div style={{ marginTop: 48, display: "flex", gap: 24, alignItems: "center" }}>
