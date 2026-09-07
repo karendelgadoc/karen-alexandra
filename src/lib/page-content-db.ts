@@ -1,5 +1,4 @@
 import { getServerClient } from "./insforge";
-import { SUBSTACK_PUBLICATION_URL } from "./substack";
 
 // ── Section registry ──────────────────────────────────────────────────────────
 
@@ -476,7 +475,7 @@ export const FOOTER_DEFAULTS: FooterContent = {
       title: "Elsewhere",
       links: [
         { label: "YouTube",   href: "https://www.youtube.com/@KarenAlexandra",          external: true },
-        { label: "Substack",  href: SUBSTACK_PUBLICATION_URL,                           external: true },
+        { label: "Substack",  href: "https://substack.com/@karenalexandra",             external: true },
         { label: "Pinterest", href: "https://www.pinterest.com/karenalexandra__/",       external: true },
         { label: "LinkedIn",  href: "https://www.linkedin.com/in/karenalexandrac",       external: true },
       ],
