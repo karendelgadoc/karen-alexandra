@@ -30,7 +30,6 @@ import { buildWatchSectionMap }     from "@/components/sections/watch";
 import { buildAboutSectionMap }     from "@/components/sections/about";
 import { buildServicesSectionMap }  from "@/components/sections/services";
 import { buildMediaKitSectionMap }  from "@/components/sections/media-kit";
-import { getAllBlogPosts } from "@/lib/blog-db";
 import { getLatestJournalEntries } from "@/lib/journal";
 import { getAllPosts } from "@/lib/posts-db";
 import { getLatestVideos } from "@/lib/youtube";
@@ -112,13 +111,13 @@ async function buildSections(page: PageKey) {
       return { c, sectionMap: buildServicesSectionMap(c, { posts: allPosts.slice(0, 3) }), defaults: SERVICES_DEFAULTS };
     }
     case "media-kit": {
-      const [content, blogPosts, videos] = await Promise.all([
+      const [content, recentPosts, videos] = await Promise.all([
         getMediaKitContent().catch(() => null),
-        getAllBlogPosts().catch(() => []),
+        getLatestJournalEntries(2).catch(() => []),
         getLatestVideos(2).catch(() => []),
       ]);
       const c = content ?? MEDIA_KIT_DEFAULTS;
-      return { c, sectionMap: buildMediaKitSectionMap(c, { recentPosts: blogPosts.slice(0, 2), recentVideos: videos.slice(0, 2) }), defaults: MEDIA_KIT_DEFAULTS };
+      return { c, sectionMap: buildMediaKitSectionMap(c, { recentPosts, recentVideos: videos.slice(0, 2) }), defaults: MEDIA_KIT_DEFAULTS };
     }
     default:
       throw new Error(`Unknown page: ${page}`);

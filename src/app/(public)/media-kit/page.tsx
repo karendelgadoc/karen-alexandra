@@ -1,6 +1,6 @@
 import { getMediaKitContent, MEDIA_KIT_DEFAULTS } from "@/lib/page-content-db";
 import { buildMediaKitSectionMap } from "@/components/sections/media-kit";
-import { getAllBlogPosts } from "@/lib/blog-db";
+import { getLatestJournalEntries } from "@/lib/journal";
 import { getLatestVideos } from "@/lib/youtube";
 import type { Metadata } from "next";
 
@@ -13,13 +13,12 @@ export const metadata: Metadata = {
 };
 
 export default async function MediaKitPage() {
-  const [content, blogPosts, videos] = await Promise.all([
+  const [content, recentPosts, videos] = await Promise.all([
     getMediaKitContent().catch(() => null),
-    getAllBlogPosts().catch(() => []),
+    getLatestJournalEntries(2).catch(() => []),
     getLatestVideos(2).catch(() => []),
   ]);
   const c = content ?? MEDIA_KIT_DEFAULTS;
-  const recentPosts = blogPosts.slice(0, 2);
   const recentVideos = videos.slice(0, 2);
 
   const hidden = new Set(c.hiddenSections ?? []);

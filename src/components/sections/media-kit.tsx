@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { MediaKitContent } from "@/lib/page-content-db";
-import type { BlogPost } from "@/lib/blog-db";
+import type { JournalEntry } from "@/lib/journal";
 import type { VideoCard } from "@/lib/youtube";
 
 const MK_SAMPLES = [
@@ -87,7 +87,7 @@ export function ReachSection({
   recentVideos,
 }: {
   c: MediaKitContent;
-  recentPosts: BlogPost[];
+  recentPosts: JournalEntry[];
   recentVideos: VideoCard[];
 }) {
   return (
@@ -139,7 +139,12 @@ export function ReachSection({
         </div>
         <div className="ka-mk-content-grid">
           {recentPosts.map((post, i) => (
-            <Link key={post.slug} href={`/journal/${post.slug}`} style={{ textDecoration: "none", color: "inherit" }}>
+            <Link
+              key={post.key}
+              href={post.href}
+              {...(post.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
               <article>
                 <div style={{ aspectRatio: "4/5", position: "relative", overflow: "hidden", background: "var(--ka-sand)" }}>
                   {post.heroImage
@@ -306,7 +311,7 @@ export function CtaSection({ c }: { c: MediaKitContent }) {
 
 export function buildMediaKitSectionMap(
   c: MediaKitContent,
-  { recentPosts = [], recentVideos = [] }: { recentPosts?: BlogPost[]; recentVideos?: VideoCard[] } = {}
+  { recentPosts = [], recentVideos = [] }: { recentPosts?: JournalEntry[]; recentVideos?: VideoCard[] } = {}
 ): Record<string, ReactNode> {
   return {
     "hero":         <HeroSection c={c} />,
