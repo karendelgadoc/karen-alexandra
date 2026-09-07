@@ -194,7 +194,7 @@ export const HOME_DEFAULTS: HomeContent = {
     location: "Based in Madrid, often elsewhere.",
     subheadRight: "Fashion marketer by day, creating beautiful brands in the digital.",
     ctaLabel: "Begin Reading",
-    ctaNote: "— 48 dispatches, all year long",
+    ctaNote: "— New season, new musings",
     portraitUrl: "/photos/portrait-lavender.jpg",
     letterCardTitle: "On dressing for the life you want.",
   },
