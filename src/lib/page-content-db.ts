@@ -472,7 +472,7 @@ export const FOOTER_DEFAULTS: FooterContent = {
       ],
     },
     {
-      title: "Elsewhere",
+      title: "Connect",
       links: [
         { label: "YouTube",   href: "https://www.youtube.com/@KarenAlexandra",          external: true },
         { label: "Substack",  href: "https://substack.com/@karenalexandra",             external: true },
@@ -537,15 +537,26 @@ async function fetchPageContent<T>(page: string, defaults: T): Promise<T> {
 export async function getFooterContent(): Promise<FooterContent> {
   const stored = await fetchPageContent<FooterContent>("footer", FOOTER_DEFAULTS);
   // Similar to getMenuContent's stale-array backfill, but keyed by label
-  // rather than href: a previously-saved column (e.g. "Elsewhere") keeps its
-  // link order, but any entry whose label still matches a current default
-  // (YouTube, LinkedIn, …) takes that default's href — so fixing a wrong
-  // URL in code corrects it everywhere immediately, not just for rows never
-  // saved via /admin/menus. Any default link missing entirely (a brand-new
-  // one, like Substack) is appended. A stored link with no matching default
-  // label at all (a genuinely custom admin addition) is left untouched.
+  // rather than href: a previously-saved column keeps its link order, but
+  // any entry whose label still matches a current default (YouTube,
+  // LinkedIn, …) takes that default's href — so fixing a wrong URL in code
+  // corrects it everywhere immediately, not just for rows never saved via
+  // /admin/menus. Any default link missing entirely (a brand-new one, like
+  // Substack) is appended. A stored link with no matching default label at
+  // all (a genuinely custom admin addition) is left untouched.
+  //
+  // A column is matched to its default primarily by title, but a title
+  // rename in code (e.g. "Elsewhere" → "Connect") would otherwise orphan an
+  // already-saved column — neither its title nor its links would ever
+  // update again. So when no title matches, fall back to matching by shared
+  // link labels: the same set of social links identifies the same column
+  // even after its heading changes, and the column's title is then healed
+  // to the default's current one too.
   const columns = stored.columns.map((col) => {
-    const defaultCol = FOOTER_DEFAULTS.columns.find((d) => d.title === col.title);
+    const colLabels = new Set(col.links.map((l) => l.label));
+    const defaultCol =
+      FOOTER_DEFAULTS.columns.find((d) => d.title === col.title) ??
+      FOOTER_DEFAULTS.columns.find((d) => d.links.some((l) => colLabels.has(l.label)));
     if (!defaultCol) return col;
     const defaultByLabel = new Map(defaultCol.links.map((l) => [l.label, l]));
     const storedLabels = new Set(col.links.map((l) => l.label));
@@ -553,7 +564,7 @@ export async function getFooterContent(): Promise<FooterContent> {
       ...col.links.map((l) => defaultByLabel.get(l.label) ?? l),
       ...defaultCol.links.filter((l) => !storedLabels.has(l.label)),
     ];
-    return { ...col, links };
+    return { ...col, title: defaultCol.title, links };
   });
   return { ...stored, columns };
 }
