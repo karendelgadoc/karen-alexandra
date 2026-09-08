@@ -71,7 +71,7 @@ function PostCard({
             fill
             style={{ objectFit: "cover" }}
             sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 40vw"
-            unoptimized={entry.heroImage.includes("substackcdn.com")}
+            unoptimized={entry.external}
           />
         ) : (
           <div style={{ width: "100%", height: "100%", background: "var(--ka-sand)" }} />
@@ -306,7 +306,7 @@ export default async function JournalPage({
                 fill
                 style={{ objectFit: "cover" }}
                 sizes="50vw"
-                unoptimized={featured.heroImage.includes("substackcdn.com")}
+                unoptimized={featured.external}
               />
             ) : (
               <div style={{ width: "100%", height: "100%", background: "var(--ka-sand)" }} />

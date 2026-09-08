@@ -116,7 +116,7 @@ export function FeaturedStoriesSection({ featuredPosts }: { featuredPosts: Featu
                   fill
                   style={{ objectFit: "cover" }}
                   sizes="33vw"
-                  unoptimized={post.heroImage.includes("substackcdn.com")}
+                  unoptimized={post.external}
                 />
               ) : (
                 <div style={{ width: "100%", height: "100%", background: "var(--ka-sand)" }} />
