@@ -1275,6 +1275,26 @@ img {
   .ka-r-2 { grid-template-columns: repeat(2, 1fr) !important; }
 }
 
+/* Portfolio stats ("$10M+ Budget" etc): the 64px value and 48px/40px
+   padding were sized for a 4-across desktop row and overflowed once
+   .ka-r-2 wraps them to 2 columns on a narrow phone — shrink both, and
+   redraw the divider borders for a proper 2×2 grid instead of the
+   4-in-a-row pattern the inline styles assume. */
+@media (max-width: 1023px) {
+  .ka-pf-fact { padding: 40px 32px !important; }
+  .ka-pf-fact-value { font-size: clamp(44px, 8vw, 64px) !important; }
+}
+@media (max-width: 767px) {
+  .ka-pf-fact {
+    padding: 32px 20px !important;
+    border-right: 1px solid var(--ka-line) !important;
+    border-bottom: 1px solid var(--ka-line) !important;
+  }
+  .ka-pf-fact:nth-child(2n) { border-right: none !important; }
+  .ka-pf-fact:nth-last-child(-n+2) { border-bottom: none !important; }
+  .ka-pf-fact-value { font-size: clamp(36px, 11vw, 48px) !important; }
+}
+
 /* Brand-logo grid: 3 on tablet, 2 on mobile */
 @media (max-width: 1023px) {
   .ka-r-logos { grid-template-columns: repeat(3, 1fr) !important; }
