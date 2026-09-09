@@ -64,6 +64,20 @@ function firstImage(html: string): string | null {
   return m ? m[1] : null;
 }
 
+// RSS attribute/text values can carry HTML-entity-encoded URLs (a raw "&" in
+// a query string comes through as "&amp;"), and the content-body fallback in
+// firstImage() has no guarantee the <img> it found used an absolute URL —
+// Substack's own exported HTML always does, but a relative src slipping
+// through would resolve against karenalexandra.com and 404 as a broken
+// image rather than failing gracefully. Reject anything that isn't a clean
+// absolute http(s) URL after decoding, so a bad candidate becomes "no image"
+// (the card's plain placeholder background) instead of a broken <img> icon.
+function normalizeImageUrl(raw: string | null): string | null {
+  if (!raw) return null;
+  const decoded = decodeEntities(raw).trim();
+  return /^https?:\/\//i.test(decoded) ? decoded : null;
+}
+
 function slugFromUrl(url: string): string {
   try {
     const parts = new URL(url).pathname.split("/").filter(Boolean);
@@ -108,10 +122,10 @@ async function fetchViaRss(limit: number): Promise<SubstackPost[]> {
       decodeEntities(m[1].replace(/^<!\[CDATA\[([\s\S]*)\]\]>$/, "$1").trim())
     );
     const image =
-      attrValue(item, "enclosure", "url") ??
-      attrValue(item, "media:content", "url") ??
-      firstImage(contentEncoded) ??
-      firstImage(description) ??
+      normalizeImageUrl(attrValue(item, "enclosure", "url")) ??
+      normalizeImageUrl(attrValue(item, "media:content", "url")) ??
+      normalizeImageUrl(firstImage(contentEncoded)) ??
+      normalizeImageUrl(firstImage(description)) ??
       "";
 
     posts.push({

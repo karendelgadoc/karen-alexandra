@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import FallbackImage from "@/components/FallbackImage";
 import type { ReactNode } from "react";
 import { KaMarquee, KaSectionHead } from "@/components/KaComponents";
 import type { HomeContent } from "@/lib/page-content-db";
@@ -110,7 +111,7 @@ export function FeaturedStoriesSection({ featuredPosts }: { featuredPosts: Featu
           >
             <div style={{ aspectRatio: i === 0 ? "5/6" : "4/5", position: "relative", overflow: "hidden", background: "var(--ka-sand)" }}>
               {post.heroImage ? (
-                <Image
+                <FallbackImage
                   src={post.heroImage}
                   alt={post.heroAlt || post.title}
                   fill
