@@ -315,10 +315,10 @@ export const ABOUT_DEFAULTS: AboutContent = {
   },
   bio: {
     portraitUrl: "https://5xkq5mmr.us-east.insforge.app/api/storage/buckets/blog-images/objects/site%2FIMG_4534.jpg",
-    tagline: "Karen Alexandra — writer, e-commerce lead, and the long Sunday lunch most of my friends are waiting for.",
+    tagline: "Karen Alexandra is a traveler, writer, e-commerce and marketing lead, and most importantly, dog mom to Mia.",
     para1: "I have a job and I have a journal, and most weeks I think the two have begun to write each other. The day job is in luxury fashion e-commerce — strategy, merchandising, the unsexy work of compounding return rates. I lead direct-to-consumer for an independent shoe house, and I consult for a handful of fashion and hospitality brands whose work I'd recommend without the brief.",
     para2: "The other half is this site. I write a Saturday letter for an audience of readers I quietly know by first name; I make small films on YouTube about the rooms, wardrobes, and rituals I want to write about; I post quietly on Instagram about whatever happens to be on the table. The phrase \"influencer\" gives me a small allergic reaction — though I'll cop to being one, because the alternative is pretending the work is something it isn't.",
-    para3: "Off the page, I am a dog mom to a maltipom named Mia, who has views about most things. I'm a triple citizen — Peru, the United States, Spain — which is mostly relevant at customs and very occasionally in conversation. I love coffee, yoga before the day starts, fashion that survives a second look, a long hike, dinners with family and friends that turn into breakfast, and a glass of wine well-poured on a Spanish terraza or chiringuito.",
+    para3: "Off the page, I am a dog mom to a maltipom named Mia, who has views about most things. I'm a triple citizen — Peru, the United States, Spain — which is mostly relevant at customs and very occasionally in conversation. I love matcha, yoga before the day starts, fashion that survives a second look, a long hike, dinners with family and friends that turn into breakfast, and a glass of wine well-poured on a Spanish terraza or chiringuito.",
     para4: "I write from Madrid, for the moment. By the time you read this I may have moved again — but the letters are sent from somewhere with a balcony, and that is the rule.",
     facts: [
       { label: "Reads as",  value: "Karen Alexandra" },
@@ -330,7 +330,7 @@ export const ABOUT_DEFAULTS: AboutContent = {
     ],
   },
   joys: [
-    { n: "I",    title: "Coffee",                   desc: "Cortado, double, never to go." },
+    { n: "I",    title: "Matcha",                   desc: "Ceremonial grade, whisked, never sweetened." },
     { n: "II",   title: "Yoga",                     desc: "Most mornings. Mat by the window." },
     { n: "III",  title: "Travel",                   desc: "Slowly. With a small bag and a real plan." },
     { n: "IV",   title: "Fashion",                  desc: "What I'd wear again next year." },
