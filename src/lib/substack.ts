@@ -100,7 +100,11 @@ function inferCategory(title: string, categories: string[], description: string)
 }
 
 async function fetchViaRss(limit: number): Promise<SubstackPost[]> {
-  const res = await fetch(SUBSTACK_FEED_URL, { next: { revalidate: 600 } });
+  // Matches the fastest ISR window either caller re-renders on (both "/"
+  // and "/journal" revalidate every 60s) — a shorter TTL here would just
+  // mean more requests to Substack's feed with no faster reflection on the
+  // site, since the page itself won't re-render more often than that.
+  const res = await fetch(SUBSTACK_FEED_URL, { next: { revalidate: 60 } });
   if (!res.ok) throw new Error(`substack rss ${res.status}`);
   const xml = await res.text();
 
