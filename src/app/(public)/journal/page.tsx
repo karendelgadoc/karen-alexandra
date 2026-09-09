@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
+import FallbackImage from "@/components/FallbackImage";
 import { getAllBlogPosts, getExplicitlyFeaturedBlogPost } from "@/lib/blog-db";
 import type { BlogCategory } from "@/lib/blog-db";
 import { getLatestSubstackPosts, SUBSTACK_PUBLICATION_URL } from "@/lib/substack";
@@ -65,7 +65,7 @@ function PostCard({
         }}
       >
         {entry.heroImage ? (
-          <Image
+          <FallbackImage
             src={entry.heroImage}
             alt={entry.heroAlt}
             fill
@@ -300,7 +300,7 @@ export default async function JournalPage({
             }}
           >
             {featured.heroImage ? (
-              <Image
+              <FallbackImage
                 src={featured.heroImage}
                 alt={featured.heroAlt}
                 fill
