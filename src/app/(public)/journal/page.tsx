@@ -8,6 +8,7 @@ import { fromBlogPost, fromSubstackPost } from "@/lib/journal";
 import type { JournalEntry } from "@/lib/journal";
 import { getJournalContent, JOURNAL_DEFAULTS } from "@/lib/page-content-db";
 import { KaArrowUpRight } from "@/components/KaComponents";
+import JournalGrid from "@/components/sections/journal-grid";
 
 export const revalidate = 60;
 
@@ -18,100 +19,6 @@ export const metadata: Metadata = {
 };
 
 const CATEGORIES = ["All entries", "Fashion", "Travel", "Wellness", "Lifestyle"];
-
-// Asymmetric collage layout config (12-column grid).
-//
-// Column spans only — no explicit grid-row. Auto-placement then guarantees
-// cards can never occupy the same cell; the previous config pinned explicit
-// rows and had two genuine collisions (cards 4↔6 and 7↔8 overlapped on top
-// of each other). Each group of spans sums to exactly 12 so every row tiles
-// edge to edge, and `mt` staggers cards vertically to keep the collage feel
-// without any risk of overlap.
-const COLLAGE_POSITIONS = [
-  { col: "span 5", aspect: "5/6", mt: 0 },  // ┐
-  { col: "span 4", aspect: "4/5", mt: 48 }, // ├ 5 + 4 + 3 = 12
-  { col: "span 3", aspect: "3/4", mt: 0 },  // ┘
-  { col: "span 4", aspect: "5/6", mt: 0 },  // ┐
-  { col: "span 5", aspect: "5/4", mt: 40 }, // ├ 4 + 5 + 3 = 12
-  { col: "span 3", aspect: "3/4", mt: 0 },  // ┘
-  { col: "span 6", aspect: "5/4", mt: 0 },  // ┐ 6 + 6 = 12
-  { col: "span 6", aspect: "4/5", mt: 40 }, // ┘
-];
-
-function PostCard({
-  entry,
-  position,
-}: {
-  entry: JournalEntry;
-  position: (typeof COLLAGE_POSITIONS)[number];
-}) {
-  return (
-    <Link
-      href={entry.href}
-      {...(entry.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-      style={{
-        gridColumn: position.col,
-        marginTop: position.mt ? `${position.mt}px` : undefined,
-        display: "block",
-        minWidth: 0,
-      }}
-    >
-      <div
-        style={{
-          aspectRatio: position.aspect,
-          position: "relative",
-          overflow: "hidden",
-          background: "var(--ka-sand)",
-        }}
-      >
-        {entry.heroImage ? (
-          <FallbackImage
-            src={entry.heroImage}
-            alt={entry.heroAlt}
-            fill
-            style={{ objectFit: "cover" }}
-            sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 40vw"
-            unoptimized={entry.external}
-          />
-        ) : (
-          <div style={{ width: "100%", height: "100%", background: "var(--ka-sand)" }} />
-        )}
-      </div>
-      <div style={{ padding: "14px 0 0" }}>
-        <span className="ka-eyebrow">
-          {entry.category}
-          {entry.external ? "  ·  Substack" : ""}
-        </span>
-        <p
-          style={{
-            fontFamily: "var(--ka-display)",
-            fontSize: "22px",
-            fontStyle: "italic",
-            marginTop: "6px",
-            lineHeight: 1.2,
-          }}
-        >
-          {entry.title}
-        </p>
-        <p
-          style={{
-            fontSize: "12px",
-            fontFamily: "var(--ka-mono)",
-            color: "var(--ka-muted)",
-            marginTop: "6px",
-            letterSpacing: "0.08em",
-          }}
-        >
-          {new Date(entry.date).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          })}
-        </p>
-      </div>
-    </Link>
-  );
-}
 
 export default async function JournalPage({
   searchParams,
@@ -142,8 +49,9 @@ export default async function JournalPage({
   // An editor-pinned local letter (`featured: true` in admin) wins the hero
   // slot; otherwise the newest entry overall — local or synced — takes it.
   const featured = explicitFeatured ? fromBlogPost(explicitFeatured) : entries[0] ?? null;
-  // Remaining entries (excluding whichever is featured) for the collage
-  const collageEntries = entries.filter((e) => e.key !== featured?.key).slice(0, 8);
+  // Remaining entries (excluding whichever is featured) for the collage —
+  // all of them; JournalGrid paginates client-side behind "Load older entries".
+  const collageEntries = entries.filter((e) => e.key !== featured?.key);
 
   return (
     <>
@@ -316,85 +224,53 @@ export default async function JournalPage({
       )}
 
       {/* ── Collage Grid ─────────────────────────────────────────────── */}
-      {collageEntries.length > 0 && (
-        <section className="ka-rp" style={{ padding: "80px 64px" }}>
-          <div
-            className="ka-r-collage"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(12, 1fr)",
-              gap: "24px",
-              alignItems: "start",
-            }}
-          >
-            {collageEntries.map((entry, i) => (
-              <PostCard
-                key={entry.key}
-                entry={entry}
-                position={COLLAGE_POSITIONS[i % COLLAGE_POSITIONS.length]}
+      <JournalGrid
+        entries={collageEntries}
+        totalCount={entries.length}
+        afterGrid={
+          <>
+            {entries.length === 0 && (
+              <section className="ka-rp" style={{ padding: "96px 64px", textAlign: "center" }}>
+                <p style={{ color: "var(--ka-muted)", fontFamily: "var(--ka-display)", fontSize: "24px", fontStyle: "italic" }}>
+                  No entries yet — check back soon.
+                </p>
+              </section>
+            )}
+
+            {/* ── Pull Quote ───────────────────────────────────────────── */}
+            <section
+              className="ka-rp"
+              style={{
+                padding: "80px 64px",
+                textAlign: "center",
+                borderTop: "1px solid var(--ka-line)",
+                borderBottom: "1px solid var(--ka-line)",
+              }}
+            >
+              <div
+                style={{
+                  width: "48px",
+                  height: "2px",
+                  background: "var(--ka-accent-deep)",
+                  margin: "0 auto 32px",
+                }}
               />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {entries.length === 0 && (
-        <section className="ka-rp" style={{ padding: "96px 64px", textAlign: "center" }}>
-          <p style={{ color: "var(--ka-muted)", fontFamily: "var(--ka-display)", fontSize: "24px", fontStyle: "italic" }}>
-            No entries yet — check back soon.
-          </p>
-        </section>
-      )}
-
-      {/* ── Pull Quote ───────────────────────────────────────────────── */}
-      <section
-        className="ka-rp"
-        style={{
-          padding: "80px 64px",
-          textAlign: "center",
-          borderTop: "1px solid var(--ka-line)",
-          borderBottom: "1px solid var(--ka-line)",
-        }}
-      >
-        <div
-          style={{
-            width: "48px",
-            height: "2px",
-            background: "var(--ka-accent-deep)",
-            margin: "0 auto 32px",
-          }}
-        />
-        <p
-          style={{
-            fontFamily: "var(--ka-display)",
-            fontSize: "clamp(28px, 4vw, 44px)",
-            fontStyle: "italic",
-            maxWidth: "680px",
-            margin: "0 auto",
-            lineHeight: 1.2,
-          }}
-        >
-          &ldquo;{pc.pullQuote}&rdquo;
-        </p>
-      </section>
-
-      {/* ── Load More ────────────────────────────────────────────────── */}
-      <div className="ka-rp" style={{ padding: "56px 64px", textAlign: "center" }}>
-        <button className="ka-btn" disabled>
-          Load older entries
-        </button>
-        <p
-          style={{
-            marginTop: "16px",
-            fontSize: "11px",
-            fontFamily: "var(--ka-mono)",
-            color: "var(--ka-muted)",
-            letterSpacing: "0.08em",
-          }}
-        >
-          Showing {entries.length} entries
-        </p>
-      </div>
+              <p
+                style={{
+                  fontFamily: "var(--ka-display)",
+                  fontSize: "clamp(28px, 4vw, 44px)",
+                  fontStyle: "italic",
+                  maxWidth: "680px",
+                  margin: "0 auto",
+                  lineHeight: 1.2,
+                }}
+              >
+                &ldquo;{pc.pullQuote}&rdquo;
+              </p>
+            </section>
+          </>
+        }
+      />
     </>
   );
 }
