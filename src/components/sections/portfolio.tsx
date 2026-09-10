@@ -22,10 +22,10 @@ export function HeroSection({ c }: { c: PortfolioContent }) {
 
 export function FactsSection({ c }: { c: PortfolioContent }) {
   return (
-    <section className="ka-r-2" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", borderBottom: "1px solid var(--ka-line)" }}>
+    <section className="ka-r-2 ka-pf-facts" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", borderBottom: "1px solid var(--ka-line)" }}>
       {c.stats.map(({ value, label, note }, i) => (
-        <div key={label} style={{ padding: "48px 40px", borderRight: i < c.stats.length - 1 ? "1px solid var(--ka-line)" : "none" }}>
-          <p style={{ fontFamily: "var(--ka-display)", fontSize: "64px", fontWeight: 300, lineHeight: 1.0, marginBottom: "8px" }}>{value}</p>
+        <div key={label} className="ka-pf-fact" style={{ padding: "48px 40px", borderRight: i < c.stats.length - 1 ? "1px solid var(--ka-line)" : "none" }}>
+          <p className="ka-pf-fact-value" style={{ fontFamily: "var(--ka-display)", fontSize: "64px", fontWeight: 300, lineHeight: 1.0, marginBottom: "8px" }}>{value}</p>
           <span className="ka-eyebrow" style={{ display: "block", marginBottom: "8px" }}>{label}</span>
           <p style={{ fontSize: "13px", color: "var(--ka-ink-soft)", lineHeight: 1.5, fontWeight: 300 }}>{note}</p>
         </div>
