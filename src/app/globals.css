@@ -1282,6 +1282,14 @@ img {
   .ka-r-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 }
 
+/* Portfolio facts grid: once it wraps to 2 columns, the 4 stats stack into
+   2 rows — add the same 1px line as the existing vertical/outer rules
+   between them, so all 4 cells read as separated quadrants instead of two
+   floating pairs. Desktop's single 4-column row never matches this. */
+@media (max-width: 1023px) {
+  .ka-facts-grid > div:nth-child(-n+2) { border-bottom: 1px solid var(--ka-line); }
+}
+
 /* Brand-logo grid: 3 on tablet, 2 on mobile */
 @media (max-width: 1023px) {
   .ka-r-logos { grid-template-columns: repeat(3, 1fr) !important; }
