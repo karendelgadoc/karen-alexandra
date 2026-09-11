@@ -1290,6 +1290,20 @@ img {
   .ka-facts-grid > div:nth-child(-n+2) { border-bottom: 1px solid var(--ka-line); }
 }
 
+/* Portfolio facts values: a fixed 64px fits fine at desktop's 4-up row, but
+   once the grid wraps to 2 columns a longer value like "1050%" can be wider
+   than the ~40px-padded column it now sits in and spill past the divider or
+   the screen edge. Scale the value down with the column instead — derived
+   from measuring "1050%" (the widest realistic value) against half the
+   viewport minus its 80px horizontal padding, with headroom for fonts that
+   render a little wider than Chromium's own metrics. Clamped at 64px so it
+   never grows past the desktop size as the breakpoint's upper end (1023px)
+   approaches. overflowWrap on the element itself (see portfolio.tsx) is the
+   backstop if a value is ever still too wide for this. */
+@media (max-width: 1023px) {
+  .ka-facts-value { font-size: clamp(28px, calc(17.24vw - 27.6px), 64px) !important; }
+}
+
 /* Brand-logo grid: 3 on tablet, 2 on mobile */
 @media (max-width: 1023px) {
   .ka-r-logos { grid-template-columns: repeat(3, 1fr) !important; }
