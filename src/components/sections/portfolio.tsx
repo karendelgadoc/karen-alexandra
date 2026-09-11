@@ -29,8 +29,20 @@ export function FactsSection({ c }: { c: PortfolioContent }) {
               old-style figures — shorter than cap height, so "$10M+" reads
               as uneven, easily-misread shapes next to the full-height $
               and M. Lining figures match cap height, keeping numbers
-              legible at this display size. */}
-          <p style={{ fontFamily: "var(--ka-display)", fontSize: "64px", fontWeight: 300, lineHeight: 1.0, marginBottom: "8px", fontVariantNumeric: "lining-nums" }}>{value}</p>
+              legible at this display size.
+              ka-facts-value (mobile/tablet only, see globals.css): a fixed
+              64px was wide enough to overflow past its column's padding
+              for longer values like "1050%" once the grid drops to 2
+              columns, so the number bled into the divider or the screen
+              edge. The media-query rule scales it down with the column;
+              overflowWrap is a hard backstop in case a value is ever
+              still too wide for its column (any browser, any width). */}
+          <p
+            className="ka-facts-value"
+            style={{ fontFamily: "var(--ka-display)", fontSize: "64px", fontWeight: 300, lineHeight: 1.0, marginBottom: "8px", fontVariantNumeric: "lining-nums", overflowWrap: "anywhere" }}
+          >
+            {value}
+          </p>
           <span className="ka-eyebrow" style={{ display: "block", marginBottom: "8px" }}>{label}</span>
           <p style={{ fontSize: "13px", color: "var(--ka-ink-soft)", lineHeight: 1.5, fontWeight: 300 }}>{note}</p>
         </div>
