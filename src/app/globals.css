@@ -1270,9 +1270,16 @@ img {
   }
 }
 
-/* Force two columns from tablet down (4-col grids → 2×N) */
+/* Force two columns from tablet down (4-col grids → 2×N).
+   minmax(0, 1fr) rather than plain 1fr: a bare 1fr track still respects
+   its content's min-content width, so a wide stat value or a long
+   unbroken word in a note can blow a column past its fair share — the
+   two columns end up unequal and the grid (and the border it sits in)
+   overflows the section, which then reads as the divider/rule lines not
+   reaching the right edge. minmax(0, 1fr) lets the track shrink below
+   that min-content size so text wraps inside its column instead. */
 @media (max-width: 1023px) {
-  .ka-r-2 { grid-template-columns: repeat(2, 1fr) !important; }
+  .ka-r-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 }
 
 /* Brand-logo grid: 3 on tablet, 2 on mobile */
