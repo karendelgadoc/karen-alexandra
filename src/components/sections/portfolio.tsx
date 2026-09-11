@@ -25,7 +25,12 @@ export function FactsSection({ c }: { c: PortfolioContent }) {
     <section className="ka-r-2 ka-facts-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", borderBottom: "1px solid var(--ka-line)" }}>
       {c.stats.map(({ value, label, note }, i) => (
         <div key={label} style={{ padding: "48px 40px", borderRight: i < c.stats.length - 1 ? "1px solid var(--ka-line)" : "none" }}>
-          <p style={{ fontFamily: "var(--ka-display)", fontSize: "64px", fontWeight: 300, lineHeight: 1.0, marginBottom: "8px" }}>{value}</p>
+          {/* fontVariantNumeric: Cormorant Garamond's default digits are
+              old-style figures — shorter than cap height, so "$10M+" reads
+              as uneven, easily-misread shapes next to the full-height $
+              and M. Lining figures match cap height, keeping numbers
+              legible at this display size. */}
+          <p style={{ fontFamily: "var(--ka-display)", fontSize: "64px", fontWeight: 300, lineHeight: 1.0, marginBottom: "8px", fontVariantNumeric: "lining-nums" }}>{value}</p>
           <span className="ka-eyebrow" style={{ display: "block", marginBottom: "8px" }}>{label}</span>
           <p style={{ fontSize: "13px", color: "var(--ka-ink-soft)", lineHeight: 1.5, fontWeight: 300 }}>{note}</p>
         </div>
