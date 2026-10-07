@@ -7,10 +7,17 @@
 //      thumbnail, view count. Duration is unavailable from RSS, shown as "—".
 //
 // Both paths return the same VideoCard shape; the page renders identically.
+//
+// Only long-form uploads are shown — no Shorts, no live streams. Both paths
+// read YouTube's long-form uploads playlist ("UULF" + channel ID suffix), which
+// YouTube maintains per channel and which already omits Shorts and streams.
+// Each path also has its own backstop in case that playlist misbehaves.
 
 export const YT_CHANNEL_HANDLE = "KarenAlexandra";
 export const YT_CHANNEL_ID = "UCq1nK9NBTKy2N_TzMPCeR9w";
 export const YT_CHANNEL_URL = `https://www.youtube.com/@${YT_CHANNEL_HANDLE}`;
+// Auto-generated playlist of the channel's long-form videos only.
+const YT_LONGFORM_PLAYLIST_ID = `UULF${YT_CHANNEL_ID.slice(2)}`;
 
 export interface VideoCard {
   id: string;
@@ -88,24 +95,13 @@ interface YTApiItem {
     };
   };
   statistics?: { viewCount?: string };
+  liveStreamingDetails?: unknown;
 }
 
 async function fetchViaApi(apiKey: string, limit: number): Promise<VideoCard[]> {
-  // 1. Get the uploads playlist ID for the channel
-  const chRes = await fetch(
-    `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${YT_CHANNEL_ID}&key=${apiKey}`,
-    { next: { revalidate: 3600 } }
-  );
-  if (!chRes.ok) throw new Error(`channels.list ${chRes.status}`);
-  const chData = (await chRes.json()) as {
-    items?: { contentDetails?: { relatedPlaylists?: { uploads?: string } } }[];
-  };
-  const uploadsId = chData.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
-  if (!uploadsId) throw new Error("no uploads playlist");
-
-  // 2. Get the last N items in that playlist
+  // 1. Get the last N items in the long-form uploads playlist
   const plRes = await fetch(
-    `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=${uploadsId}&maxResults=${limit}&key=${apiKey}`,
+    `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=${YT_LONGFORM_PLAYLIST_ID}&maxResults=${limit}&key=${apiKey}`,
     { next: { revalidate: 600 } }
   );
   if (!plRes.ok) throw new Error(`playlistItems.list ${plRes.status}`);
@@ -118,9 +114,9 @@ async function fetchViaApi(apiKey: string, limit: number): Promise<VideoCard[]> 
     .filter((x): x is string => !!x);
   if (ids.length === 0) return [];
 
-  // 3. Get statistics + content details (for duration + view count) for those videos
+  // 2. Get statistics + content details (for duration + view count) for those videos
   const vRes = await fetch(
-    `https://www.googleapis.com/youtube/v3/videos?part=contentDetails,statistics,snippet&id=${ids.join(",")}&key=${apiKey}`,
+    `https://www.googleapis.com/youtube/v3/videos?part=contentDetails,statistics,snippet,liveStreamingDetails&id=${ids.join(",")}&key=${apiKey}`,
     { next: { revalidate: 600 } }
   );
   if (!vRes.ok) throw new Error(`videos.list ${vRes.status}`);
@@ -133,6 +129,8 @@ async function fetchViaApi(apiKey: string, limit: number): Promise<VideoCard[]> 
 
   return ids.flatMap<VideoCard>((id) => {
     const meta = byId.get(id);
+    // Backstop: anything that is or was a live stream carries liveStreamingDetails.
+    if (meta?.liveStreamingDetails) return [];
     const sn = meta?.snippet ?? items.find((p) => p.contentDetails?.videoId === id)?.snippet;
     if (!sn?.title) return [];
     const title = sn.title;
@@ -165,7 +163,7 @@ function attrValue(xml: string, tag: string, attr: string): string | null {
 
 async function fetchViaRss(limit: number): Promise<VideoCard[]> {
   const res = await fetch(
-    `https://www.youtube.com/feeds/videos.xml?channel_id=${YT_CHANNEL_ID}`,
+    `https://www.youtube.com/feeds/videos.xml?playlist_id=${YT_LONGFORM_PLAYLIST_ID}`,
     { next: { revalidate: 600 } }
   );
   if (!res.ok) throw new Error(`rss ${res.status}`);
@@ -177,6 +175,8 @@ async function fetchViaRss(limit: number): Promise<VideoCard[]> {
     const id = tagText(entry, "yt:videoId");
     const title = tagText(entry, "title");
     if (!id || !title) continue;
+    // Backstop: YouTube links Shorts as /shorts/<id> in feeds.
+    if (attrValue(entry, "link", "href")?.includes("/shorts/")) continue;
     const published = tagText(entry, "published") ?? "";
     const thumbUrl = attrValue(entry, "media:thumbnail", "url") ?? thumb(id);
     const views = attrValue(entry, "media:statistics", "views") ?? "";
